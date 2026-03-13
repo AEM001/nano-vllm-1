@@ -3,7 +3,7 @@ from torch import nn
 import torch.nn.functional as F
 import torch.distributed as dist
 
-
+# for divide evenly in tensor parallelism
 def divide(numerator, denominator):
     assert numerator % denominator == 0
     return numerator // denominator
@@ -59,13 +59,13 @@ class ColumnParallelLinear(LinearBase):
         output_size: int,
         bias: bool = False,
     ):
-        tp_size = dist.get_world_size()
-        super().__init__(input_size, divide(output_size, tp_size), bias, 0)
+        tp_size = dist.get_world_size()#get the total number of the GPUs
+        super().__init__(input_size, divide(output_size, tp_size), bias, 0)#split output size evenly, split along dimension 0(output dimension)
 
     def weight_loader(self, param: nn.Parameter, loaded_weight: torch.Tensor):
         param_data = param.data
-        shard_size = param_data.size(self.tp_dim)
-        start_idx = self.tp_rank * shard_size
+        shard_size = param_data.size(self.tp_dim)#size of this GPU's shard
+        start_idx = self.tp_rank * shard_size#where this shard starts
         loaded_weight = loaded_weight.narrow(self.tp_dim, start_idx, shard_size)
         param_data.copy_(loaded_weight)
 
@@ -74,7 +74,9 @@ class ColumnParallelLinear(LinearBase):
 
 
 class MergedColumnParallelLinear(ColumnParallelLinear):
-
+    """Linear layer with multiple output projections merged into one, 
+    supporting tensor parallelism."""
+    
     def __init__(
         self,
         input_size: int,
@@ -94,6 +96,11 @@ class MergedColumnParallelLinear(ColumnParallelLinear):
 
 
 class QKVParallelLinear(ColumnParallelLinear):
+    """Linear layer for parallel QKV projections in attention mechanisms.
+    
+    This layer combines query, key, and value projections into a single linear layer
+    while supporting tensor parallelism across multiple GPUs.
+    """
 
     def __init__(
         self,
@@ -103,6 +110,15 @@ class QKVParallelLinear(ColumnParallelLinear):
         total_num_kv_heads: int | None = None,
         bias: bool = False,
     ):
+        """Initialize QKV parallel linear layer.
+        
+        Args:
+            hidden_size: Input hidden dimension size
+            head_size: Size of each attention head
+            total_num_heads: Total number of attention heads
+            total_num_kv_heads: Total number of key/value heads (defaults to total_num_heads)
+            bias: Whether to include bias term
+        """
         tp_size = dist.get_world_size()
         total_num_kv_heads = total_num_kv_heads or total_num_heads
         self.head_size = head_size
@@ -112,6 +128,13 @@ class QKVParallelLinear(ColumnParallelLinear):
         super().__init__(hidden_size, output_size, bias)
 
     def weight_loader(self, param: nn.Parameter, loaded_weight: torch.Tensor, loaded_shard_id: str):
+        """Load weights for specific QKV shard.
+        
+        Args:
+            param: Parameter to load weights into
+            loaded_weight: Weight tensor to load from
+            loaded_shard_id: Identifier for which shard ('q', 'k', or 'v')
+        """
         param_data = param.data
         assert loaded_shard_id in ["q", "k", "v"]
         if loaded_shard_id == "q":

@@ -1,31 +1,11 @@
 """
-ModelRunner - Core model execution component for nano-vllm inference.
 
-This module handles the actual neural network computation with optimizations:
-- Tensor parallelism across multiple GPUs/processes
-- CUDA Graphs for eliminating Python overhead in decode phase
-- KV cache management and memory allocation
-- Efficient batch preparation for prefill/decode phases
-
-Architecture:
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Scheduler     │───▶│   ModelRunner    │───▶│   GPU Hardware  │
-│                 │    │                  │    │                 │
-│ - Batch seqs    │    │ - Model exec     │    │ - CUDA kernels  │
-│ - Memory mgmt   │    │ - Parallelism    │    │ - KV cache      │
-│ - Sequence state│    │ - CUDA graphs    │    │ - Tensor cores  │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-
-Key Optimizations:
-1. **Tensor Parallelism**: Split model across multiple GPUs
-2. **CUDA Graphs**: Pre-captured computation graphs for decode phase
-3. **Memory Pooling**: Efficient KV cache allocation
-4. **Batch Preparation**: Optimized tensor formatting
 """
 
 import pickle
 import torch
 import torch.distributed as dist
+
 from multiprocessing.synchronize import Event
 from multiprocessing.shared_memory import SharedMemory
 
@@ -55,32 +35,24 @@ class ModelRunner:
     """
 
     def __init__(self, config: Config, rank: int, event: Event | list[Event]):
-        """
-        Initialize ModelRunner with tensor parallelism setup.
-        
-        Args:
-            config: Model and inference configuration
-            rank: Process rank (0 = main, 1+ = workers)
-            event: Synchronization event(s) for inter-process communication
-            
-        Initialization Steps:
-        1. Setup distributed process group and CUDA device
-        2. Load model shard for this rank
-        3. Warmup model and allocate KV cache
-        4. Capture CUDA graphs for decode optimization
-        5. Setup shared memory for multi-process coordination
-        """
+
         self.config = config
-        hf_config = config.hf_config
+        hf_config = config.hf_config#due to model runner is gonna directly working with the GPU, it is neccessary to knwo the exact structure
+
         self.block_size = config.kvcache_block_size
         self.enforce_eager = config.enforce_eager
-        self.world_size = config.tensor_parallel_size
-        self.rank = rank
-        self.event = event
+        self.world_size = config.tensor_parallel_size#Total number of processes in tensor parallel group
 
-        # Initialize distributed training and CUDA
+        self.rank = rank#this process's ID
+        self.event = event#Synchronization object for coordinating with other ranks,Rank 0 gets list[Event] from all workers
+
+        #Initialize pytorch distributed communication between process
+        #set up NCCL for GPU-to-GPU communication
         dist.init_process_group("nccl", "tcp://localhost:2333", world_size=self.world_size, rank=rank)
+
+        # Assign this process to a specific GPU
         torch.cuda.set_device(rank)
+        
         
         # Setup model precision and device
         default_dtype = torch.get_default_dtype()

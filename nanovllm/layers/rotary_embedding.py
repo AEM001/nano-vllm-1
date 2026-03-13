@@ -4,10 +4,11 @@ from torch import nn
 
 
 def apply_rotary_emb(
-    x: torch.Tensor,
-    cos: torch.Tensor,
-    sin: torch.Tensor,
-) -> torch.Tensor:
+    x: torch.Tensor,  # Input tensor to apply rotary embeddings to
+    cos: torch.Tensor,  # Cosine values for rotary embeddings
+    sin: torch.Tensor,  # Sine values for rotary embeddings
+) -> torch.Tensor:  # Output tensor with rotary embeddings applied
+    """Apply rotary embeddings to the input tensor."""
     x1, x2 = torch.chunk(x.float(), 2, dim=-1)
     y1 = x1 * cos - x2 * sin
     y2 = x2 * cos + x1 * sin
@@ -15,13 +16,14 @@ def apply_rotary_emb(
 
 
 class RotaryEmbedding(nn.Module):
+    """Rotary Position Embedding (RoPE) implementation."""
 
     def __init__(
         self,
-        head_size: int,
-        rotary_dim: int,
-        max_position_embeddings: int,
-        base: float,
+        head_size: int,  # Size of each attention head
+        rotary_dim: int,  # Dimensionality for rotary embeddings (must equal head_size)
+        max_position_embeddings: int,  # Maximum sequence length for position embeddings
+        base: float,  # Base value for frequency calculation
     ) -> None:
         super().__init__()
         self.head_size = head_size
@@ -37,10 +39,11 @@ class RotaryEmbedding(nn.Module):
     @torch.compile
     def forward(
         self,
-        positions: torch.Tensor,
-        query: torch.Tensor,
-        key: torch.Tensor,
-    ) -> tuple[torch.Tensor, torch.Tensor]:
+        positions: torch.Tensor,  # Position indices for the tokens
+        query: torch.Tensor,  # Query tensor to apply rotary embeddings to
+        key: torch.Tensor,  # Key tensor to apply rotary embeddings to
+    ) -> tuple[torch.Tensor, torch.Tensor]:  # Tuple of (query, key) with rotary embeddings applied
+        """Apply rotary embeddings to query and key tensors."""
         cos_sin = self.cos_sin_cache[positions]
         cos, sin = cos_sin.chunk(2, dim=-1)
         query = apply_rotary_emb(query, cos, sin)
@@ -50,12 +53,13 @@ class RotaryEmbedding(nn.Module):
 
 @lru_cache(1)
 def get_rope(
-    head_size: int,
-    rotary_dim: int,
-    max_position: int,
-    base: float,
-    rope_scaling: dict | None = None,
-):
+    head_size: int,  # Size of each attention head
+    rotary_dim: int,  # Dimensionality for rotary embeddings
+    max_position: int,  # Maximum sequence length for position embeddings
+    base: float,  # Base value for frequency calculation
+    rope_scaling: dict | None = None,  # Optional rope scaling configuration (not supported)
+):  # Returns a RotaryEmbedding instance
+    """Get a cached RotaryEmbedding instance."""
     assert rope_scaling is None
     rotary_emb = RotaryEmbedding(head_size, rotary_dim, max_position, base)
     return rotary_emb

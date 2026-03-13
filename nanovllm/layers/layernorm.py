@@ -16,7 +16,7 @@ class RMSNorm(nn.Module):
     @torch.compile
     def rms_forward(
         self,
-        x: torch.Tensor,
+        x: torch.Tensor,  #batch_size*seq_len*hidden_size
     ) -> torch.Tensor:
         orig_dtype = x.dtype
         x = x.float()

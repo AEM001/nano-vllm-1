@@ -1,20 +1,17 @@
 """
-LLM Engine - Core orchestration component for nano-vllm inference system.
+Core LLM Engine for nano-vllm inference system.
+- set up some configs
+- initialize the list for storing process and events
+- initialize several workers in rank, 0 is the main worker, and coordinate them
 
-This module implements the main engine that coordinates:
-- Model loading and tensor parallelism across multiple processes
-- Request scheduling and batch management
-- Token generation and decoding
-- Process lifecycle management
+- whole cycle:
+  - add request(for scheduler)
+  - schedule
+  - step, outputing sequence id and the raw token_ids, calculating the performances
+  - output 
 
-Architecture:
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   LLMEngine     │───▶│   Scheduler      │───▶│   ModelRunner   │
-│                 │    │                  │    │                 │
-│ - Request mgmt  │    │ - Batch scheduling│    │ - Model exec    │
-│ - Tokenization  │    │ - Memory mgmt     │    │ - Parallelism   │
-│ - Output decode │    │ - Sequence state  │    │ - KV cache      │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
+- generate: wrap the step up, adding features like tqdm progress bar
+- and decode into the final text, outputting the result
 """
 
 import atexit
@@ -33,127 +30,76 @@ from nanovllm.engine.model_runner import ModelRunner
 
 class LLMEngine:
     """
-    Main inference engine that orchestrates the entire LLM serving pipeline.
-    
-    The engine manages:
-    1. **Tensor Parallelism**: Spawns multiple processes for distributed model execution
-    2. **Request Management**: Accepts and queues generation requests
-    3. **Batch Scheduling**: Coordinates efficient batching of requests
-    4. **Token Generation**: Drives the step-by-step generation process
-    5. **Resource Cleanup**: Ensures proper shutdown of all processes
-    
-    Process Flow:
-    User Request → Tokenization → Scheduler → ModelRunner → Token Decoding → User Output
+    Main engine for LLM serving.
+    Handles tensor parallelism, request management, batch scheduling,
+    token generation, and cleanup.
     """
 
     def __init__(self, model, **kwargs):
-        """
-        Initialize the LLM engine with tensor parallelism support.
-        
-        Args:
-            model (str): Model name/path for loading
-            **kwargs: Configuration parameters passed to Config
-            
-        Process Setup:
-        - Main process (rank 0): Handles coordination and primary model execution
-        - Worker processes (rank 1..N-1): Handle tensor-parallel model shards
-        - Events: Synchronization primitives for inter-process communication
-        """
-        # Extract only valid Config fields from kwargs
+        #This code filters and validates configuration parameters before creating the Config object:
         config_fields = {field.name for field in fields(Config)}
         config_kwargs = {k: v for k, v in kwargs.items() if k in config_fields}
         config = Config(model, **config_kwargs)
-        
-        # Initialize tensor parallelism infrastructure
-        self.ps = []      # Worker process handles
-        self.events = []  # Synchronization events
-        ctx = mp.get_context("spawn")  # Use spawn context for CUDA safety
-        
-        # Spawn worker processes for tensor parallel ranks 1..N-1
+
+        # Tensor parallelism setup
+        self.ps = []#Empty list to hold worker processes
+        self.events = []#Empty list for synchronization events
+        ctx = mp.get_context("spawn")#Gets multiprocessing context using "spawn" method (creates new processes rather than forks)
         for i in range(1, config.tensor_parallel_size):
-            event = ctx.Event()  # Synchronization event for this worker
+            event = ctx.Event()
             process = ctx.Process(target=ModelRunner, args=(config, i, event))
             process.start()
             self.ps.append(process)
             self.events.append(event)
-        
-        # Initialize main model runner (rank 0) with worker events
         self.model_runner = ModelRunner(config, 0, self.events)
-        
-        # Load tokenizer and set EOS token
+
+        # Tokenizer and scheduler
         self.tokenizer = AutoTokenizer.from_pretrained(config.model, use_fast=True)
         config.eos = self.tokenizer.eos_token_id
-        
-        # Initialize request scheduler
         self.scheduler = Scheduler(config)
-        
-        # Register cleanup handler for graceful shutdown
+
         atexit.register(self.exit)
 
     def exit(self):
-        """
-        Gracefully shutdown all processes and clean up resources.
-        
-        Shutdown Sequence:
-        1. Signal main model runner to exit
-        2. Delete main model runner to free CUDA memory
-        3. Wait for all worker processes to complete
-        """
-        self.model_runner.call("exit")
-        del self.model_runner
-        for p in self.ps:
+        self.model_runner.call("exit")#Sends a shutdown command to the main model logic (Rank 0).
+        del self.model_runner #deletes the rank0 object from memory
+        for p in self.ps:#Loops through every worker process (Rank 1, 2, 3...) and waits for them to finish.
             p.join()
 
     def add_request(self, prompt: str | list[int], sampling_params: SamplingParams):
-        """
-        Add a new generation request to the scheduler.
-        
-        Args:
-            prompt: Either a text string or list of token IDs
-            sampling_params: Parameters controlling generation behavior
-            
-        Process:
-        1. Convert string prompts to token IDs using tokenizer
-        2. Create Sequence object with prompt and sampling params
-        3. Submit to scheduler for batch processing
-        """
         if isinstance(prompt, str):
             prompt = self.tokenizer.encode(prompt)
         seq = Sequence(prompt, sampling_params)
         self.scheduler.add(seq)
 
     def step(self):
+        seqs, is_prefill = self.scheduler.schedule()#Scheduler decides what to process:
+
+
+        token_ids = self.model_runner.call("run", seqs, is_prefill)#Model execution across all GPUs:
         """
-        Execute one generation step for the current batch.
-        
-        This is the core execution loop that handles both prefill (prompt processing)
-        and decode (token generation) phases.
-        
-        Returns:
-            tuple: (finished_sequences, token_count)
-                - finished_sequences: List of (seq_id, token_ids) for completed requests
-                - token_count: Positive for prefill tokens, negative for decode tokens
-        
-        Step Flow:
-        1. **Schedule**: Get next batch of sequences from scheduler
-        2. **Execute**: Run model inference via ModelRunner
-        3. **Postprocess**: Update sequence states with generated tokens
-        4. **Collect**: Extract finished sequences for output
+        Sends batch to tensor parallel processes
+        Rank 0 coordinates with ranks 1,2,3... via events
+        Each process computes its portion of the model
+        Returns generated tokens (one per sequence)
         """
-        seqs, is_prefill = self.scheduler.schedule()
-        token_ids = self.model_runner.call("run", seqs, is_prefill)
-        self.scheduler.postprocess(seqs, token_ids)
+
+
+        self.scheduler.postprocess(seqs, token_ids)#Handle results and update state:
+        """
+        Appends generated tokens to sequences
+        Checks if sequences are finished (EOS token, max length)
+        Frees KV cache memory for completed sequences
+        Updates sequence statuses
+        """
+
+
         outputs = [(seq.seq_id, seq.completion_token_ids) for seq in seqs if seq.is_finished]
-        num_tokens = sum(len(seq) for seq in seqs) if is_prefill else -len(seqs)
+
+        num_tokens = sum(len(seq) for seq in seqs) if is_prefill else -len(seqs)#positive for prefill, negative for decode
         return outputs, num_tokens
 
     def is_finished(self):
-        """
-        Check if all generation requests are completed.
-        
-        Returns:
-            bool: True if no active sequences remain
-        """
         return self.scheduler.is_finished()
 
     def generate(
@@ -163,72 +109,50 @@ class LLMEngine:
         use_tqdm: bool = True,
     ) -> list[str]:
         """
-        High-level generation interface that handles the complete generation pipeline.
-        
-        This method orchestrates the entire generation process from request submission
-        to final output decoding, with progress tracking and throughput monitoring.
-        
-        Args:
-            prompts: List of text prompts or pre-tokenized sequences
-            sampling_params: Single params object or list (one per prompt)
-            use_tqdm: Whether to show progress bar and throughput metrics
-            
-        Returns:
-            List of dictionaries containing:
-                - "text": Decoded generated text
-                - "token_ids": Raw token ID sequences
-            
-        Generation Pipeline:
-        1. **Setup**: Initialize progress tracking and parameter validation
-        2. **Submit**: Add all requests to the scheduler
-        3. **Execute Loop**: Repeatedly call step() until all sequences finish
-        4. **Monitor**: Track prefill/decode throughput in real-time
-        5. **Collect**: Gather finished outputs and decode to text
-        6. **Cleanup**: Close progress bar and return results
+        Complete generation pipeline:
+        - Submits requests
+        - Runs generation loop
+        - Tracks progress/throughput
+        - Returns output dicts with text and token IDs
         """
-        # Initialize progress tracking
         if use_tqdm:
             pbar = tqdm(total=len(prompts), desc="Generating", dynamic_ncols=True)
-        
-        # Normalize sampling parameters to list format
         if not isinstance(sampling_params, list):
-            sampling_params = [sampling_params] * len(prompts)
-        
-        # Submit all requests to scheduler
+            sampling_params = [sampling_params] * len(prompts)#prompts are a list, not prompt's tokens
+
         for prompt, sp in zip(prompts, sampling_params):
             self.add_request(prompt, sp)
-        
-        # Generation loop with throughput monitoring
         outputs = {}
-        prefill_throughput = decode_throughput = 0.
-        
+        prefill_throughput = decode_throughput = 0.#initialize throughput counters
+
         while not self.is_finished():
-            # Time the generation step for throughput calculation
             t = perf_counter()
             output, num_tokens = self.step()
-            
-            # Update throughput metrics for progress display
             if use_tqdm:
-                if num_tokens > 0:  # Prefill phase
+                if num_tokens > 0:
                     prefill_throughput = num_tokens / (perf_counter() - t)
-                else:  # Decode phase
+                else:
                     decode_throughput = -num_tokens / (perf_counter() - t)
                 pbar.set_postfix({
                     "Prefill": f"{int(prefill_throughput)}tok/s",
                     "Decode": f"{int(decode_throughput)}tok/s",
                 })
-            
-            # Collect finished sequences
+
             for seq_id, token_ids in output:
                 outputs[seq_id] = token_ids
                 if use_tqdm:
                     pbar.update(1)
-        
-        # Convert outputs to ordered list and decode to text
+                    
         outputs = [outputs[seq_id] for seq_id in sorted(outputs.keys())]
+        # Before: outputs = {seq_id_3: [tokens], seq_id_1: [tokens], seq_id_2: [tokens]}
+        # After: outputs = [[tokens_seq_1], [tokens_seq_2], [tokens_seq_3]]
         outputs = [{"text": self.tokenizer.decode(token_ids), "token_ids": token_ids} for token_ids in outputs]
-        
-        # Clean up progress tracking
+        # Before: outputs = [[token1, token2, token3], [token4, token5]]
+        # After: outputs = [
+        #   {"text": "Hello world", "token_ids": [token1, token2, token3]},
+        #   {"text": "How are", "token_ids": [token4, token5]}
+        # ]
         if use_tqdm:
             pbar.close()
         return outputs
+        
