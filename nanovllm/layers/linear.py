@@ -19,6 +19,8 @@ class LinearBase(nn.Module):
         tp_dim: int | None = None,
     ):
         super().__init__()
+        # Which dimension to split the weight matrix along 
+        # (e.g., 0 = split rows, 1 = split columns)
         self.tp_dim = tp_dim
         self.tp_rank = dist.get_rank()
         self.tp_size = dist.get_world_size()
@@ -31,9 +33,9 @@ class LinearBase(nn.Module):
             self.register_parameter("bias", None)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        raise NotImplementedError
+        raise NotImplementedError#base class, must be implemented by child classes
 
-
+#without tp version
 class ReplicatedLinear(LinearBase):
 
     def __init__(
@@ -110,31 +112,19 @@ class QKVParallelLinear(ColumnParallelLinear):
         total_num_kv_heads: int | None = None,
         bias: bool = False,
     ):
-        """Initialize QKV parallel linear layer.
-        
-        Args:
-            hidden_size: Input hidden dimension size
-            head_size: Size of each attention head
-            total_num_heads: Total number of attention heads
-            total_num_kv_heads: Total number of key/value heads (defaults to total_num_heads)
-            bias: Whether to include bias term
-        """
+
         tp_size = dist.get_world_size()
         total_num_kv_heads = total_num_kv_heads or total_num_heads
         self.head_size = head_size
         self.num_heads = divide(total_num_heads, tp_size)
+
         self.num_kv_heads = divide(total_num_kv_heads, tp_size)
+
         output_size = (total_num_heads + 2 * total_num_kv_heads) * self.head_size
         super().__init__(hidden_size, output_size, bias)
 
     def weight_loader(self, param: nn.Parameter, loaded_weight: torch.Tensor, loaded_shard_id: str):
-        """Load weights for specific QKV shard.
-        
-        Args:
-            param: Parameter to load weights into
-            loaded_weight: Weight tensor to load from
-            loaded_shard_id: Identifier for which shard ('q', 'k', or 'v')
-        """
+
         param_data = param.data
         assert loaded_shard_id in ["q", "k", "v"]
         if loaded_shard_id == "q":

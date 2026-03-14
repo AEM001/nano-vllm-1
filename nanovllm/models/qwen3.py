@@ -25,18 +25,21 @@ class Qwen3Attention(nn.Module):
         rope_theta: float = 10000,
         rope_scaling: tuple | None = None,
     ) -> None:
+
         super().__init__()
         tp_size = dist.get_world_size()
         self.total_num_heads = num_heads
-        assert self.total_num_heads % tp_size == 0
+        #in GQA, total_num_heads is the number of query heads
+        assert self.total_num_heads % tp_size == 0#number of query heads
         self.num_heads = self.total_num_heads // tp_size
         self.total_num_kv_heads = num_kv_heads
-        assert self.total_num_kv_heads % tp_size == 0
+        #in GQA, total_num_kv_heads is the number of key/value heads
+        assert self.total_num_kv_heads % tp_size == 0#number of key/value heads
         self.num_kv_heads = self.total_num_kv_heads // tp_size
         self.head_dim = head_dim or hidden_size // self.total_num_heads
         self.q_size = self.num_heads * self.head_dim
         self.kv_size = self.num_kv_heads * self.head_dim
-        self.scaling = self.head_dim ** -0.5
+        self.scaling = self.head_dim ** -0.5# Attention scores = Q · K^T / √(d_k)
         self.qkv_bias = qkv_bias
 
         self.qkv_proj = QKVParallelLinear(
@@ -46,11 +49,16 @@ class Qwen3Attention(nn.Module):
             self.total_num_kv_heads,
             bias=qkv_bias,
         )
+
+        # Input: Takes the concatenated attention outputs from all heads
+        # Output: Projects back to the model's hidden dimension
+        # Function: Transforms the attention result back to the same dimension as the input
         self.o_proj = RowParallelLinear(
             self.total_num_heads * self.head_dim,
             hidden_size,
             bias=False,
         )
+
         self.rotary_emb = get_rope(
             self.head_dim,
             rotary_dim=self.head_dim,
@@ -64,29 +72,46 @@ class Qwen3Attention(nn.Module):
             self.scaling,
             self.num_kv_heads,
         )
+
+        # Each attention head gets normalized independently
+        # Normalization happens before position encoding
+        # With bias: Skip normalization (bias provides centering)
+        # Without bias: Apply RMSNorm for stability
+
         if not self.qkv_bias:
             self.q_norm = RMSNorm(self.head_dim, eps=rms_norm_eps)
             self.k_norm = RMSNorm(self.head_dim, eps=rms_norm_eps)
+
+
 
     def forward(
         self,
         positions: torch.Tensor,
         hidden_states: torch.Tensor,
     ) -> torch.Tensor:
+
+        # Purpose: Combined query/key/value projection in single linear layer
+        # Input: hidden_states (dimension: hidden_size)
+        # Output: Combined QKV tensor (dimension: q_size + kv_size + kv_size)
         qkv = self.qkv_proj(hidden_states)
+
         q, k, v = qkv.split([self.q_size, self.kv_size, self.kv_size], dim=-1)
         q = q.view(-1, self.num_heads, self.head_dim)
         k = k.view(-1, self.num_kv_heads, self.head_dim)
         v = v.view(-1, self.num_kv_heads, self.head_dim)
+
         if not self.qkv_bias:
             q = self.q_norm(q)
             k = self.k_norm(k)
+
         q, k = self.rotary_emb(positions, q, k)
         o = self.attn(q, k, v)
-        output = self.o_proj(o.flatten(1, -1))
+
+        output = self.o_proj(o.flatten(1, -1))# Project concatenated heads back to hidden_size
         return output
 
-
+# The MLP processes the attention output to add non-linear transformations 
+# and increase model capacity.
 class Qwen3MLP(nn.Module):
 
     def __init__(
@@ -96,16 +121,22 @@ class Qwen3MLP(nn.Module):
         hidden_act: str,
     ) -> None:
         super().__init__()
+        # Combined projection: Single linear layer 
+        # that outputs both gate and up projections
+        # for SwiGLU to work well
         self.gate_up_proj = MergedColumnParallelLinear(
             hidden_size,
             [intermediate_size] * 2,
             bias=False,
         )
+        # Projection back: 
+        # Reduces dimension from intermediate_size to hidden_size
         self.down_proj = RowParallelLinear(
             intermediate_size,
             hidden_size,
             bias=False,
         )
+
         assert hidden_act == "silu"
         self.act_fn = SiluAndMul()
 
@@ -123,6 +154,7 @@ class Qwen3DecoderLayer(nn.Module):
         config: Qwen3Config,
     ) -> None:
         super().__init__()
+
         self.self_attn = Qwen3Attention(
             hidden_size=config.hidden_size,
             num_heads=config.num_attention_heads,
@@ -139,6 +171,7 @@ class Qwen3DecoderLayer(nn.Module):
             intermediate_size=config.intermediate_size,
             hidden_act=config.hidden_act,
         )
+        
         self.input_layernorm = RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
         self.post_attention_layernorm = RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
 
@@ -148,12 +181,19 @@ class Qwen3DecoderLayer(nn.Module):
         hidden_states: torch.Tensor,
         residual: torch.Tensor | None,
     ) -> tuple[torch.Tensor, torch.Tensor]:
+
+        # Pre-Norm Architecture
+        # Qwen3 uses pre-norm (normalize before attention/MLP, not after):
+        # input → layernorm → attention → residual_add → layernorm → mlp → residual_add
         if residual is None:
             hidden_states, residual = self.input_layernorm(hidden_states), hidden_states
         else:
             hidden_states, residual = self.input_layernorm(hidden_states, residual)
+
         hidden_states = self.self_attn(positions, hidden_states)
+
         hidden_states, residual = self.post_attention_layernorm(hidden_states, residual)
+
         hidden_states = self.mlp(hidden_states)
         return hidden_states, residual
 
@@ -197,7 +237,7 @@ class Qwen3ForCausalLM(nn.Module):
     ) -> None:
         super().__init__()
         self.model = Qwen3Model(config)
-        self.lm_head = ParallelLMHead(config.vocab_size, config.hidden_size)
+        self.lm_head = ParallelLMHead(config.vocab_size, config.hidden_size)#final linear layer for vocabulary prediction
         if config.tie_word_embeddings:
             self.lm_head.weight.data = self.model.embed_tokens.weight.data
 

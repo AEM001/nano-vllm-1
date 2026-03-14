@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 import torch
 
-
+# A global state manager that tracks information needed for 
+# efficient inference across multiple requests.
 @dataclass
 class Context:
     is_prefill: bool = False
