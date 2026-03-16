@@ -1,4 +1,14 @@
+# 1. Allocate physical memory blocks
+block_manager = BlockManager(config.num_kvcache_blocks, config.kvcache_block_size)
+block_manager.allocate(seq)
 
+# 2. First call: prefill (process prompt)
+token_ids_list = run_model.run([seq], is_prefill=True)
+
+# 3. Subsequent calls: decode (generate one token at a time)
+while len(generated_tokens) < sampling_params.max_tokens:
+    token_ids_list = run_model.run([seq], is_prefill=False)  # <-- is_prefill=False!
+    # ... append token and continue
 
 
 

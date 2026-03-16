@@ -30,7 +30,7 @@ class ModelRunner:
     - Shared Memory: For fast inter-process communication
     """
 
-    def __init__(self, config: Config, rank: int, event: Event | list[Event]):
+    def __init__(self, config: Config, rank: int, events: Event | list[Event]):
 
         self.config = config
         hf_config = config.hf_config#due to model runner is gonna directly working with the GPU, it is neccessary to knwo the exact structure
@@ -40,7 +40,7 @@ class ModelRunner:
         self.world_size = config.tensor_parallel_size#Total number of processes in tensor parallel group
 
         self.rank = rank#this process's ID
-        self.event = event#Synchronization object for coordinating with other ranks,Rank 0 gets list[Event] from all workers
+        self.event = events#Synchronization object for coordinating with other ranks,Rank 0 gets list[Event] from all workers
 
         #Initialize pytorch distributed communication between process
         #set up NCCL for GPU-to-GPU communication
@@ -83,7 +83,9 @@ class ModelRunner:
                 # Worker process: connect and start event loop
                 dist.barrier()
                 self.shm = SharedMemory(name="nanovllm")
-                self.loop()#rank0 doesn't execute    def prepare_block_tables(self, seqs: list[Sequence]):
+                self.loop()#rank0 doesn't execute
+
+    def prepare_block_tables(self, seqs: list[Sequence]):
         
         max_len = max(len(seq.block_table) for seq in seqs)#find maximum block table length
 

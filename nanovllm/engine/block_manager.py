@@ -64,7 +64,7 @@ class BlockManager:
         self.free_block_ids.append(block_id)
 
     def can_allocate(self, seq: Sequence) -> bool:
-        return len(self.free_block_ids) >= seq.nu_blocks
+        return len(self.free_block_ids) >= seq.num_blocks
 
     def allocate(self, seq: Sequence) -> None:
         assert not seq.block_table, "Sequence already has allocated blocks"

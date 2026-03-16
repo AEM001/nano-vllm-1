@@ -1,0 +1,151 @@
+(l-vllm) albert@ubuntu:~/learn/nano-vllm-src/Basic$ python 1.py 
+The module name  (originally ) is not a valid Python identifier. Please rename the original module to avoid import issues.
+
+Total generation time: 7.53 seconds
+Prompt: Tell me a long love story:
+Generated: <|im_start|>user
+Tell me a long love story:<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+Sure! Here's a **long and heartfelt love story** about a fictional relationship between two people who began as strangers but found love through shared experiences, growth, and mutual understanding.
+
+---
+
+### **The Beginning**
+
+In a quiet town nestled between mountains and forests, two strangers met one afternoon. They were both young, both from the same family, and both searching for their own purpose in life. One was a woman named **Ava** who had just finished her first year at a prestigious university. The other was a man named **Liam** who had been working as a teacher and had always felt there was something missing in his life.
+
+They met in an old library, and the air was filled with the scent of books and the sound of quiet conversation. Neither of them had ever met before, but their eyes met and something in their shared curiosity and curiosity about life stirred something inside them. They began to talk about their dreams, their fears, and their hopes.
+
+Over time, their conversation
+
+albert@ubuntu:~/learn$ cd /home/albert/learn/nano-vllm-src && /home/albert/learn/l-vllm/.venv/bin/python Basic/1.py
+The module name  (originally ) is not a valid Python identifier. Please rename the original module to avoid import issues.
+
+Total generation time: 2.37 seconds
+Prompt: Tell me a long love story:
+Generated: <|im_start|>user
+Tell me a long love story:<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+Certainly! Here's a **long and touching love story** that I've crafted to reflect deep emotional connections and the journey of love:
+
+---
+
+---
+
+### **The Light in the Darkness**
+
+In the quiet town of Luthen, where the sky often shrouded in fog and the streets were lined with quiet shops, lived a young woman named Clara. She was known for her kindness, her love for reading, and her unshakable belief in the power of stories. Clara had always dreamed of a life where she could share her heart with others and write—or rather, tell—stories that would resonate with people who needed them.
+
+It was during her summer vacation that Clara met her life’s greatest love. She was a musician, and she had always dreamed of being the one to play the guitar. But Clara’s heart was not just about music. It was about **truth**, **connection**, and **love**. She met him at a local café, and they spent hours together,
+
+
+
+import torch
+import time
+from transformers import AutoTokenizer, AutoModelForCausalLM
+
+def get_gpu_memory():
+    """Get current GPU memory usage in MB"""
+    if torch.cuda.is_available():
+        return {
+            'allocated': torch.cuda.memory_allocated() / 1024 / 1024,  # MB
+            'cached': torch.cuda.memory_reserved() / 1024 / 1024     # MB
+            # 'free': (torch.cuda.get_device_properties(0).total_memory - torch.cuda.memory_allocated()) / 1024 / 1024  # MB
+        }
+    return None
+
+class SimpleModelRunner:
+    
+    def __init__(self, model_path):
+        """Load model and tokenizer using standard HuggingFace"""
+        self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        self.model = AutoModelForCausalLM.from_pretrained(model_path)
+        
+        # Move to GPU and set to eval
+        self.model.cuda()
+        self.model.eval()
+        
+    def generate(self, prompt, max_tokens=1000, temperature=0.6):
+        """Generate text from prompt - simple token by token"""
+        # Tokenize prompt
+        inputs = self.tokenizer(prompt, return_tensors="pt").to("cuda")
+        
+        # Generate tokens one by one
+        generated_ids = inputs["input_ids"][0].tolist()
+        count=0
+        
+        # Simple timing
+        start_time = time.time()
+        
+        for step in range(max_tokens):
+            # Get model output
+            with torch.no_grad():
+                outputs = self.model(torch.tensor([generated_ids]).to("cuda"))
+                
+            # Get next token (simple greedy sampling)
+            # the shape of logits is[batch_size, seq_len, vocab_size]
+            logits = outputs.logits[0, -1, :]  # first sequence, last token, all vocabulary logits
+            logits = logits / temperature  # Apply temperature
+            
+            # # Simple repetition penalty - reduce probability of recently seen tokens
+            # recent_tokens = generated_ids[-5:] if len(generated_ids) >= 5 else generated_ids
+            # for token in recent_tokens:
+            #     logits[token] = logits[token] * 0.8  # Penalize recent tokens
+            
+            probs = torch.softmax(logits, dim=-1)
+            next_token = torch.multinomial(probs, num_samples=1).item()#sample from the probability distribution
+            
+            # Stop at EOS
+            if next_token == self.tokenizer.eos_token_id:
+                break
+                
+            # Add token
+            generated_ids.append(next_token)
+            count += 1
+            
+            # # Print GPU memory usage
+            # memory = get_gpu_memory()
+            # if memory and count % 10 == 0:
+            #     print(f"Token {step+1}: '{self.tokenizer.decode([next_token])}' | GPU: {memory['allocated']:.1f}MB allocated, {memory['cached']:.1f}MB cached")
+            
+        # End timing
+        end_time = time.time()
+        total_time = end_time - start_time
+        print(f"\nTotal generation time: {total_time:.2f} seconds")
+             
+        # Decode and return
+        return self.tokenizer.decode(generated_ids)
+
+def main():
+    model_path = "/home/albert/learn/models/Qwen3-0.6B/"
+    
+    # Create simple model runner
+    runner = SimpleModelRunner(model_path)
+    
+    # Generate text
+    prompt = "Tell me a long love story:"
+    
+    # Format prompt with chat template (the way model was trained)
+    messages = [{"role": "user", "content": prompt}]
+    formatted_prompt = runner.tokenizer.apply_chat_template(
+        messages, 
+        tokenize=False, 
+        add_generation_prompt=True,
+        enable_thinking=False  # Disable thinking output
+    )
+    
+    result = runner.generate(formatted_prompt, max_tokens=200, temperature=0.6)
+    
+    print(f"Prompt: {prompt}")
+    print(f"Generated: {result}")
+
+if __name__ == "__main__":
+    main()

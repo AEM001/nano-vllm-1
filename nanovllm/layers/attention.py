@@ -158,7 +158,7 @@ class Attention(nn.Module):
         context = get_context()
         k_cache, v_cache = self.k_cache, self.v_cache
         
-        if k_cache.numel() and v_cache.numel():
+        if k_cache.numel() and v_cache.numel() and context.slot_mapping.numel() > 0:
             store_kvcache(k, v, k_cache, v_cache, context.slot_mapping)
         
         use_flash_attn = flash_attn_varlen_func is not None and flash_attn_with_kvcache is not None
