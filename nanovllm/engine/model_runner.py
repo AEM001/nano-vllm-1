@@ -253,7 +253,7 @@ class ModelRunner:
             max_seqlen_k = max(seqlen_k, max_seqlen_k)
             
             # Map logical sequence blocks to physical KV cache memory (PagedAttention)
-            !!!if not seq.block_table:    # Skip warmup phase (no cache yet)
+            if not seq.block_table:    # Skip warmup phase (no cache yet)
                 continue
             for i in range(seq.num_cached_blocks, seq.num_blocks):
                 start = seq.block_table[i] * self.block_size  # Physical start slot

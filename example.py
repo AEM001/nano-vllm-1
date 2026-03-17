@@ -24,6 +24,7 @@ def main():
         "introduce yourself",
         "what is the architecture of you",
     ]
+    
     prompts = [
         tokenizer.apply_chat_template(
             [{"role": "user", "content": prompt}],

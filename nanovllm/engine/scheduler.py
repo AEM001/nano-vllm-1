@@ -50,7 +50,9 @@ class Scheduler:
             
             # Move: Waiting -> Running -> THIS BATCH
             num_seqs += 1
+
             self.block_manager.allocate(seq)  # Reserve KV cache
+            
             num_batched_tokens += len(seq) - seq.num_cached_tokens
             seq.status = SequenceStatus.RUNNING
             self.waiting.popleft()     # Remove from waiting queue
