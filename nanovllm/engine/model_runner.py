@@ -253,7 +253,7 @@ class ModelRunner:
             max_seqlen_k = max(seqlen_k, max_seqlen_k)
             
             # Map logical sequence blocks to physical KV cache memory (PagedAttention)
-            if not seq.block_table:    # Skip warmup phase (no cache yet)
+            !!!if not seq.block_table:    # Skip warmup phase (no cache yet)
                 continue
             for i in range(seq.num_cached_blocks, seq.num_blocks):
                 start = seq.block_table[i] * self.block_size  # Physical start slot
@@ -310,6 +310,7 @@ class ModelRunner:
         positions = torch.tensor(positions, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
         slot_mapping = torch.tensor(slot_mapping, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
         context_lens = torch.tensor(context_lens, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+        
         block_tables = self.prepare_block_tables(seqs)
         
         # Set global context for attention layers (decode mode = False)
