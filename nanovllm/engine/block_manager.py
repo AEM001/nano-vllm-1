@@ -80,11 +80,13 @@ class BlockManager:
             if block_id == -1 or self.blocks[block_id].token_ids != token_ids:# the block_id corresponding to the hash is not the actual block id
                 cache_miss = True
 
+
+
             if cache_miss:#need new block
                 block_id = self.free_block_ids[0]
                 block = self._allocate_block(block_id)
             else:
-                #reuse cached block
+                
                 seq.num_cached_tokens += self.block_size
 
                 if block_id in self.used_block_ids:
@@ -113,7 +115,7 @@ class BlockManager:
     def can_append(self, seq: Sequence) -> bool:
         return len(self.free_block_ids) >= (len(seq) % self.block_size == 1)
 
-    def may_append(self, seq: Sequence) -> None:
+    def may_append(self, seq: Sequence) -> None:#for newly generated token
         block_table = seq.block_table
         last_block = self.blocks[block_table[-1]]
 
