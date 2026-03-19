@@ -17,7 +17,6 @@ Core LLM Engine for nano-vllm inference system.
 import atexit
 from dataclasses import fields
 from time import perf_counter
-from tqdm.auto import tqdm
 from transformers import AutoTokenizer
 import torch.multiprocessing as mp
 
@@ -37,25 +36,36 @@ class LLMEngine:
 
     def __init__(self, model, **kwargs):
         #This code filters and validates configuration parameters before creating the Config object:
-        config_fields = {field.name for field in fields(Config)}
-        config_kwargs = {k: v for k, v in kwargs.items() if k in config_fields}
-        config = Config(model, **config_kwargs)
+        config = Config(model=model, **{k: v for k, v in kwargs.items() if v is not None})
+        
+        # Print flags - only show once
+        self.printed_init = False
+        self.printed_add_request = False
+        self.printed_step_start = False
+        self.printed_scheduler_call = False
+        self.printed_model_call = False
+        self.printed_postprocess = False
+        self.printed_step_end = False
 
         # Tensor parallelism setup
         self.ps = []#Empty list to hold worker processes
         self.events = []#Empty list for synchronization events
         ctx = mp.get_context("spawn")#Gets multiprocessing context using "spawn" method (creates new processes rather than forks)
+        
         for i in range(1, config.tensor_parallel_size):
             event = ctx.Event()
             process = ctx.Process(target=ModelRunner, args=(config, i, event))
             process.start()
+            print(f"\nprocess {i} started\n")
             self.ps.append(process)
             self.events.append(event)
+        print("\nstarting the main model runner\n")
         self.model_runner = ModelRunner(config, 0, self.events)
 
         # Tokenizer and scheduler
         self.tokenizer = AutoTokenizer.from_pretrained(config.model, use_fast=True)
         config.eos = self.tokenizer.eos_token_id
+        print("\nfrom llm engine: instantiating scheduler!\n")
         self.scheduler = Scheduler(config)
 
         atexit.register(self.exit)
@@ -67,15 +77,32 @@ class LLMEngine:
             p.join()
 
     def add_request(self, prompt: str | list[int], sampling_params: SamplingParams):
+        if not self.printed_add_request:
+            print("\nadding request\n")
+            self.printed_add_request = True
         if isinstance(prompt, str):
             prompt = self.tokenizer.encode(prompt)
         seq = Sequence(prompt, sampling_params)
         self.scheduler.add(seq)
 
     def step(self):
+        if not self.printed_step_start:
+            print("\nstarting step\n")
+            self.printed_step_start = True
+            
+        if not self.printed_scheduler_call:
+            print("📋 Calling scheduler.schedule()...")
+            self.printed_scheduler_call = True
+            
         seqs, is_prefill = self.scheduler.schedule()#Scheduler decides what to process:
+        
+        if not self.printed_scheduler_call:
+            print("✅ Finished scheduler.schedule()")
 
-
+        if not self.printed_model_call:
+            print("🤖 Calling model_runner.call()...")
+            self.printed_model_call = True
+            
         token_ids = self.model_runner.call("run", seqs, is_prefill)#Model execution across all GPUs:
         """
         Sends batch to tensor parallel processes
@@ -83,8 +110,14 @@ class LLMEngine:
         Each process computes its portion of the model
         Returns generated tokens (one per sequence)
         """
+        
+        if not self.printed_model_call:
+            print("✅ Finished model_runner.call()")
 
-
+        if not self.printed_postprocess:
+            print("🔄 Calling scheduler.postprocess()...")
+            self.printed_postprocess = True
+            
         self.scheduler.postprocess(seqs, token_ids)#Handle results and update state:
         """
         Appends generated tokens to sequences
@@ -93,10 +126,14 @@ class LLMEngine:
         Updates sequence statuses
         """
 
-
         outputs = [(seq.seq_id, seq.completion_token_ids) for seq in seqs if seq.is_finished]
 
         num_tokens = sum(len(seq) for seq in seqs) if is_prefill else -len(seqs)#positive for prefill, negative for decode
+        
+        if not self.printed_step_end:
+            print("✅ Finished step()")
+            self.printed_step_end = True
+            
         return outputs, num_tokens
 
     def is_finished(self):
@@ -115,8 +152,8 @@ class LLMEngine:
         - Tracks progress/throughput
         - Returns output dicts with text and token IDs
         """
-        if use_tqdm:
-            pbar = tqdm(total=len(prompts), desc="Generating", dynamic_ncols=True)
+        print("\nstarting to generate\n")
+        
         if not isinstance(sampling_params, list):
             sampling_params = [sampling_params] * len(prompts)#prompts are a list, not prompt's tokens
 
@@ -124,35 +161,30 @@ class LLMEngine:
             self.add_request(prompt, sp)
         outputs = {}
         prefill_throughput = decode_throughput = 0.#initialize throughput counters
+        step_count = 0
 
+        print("🔄 Starting generation loop...")
         while not self.is_finished():
             t = perf_counter()
             output, num_tokens = self.step()
-            if use_tqdm:
-                if num_tokens > 0:
-                    prefill_throughput = num_tokens / (perf_counter() - t)
-                else:
-                    decode_throughput = -num_tokens / (perf_counter() - t)
-                pbar.set_postfix({
-                    "Prefill": f"{int(prefill_throughput)}tok/s",
-                    "Decode": f"{int(decode_throughput)}tok/s",
-                })
+            step_count += 1
+            
+            if num_tokens > 0:
+                prefill_throughput = num_tokens / (perf_counter() - t)
+                print(f"✅ Prefill: {int(prefill_throughput)}tok/s")
+            else:
+                decode_throughput = -num_tokens / (perf_counter() - t)
+                # Show decode throughput every 10 steps
+                if step_count % 10 == 0:
+                    print(f"⚡ Decode: {int(decode_throughput)}tok/s (step {step_count})")
 
             for seq_id, token_ids in output:
                 outputs[seq_id] = token_ids
-                if use_tqdm:
-                    pbar.update(1)
                     
         outputs = [outputs[seq_id] for seq_id in sorted(outputs.keys())]
         # Before: outputs = {seq_id_3: [tokens], seq_id_1: [tokens], seq_id_2: [tokens]}
         # After: outputs = [[tokens_seq_1], [tokens_seq_2], [tokens_seq_3]]
         outputs = [{"text": self.tokenizer.decode(token_ids), "token_ids": token_ids} for token_ids in outputs]
         # Before: outputs = [[token1, token2, token3], [token4, token5]]
-        # After: outputs = [
-        #   {"text": "Hello world", "token_ids": [token1, token2, token3]},
-        #   {"text": "How are", "token_ids": [token4, token5]}
-        # ]
-        if use_tqdm:
-            pbar.close()
+        # After: outputs = [{"text": "Hello world", "token_ids": [token1, token2, token3]}, {"text": "How are you", "token_ids": [token4, token5]}]
         return outputs
-        

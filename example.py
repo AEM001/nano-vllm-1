@@ -19,10 +19,9 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(path)
     llm = LLM(path, enforce_eager=True, tensor_parallel_size=1)  # disable cuda graphs, use eager execution
 
-    sampling_params = SamplingParams(temperature=0.6, max_tokens=128)
+    sampling_params = SamplingParams(temperature=0.6, max_tokens=1280)
     prompts = [
-        "introduce yourself",
-        "what is the architecture of you",
+        "introduce USA"
     ]
     
     prompts = [
@@ -30,7 +29,7 @@ def main():
             [{"role": "user", "content": prompt}],
             tokenize=False,
             add_generation_prompt=True,
-            enable_thinking=True,
+            enable_thinking=False,
         )
         for prompt in prompts
     ]#This code transforms plain text prompts into properly formatted chat messages for the model

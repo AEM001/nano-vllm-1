@@ -36,10 +36,14 @@ class BlockManager:
             num_blocks: Total number of blocks to manage
             block_size: Number of tokens each block can hold
         """
+        print("\nfrom block manager: initializing block manager...\n")
         self.block_size: int = block_size
+        print(f"\nblock size: {self.block_size}\n")
         self.blocks: list[Block] = [Block(i) for i in range(num_blocks)]
+        print(f"\nnumber of blocks: {len(self.blocks)}\n")
         self.hash_to_block_id: dict[int, int] = dict()  # Maps hash -> block_id for caching
-        self.free_block_ids: deque[int] = deque(range(num_blocks))  # Available block IDs (FIFO queue)
+        self.free_block_ids: deque[int] = deque(range(num_blocks)) 
+    
         self.used_block_ids: set[int] = set()  # Currently allocated block IDs
 
     @classmethod
@@ -73,6 +77,7 @@ class BlockManager:
 
         for i in range(seq.num_blocks):
             token_ids = seq.block(i)
+            print(f"\n from block manager: allocate :token ids: {token_ids}\n")
             #compute hash if full block, otherwise use -1 to indicate cache miss
             h = self.compute_hash(token_ids, h) if len(token_ids) == self.block_size else -1
 

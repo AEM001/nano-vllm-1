@@ -8,12 +8,19 @@ from nanovllm.engine.block_manager import BlockManager
 class Scheduler:
     
     def __init__(self, config: Config):
-               
         self.max_num_seqs = config.max_num_seqs
         self.max_num_batched_tokens = config.max_num_batched_tokens
         self.eos = config.eos
         
+        # Print flags - only show once
+        self.printed_add = False
+        self.printed_schedule = False
+        self.printed_allocate = False
+        self.printed_may_append = False
+        self.printed_append_token = False
+        
         # KV cache memory management
+        print("\nfrom scheduler: initializing block manager...\n")
         self.block_manager = BlockManager(config.num_kvcache_blocks, config.kvcache_block_size)
         
         # Sequence queues
@@ -24,6 +31,9 @@ class Scheduler:
         return not self.waiting and not self.running
 
     def add(self, seq: Sequence):
+        if not self.printed_add:
+            print(f"from scheduler: adding sequence{seq} to waiting queue\n")
+            self.printed_add = True
         self.waiting.append(seq)
 
     def schedule(self) -> tuple[list[Sequence], bool]:
@@ -33,7 +43,10 @@ class Scheduler:
         - Fall back to decode if no prefill candidates
         - Preempt sequences if memory constraints require it
         """
-
+        if not self.printed_schedule:
+            print("\nfrom scheduler: scheduling sequences\n")
+            self.printed_schedule = True
+        
         # THIS BATCH: sequences to execute RIGHT NOW
         scheduled_seqs = []
         num_seqs = 0
@@ -50,10 +63,19 @@ class Scheduler:
             
             # Move: Waiting -> Running -> THIS BATCH
             num_seqs += 1
-
+            if not self.printed_allocate:
+                print("\nfrom scheduler: calling block_manager to allocate sequence, creating block_tables and calculating hash for block\n")
+                self.printed_allocate = True
+                
             self.block_manager.allocate(seq)  # Reserve KV cache
             
+            if not self.printed_allocate:
+                print("\nfrom scheduler: finished allocating sequence\n")
+            
             num_batched_tokens += len(seq) - seq.num_cached_tokens
+            if not self.printed_allocate:
+                print(f"\nfrom scheduler: num_batched_tokens: {num_batched_tokens}\n")
+                
             seq.status = SequenceStatus.RUNNING
             self.waiting.popleft()     # Remove from waiting queue
             self.running.append(seq)    # Add to running queue
@@ -79,7 +101,13 @@ class Scheduler:
             else:
                 # Space available, add to THIS BATCH
                 num_seqs += 1
+                if not self.printed_may_append:
+                    print('='*50)
+                    print("\nfrom scheduler: calling block_manager.may_append to deal with newly generated token\n")
+                    self.printed_may_append = True
+                    
                 self.block_manager.may_append(seq)
+                
                 scheduled_seqs.append(seq)
         
         assert scheduled_seqs  # Should always have at least one sequence
@@ -97,7 +125,15 @@ class Scheduler:
         
         for seq, token_id in zip(seqs, token_ids):
             # Append generated token to sequence
+            if not self.printed_append_token:
+                print('='*50)
+                print(f"\nfrom scheduler: appending token {token_id} to sequence {seq.seq_id}\n")
+                self.printed_append_token = True
+                
             seq.append_token(token_id)
+            
+            if not self.printed_append_token:
+                print('='*50)
             
             #eos matters and current generated token is eos or max tokens reached
             if (not seq.ignore_eos and token_id == self.eos) or seq.num_completion_tokens == seq.max_tokens:

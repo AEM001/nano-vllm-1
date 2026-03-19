@@ -1,4 +1,5 @@
 import pickle
+import time
 import torch
 import torch.distributed as dist
 
@@ -8,10 +9,9 @@ from multiprocessing.shared_memory import SharedMemory
 from nanovllm.config import Config
 from nanovllm.engine.sequence import Sequence
 from nanovllm.models.qwen3 import Qwen3ForCausalLM
-from nanovllm.layers.sampler import Sampler
 from nanovllm.utils.context import set_context, get_context, reset_context
 from nanovllm.utils.loader import load_model
-
+from nanovllm.layers.sampler import Sampler
 
 class ModelRunner:
     """
@@ -42,12 +42,15 @@ class ModelRunner:
         self.rank = rank#this process's ID
         self.event = events#Synchronization object for coordinating with other ranks,Rank 0 gets list[Event] from all workers
 
+        print(f"\nmodel runner {rank} initialized\n")
+
         #Initialize pytorch distributed communication between process
         #set up NCCL for GPU-to-GPU communication
         dist.init_process_group("nccl", "tcp://localhost:2333", world_size=self.world_size, rank=rank)
 
         # Assign this process to a specific GPU
         torch.cuda.set_device(rank)
+        print(f"\nGPU device set to rank {rank}\n")
         
         
         # Setup model precision and device
@@ -57,13 +60,18 @@ class ModelRunner:
         
       
         self.model = Qwen3ForCausalLM(hf_config)
+        t0 = time.time()
         load_model(self.model, config.model)
+        t1 = time.time()
+        print(f"\nModel loaded on rank {rank} in {t1 - t0:.4f} seconds\n")
 
 
         self.sampler = Sampler()
         
         # Performance optimizations
+        print(f"\nWarming up model on rank {rank}...\n")
         self.warmup_model()
+        print(f"\nAllocating KV cache on rank {rank}...\n")
         self.allocate_kv_cache()
 
         if not self.enforce_eager:
@@ -162,7 +170,10 @@ class ModelRunner:
         num_seqs = min(max_num_batched_tokens // max_model_len, self.config.max_num_seqs)
 
         seqs = [Sequence([0] * max_model_len) for _ in range(num_seqs)]
+        t0 = time.time()
         self.run(seqs, True)
+        t1 = time.time()
+        print(f"\nModel warmed up in {t1 - t0:.4f} seconds\n")
         torch.cuda.empty_cache()
 
     def allocate_kv_cache(self):
@@ -172,9 +183,13 @@ class ModelRunner:
         
         # Get GPU memory information
         free, total = torch.cuda.mem_get_info()
-        used = total - free
+        print(f"\nFree memory: {free / 1024**3:.2f} GB")
+     
+        used = total - free 
         peak = torch.cuda.memory_stats()["allocated_bytes.all.peak"]
+        print(f"\nPeak memory: {peak / 1024**3:.2f} GB\n")
         current = torch.cuda.memory_stats()["allocated_bytes.all.current"]
+        print(f"\nCurrent memory: {current / 1024**3:.2f} GB\n")
         
         # Calculate KV cache parameters
         num_kv_heads = hf_config.num_key_value_heads // self.world_size
@@ -186,10 +201,10 @@ class ModelRunner:
         # Calculate maximum number of blocks we can allocate
         config.num_kvcache_blocks = int(total * config.gpu_memory_utilization - used - peak + current) // block_bytes
         assert config.num_kvcache_blocks > 0
-        
+        print(f"\nNumber of KV cache blocks: {config.num_kvcache_blocks}\n")
         # Pre-allocate KV cache tensor
         self.kv_cache = torch.empty(2, hf_config.num_hidden_layers, config.num_kvcache_blocks, self.block_size, num_kv_heads, head_dim)
-        
+        print(f"\n free memory after KV cache allocation: {torch.cuda.mem_get_info()[0] / 1024**3:.2f} GB\n")
         # Assign cache tensors to attention layers
         layer_id = 0
 
@@ -254,6 +269,7 @@ class ModelRunner:
             
             # Map logical sequence blocks to physical KV cache memory (PagedAttention)
             if not seq.block_table:    # Skip warmup phase (no cache yet)
+                print("\n in prepare_prefill of model_runner, skipping warmup phase\n")
                 continue
             for i in range(seq.num_cached_blocks, seq.num_blocks):
                 start = seq.block_table[i] * self.block_size  # Physical start slot
