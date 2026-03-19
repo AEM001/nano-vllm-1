@@ -15,6 +15,7 @@ Core LLM Engine for nano-vllm inference system.
 """
 
 import atexit
+import logging
 from dataclasses import fields
 from time import perf_counter
 from transformers import AutoTokenizer
@@ -25,6 +26,9 @@ from nanovllm.sampling_params import SamplingParams
 from nanovllm.engine.sequence import Sequence
 from nanovllm.engine.scheduler import Scheduler
 from nanovllm.engine.model_runner import ModelRunner
+
+# Get module-specific logger (root logger configured in example.py)
+logger = logging.getLogger(__name__)
 
 
 class LLMEngine:
@@ -38,15 +42,6 @@ class LLMEngine:
         #This code filters and validates configuration parameters before creating the Config object:
         config = Config(model=model, **{k: v for k, v in kwargs.items() if v is not None})
         
-        # Print flags - only show once
-        self.printed_init = False
-        self.printed_add_request = False
-        self.printed_step_start = False
-        self.printed_scheduler_call = False
-        self.printed_model_call = False
-        self.printed_postprocess = False
-        self.printed_step_end = False
-
         # Tensor parallelism setup
         self.ps = []#Empty list to hold worker processes
         self.events = []#Empty list for synchronization events
@@ -56,16 +51,16 @@ class LLMEngine:
             event = ctx.Event()
             process = ctx.Process(target=ModelRunner, args=(config, i, event))
             process.start()
-            print(f"\nprocess {i} started\n")
+            logger.debug(f"Process {i} started")
             self.ps.append(process)
             self.events.append(event)
-        print("\nstarting the main model runner\n")
+        logger.debug("Starting the main model runner")
         self.model_runner = ModelRunner(config, 0, self.events)
 
         # Tokenizer and scheduler
         self.tokenizer = AutoTokenizer.from_pretrained(config.model, use_fast=True)
         config.eos = self.tokenizer.eos_token_id
-        print("\nfrom llm engine: instantiating scheduler!\n")
+        logger.debug("Instantiating scheduler")
         self.scheduler = Scheduler(config)
 
         atexit.register(self.exit)
@@ -77,31 +72,22 @@ class LLMEngine:
             p.join()
 
     def add_request(self, prompt: str | list[int], sampling_params: SamplingParams):
-        if not self.printed_add_request:
-            print("\nadding request\n")
-            self.printed_add_request = True
+        logger.info("Adding request")
         if isinstance(prompt, str):
             prompt = self.tokenizer.encode(prompt)
         seq = Sequence(prompt, sampling_params)
         self.scheduler.add(seq)
 
     def step(self):
-        if not self.printed_step_start:
-            print("\nstarting step\n")
-            self.printed_step_start = True
+        logger.debug("Starting step")
             
-        if not self.printed_scheduler_call:
-            print("📋 Calling scheduler.schedule()...")
-            self.printed_scheduler_call = True
+        logger.debug("Calling scheduler.schedule()")
             
         seqs, is_prefill = self.scheduler.schedule()#Scheduler decides what to process:
         
-        if not self.printed_scheduler_call:
-            print("✅ Finished scheduler.schedule()")
+        logger.debug("Finished scheduler.schedule()")
 
-        if not self.printed_model_call:
-            print("🤖 Calling model_runner.call()...")
-            self.printed_model_call = True
+        logger.debug("Calling model_runner.call()")
             
         token_ids = self.model_runner.call("run", seqs, is_prefill)#Model execution across all GPUs:
         """
@@ -111,12 +97,9 @@ class LLMEngine:
         Returns generated tokens (one per sequence)
         """
         
-        if not self.printed_model_call:
-            print("✅ Finished model_runner.call()")
+        logger.debug("Finished model_runner.call()")
 
-        if not self.printed_postprocess:
-            print("🔄 Calling scheduler.postprocess()...")
-            self.printed_postprocess = True
+        logger.debug("Calling scheduler.postprocess()")
             
         self.scheduler.postprocess(seqs, token_ids)#Handle results and update state:
         """
@@ -128,11 +111,9 @@ class LLMEngine:
 
         outputs = [(seq.seq_id, seq.completion_token_ids) for seq in seqs if seq.is_finished]
 
-        num_tokens = sum(len(seq) for seq in seqs) if is_prefill else -len(seqs)#positive for prefill, negative for decode
+        num_tokens = sum(len(seq) for seq in seqs) if is_prefill else -len(seqs)#if there is only one sequence running, then, at one time, one new token is generated, so it is reasonable to be -1
         
-        if not self.printed_step_end:
-            print("✅ Finished step()")
-            self.printed_step_end = True
+        logger.debug("Finished step()")
             
         return outputs, num_tokens
 
@@ -152,7 +133,7 @@ class LLMEngine:
         - Tracks progress/throughput
         - Returns output dicts with text and token IDs
         """
-        print("\nstarting to generate\n")
+        logger.info("Starting generation...")
         
         if not isinstance(sampling_params, list):
             sampling_params = [sampling_params] * len(prompts)#prompts are a list, not prompt's tokens
@@ -163,20 +144,20 @@ class LLMEngine:
         prefill_throughput = decode_throughput = 0.#initialize throughput counters
         step_count = 0
 
-        print("🔄 Starting generation loop...")
+        logger.debug("Starting generation loop...")
         while not self.is_finished():
             t = perf_counter()
             output, num_tokens = self.step()
+           
             step_count += 1
             
-            if num_tokens > 0:
-                prefill_throughput = num_tokens / (perf_counter() - t)
-                print(f"✅ Prefill: {int(prefill_throughput)}tok/s")
-            else:
-                decode_throughput = -num_tokens / (perf_counter() - t)
-                # Show decode throughput every 10 steps
-                if step_count % 10 == 0:
-                    print(f"⚡ Decode: {int(decode_throughput)}tok/s (step {step_count})")
+            # if num_tokens > 0:
+            #     prefill_throughput = num_tokens / (perf_counter() - t)
+               
+            # else:
+            #     decode_throughput = -num_tokens / (perf_counter() - t)
+            #     # Show decode throughput every 10 steps
+                
 
             for seq_id, token_ids in output:
                 outputs[seq_id] = token_ids

@@ -1,7 +1,11 @@
 import os
+import logging
 from huggingface_hub import snapshot_download
 from nanovllm import LLM, SamplingParams
 from transformers import AutoTokenizer
+
+# Configure logging at the application entry point
+logging.basicConfig(level=logging.DEBUG,format='%(levelname)s: %(message)s')
 
 
 def main():
@@ -19,9 +23,9 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(path)
     llm = LLM(path, enforce_eager=True, tensor_parallel_size=1)  # disable cuda graphs, use eager execution
 
-    sampling_params = SamplingParams(temperature=0.6, max_tokens=1280)
+    sampling_params = SamplingParams(temperature=0.6, max_tokens=4096, ignore_eos=True)
     prompts = [
-        "introduce USA"
+        "Please provide a comprehensive and detailed introduction to the United States, covering its geography, history, government, economy, culture, and major achievements. Write at least 1000 words."
     ]
     
     prompts = [

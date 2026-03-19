@@ -1,9 +1,12 @@
-from collections import deque
-import xxhash
 import numpy as np
-from typing import Optional
+import xxhash
+from collections import deque
+import logging
 
 from nanovllm.engine.sequence import Sequence
+
+# Configure logger
+logger = logging.getLogger(__name__)
 
 
 class Block:
@@ -36,11 +39,11 @@ class BlockManager:
             num_blocks: Total number of blocks to manage
             block_size: Number of tokens each block can hold
         """
-        print("\nfrom block manager: initializing block manager...\n")
+        logger.debug("Initializing block manager...")
         self.block_size: int = block_size
-        print(f"\nblock size: {self.block_size}\n")
+        logger.debug(f"Block size: {self.block_size}")
         self.blocks: list[Block] = [Block(i) for i in range(num_blocks)]
-        print(f"\nnumber of blocks: {len(self.blocks)}\n")
+        logger.debug(f"Number of blocks: {len(self.blocks)}")
         self.hash_to_block_id: dict[int, int] = dict()  # Maps hash -> block_id for caching
         self.free_block_ids: deque[int] = deque(range(num_blocks)) 
     
@@ -77,7 +80,7 @@ class BlockManager:
 
         for i in range(seq.num_blocks):
             token_ids = seq.block(i)
-            print(f"\n from block manager: allocate :token ids: {token_ids}\n")
+            logger.debug(f"Allocate: token ids: {token_ids}")
             #compute hash if full block, otherwise use -1 to indicate cache miss
             h = self.compute_hash(token_ids, h) if len(token_ids) == self.block_size else -1
 
