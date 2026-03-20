@@ -1,0 +1,772 @@
+(l-vllm) albert@ubuntu:~/learn/nano-vllm-src$ python example.py 
+DEBUG: LLM_ENGINE: Starting the main model runner
+INFO: Model runner 0 initialized
+INFO: GPU device set to rank 0
+`torch_dtype` is deprecated! Use `dtype` instead!
+INFO: Model loaded on rank 0 in 0.1156 seconds
+INFO: Warming up model on rank 0...
+DEBUG: MODELRUNNER: Skipping warmup phase in prepare_prefill
+DEBUG: MODELRUNNER: Skipping warmup phase in prepare_prefill
+DEBUG: MODELRUNNER: Skipping warmup phase in prepare_prefill
+DEBUG: MODELRUNNER: Skipping warmup phase in prepare_prefill
+DEBUG: MODELRUNNER: Skipping warmup phase in prepare_prefill
+DEBUG: MODELRUNNER: Skipping warmup phase in prepare_prefill
+INFO: Model warmed up in 10.7782 seconds
+INFO: Allocating KV cache on rank 0...
+INFO: Free memory: 9.88 GB
+INFO: Peak memory: 4.20 GB
+INFO: Current memory: 1.14 GB
+INFO: Available memory for KV cache: 6.25 GB
+INFO: Number of KV cache blocks: 228
+INFO: Free memory after KV cache allocation: 3.64 GB
+DEBUG: LLM_ENGINE: Instantiating scheduler
+DEBUG: SCHEDULER: Initializing block manager...
+DEBUG: BLOCK_MANAGER: Block size: 256
+DEBUG: BLOCK_MANAGER: Number of blocks: 228
+INFO: Starting generation...
+INFO: Adding request
+DEBUG: LLM_ENGINE: sequence 6 - tokens: 15, blocks needed: 1
+DEBUG: LLM_ENGINE: sequence 6 - block_table: []
+DEBUG: SCHEDULER: Adding sequence <nanovllm.engine.sequence.Sequence object at 0x70171ca03980> to waiting queue
+INFO: Adding request
+DEBUG: LLM_ENGINE: sequence 7 - tokens: 15, blocks needed: 1
+DEBUG: LLM_ENGINE: sequence 7 - block_table: []
+DEBUG: SCHEDULER: Adding sequence <nanovllm.engine.sequence.Sequence object at 0x70171c1b31d0> to waiting queue
+DEBUG: LLM_ENGINE: Starting generation loop...
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager to allocate sequence, creating block_tables and calculating hash for block
+DEBUG: BLOCK_MANAGER: Allocate: token ids: [151644, 872, 198, 396, 47845, 7279, 151645, 198, 151644, 77091, 198, 151667, 271, 151668, 271]
+INFO: SCHEDULER: ALLOCATED seq 6 - blocks: [0], positions: 15 tokens
+DEBUG: SCHEDULER: Finished allocating sequence
+DEBUG: SCHEDULER: num_batched_tokens: 0
+DEBUG: SCHEDULER: Calling block_manager to allocate sequence, creating block_tables and calculating hash for block
+DEBUG: BLOCK_MANAGER: Allocate: token ids: [151644, 872, 198, 396, 47845, 7043, 151645, 198, 151644, 77091, 198, 151667, 271, 151668, 271]
+INFO: SCHEDULER: ALLOCATED seq 7 - blocks: [1], positions: 15 tokens
+DEBUG: SCHEDULER: Finished allocating sequence
+DEBUG: SCHEDULER: num_batched_tokens: 0
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare prefill input_ids: [151644, 872, 198, 396, 47845, 7279, 151645, 198, 151644, 77091, 198, 151667, 271, 151668, 271]
+DEBUG: MODELRUNNER: prepare prefill positions: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+DEBUG: MODELRUNNER: prepare prefill seqlen_q: 15
+DEBUG: MODELRUNNER: prepare prefill seqlen_k: 15
+DEBUG: MODELRUNNER: prepare prefill cu_seqlens_q: [0, 15]
+DEBUG: MODELRUNNER: prepare prefill cu_seqlens_k: [0, 15]
+DEBUG: Seq 6 - block_table: [0], cached_blocks: 0, total_blocks: 1
+DEBUG: MODELRUNNER: Seq 6 block 0 -> slots [0:15)
+DEBUG: MODELRUNNER: prepare prefill input_ids: [151644, 872, 198, 396, 47845, 7279, 151645, 198, 151644, 77091, 198, 151667, 271, 151668, 271, 151644, 872, 198, 396, 47845, 7043, 151645, 198, 151644, 77091, 198, 151667, 271, 151668, 271]
+DEBUG: MODELRUNNER: prepare prefill positions: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+DEBUG: MODELRUNNER: prepare prefill seqlen_q: 15
+DEBUG: MODELRUNNER: prepare prefill seqlen_k: 15
+DEBUG: MODELRUNNER: prepare prefill cu_seqlens_q: [0, 15, 30]
+DEBUG: MODELRUNNER: prepare prefill cu_seqlens_k: [0, 15, 30]
+DEBUG: Seq 7 - block_table: [1], cached_blocks: 0, total_blocks: 1
+DEBUG: MODELRUNNER: Seq 7 block 0 -> slots [256:271)
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 785 to sequence 6
+DEBUG: SCHEDULER: Appending token 45410 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [785]
+DEBUG: MODELRUNNER: prepare decode positions: [15]
+DEBUG: MODELRUNNER: prepare decode context_lens: [16]
+DEBUG: MODELRUNNER: prepare decode input_ids: [785, 45410]
+DEBUG: MODELRUNNER: prepare decode positions: [15, 15]
+DEBUG: MODELRUNNER: prepare decode context_lens: [16, 16]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 3639 to sequence 6
+DEBUG: SCHEDULER: Appending token 374 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [3639]
+DEBUG: MODELRUNNER: prepare decode positions: [16]
+DEBUG: MODELRUNNER: prepare decode context_lens: [17]
+DEBUG: MODELRUNNER: prepare decode input_ids: [3639, 374]
+DEBUG: MODELRUNNER: prepare decode positions: [16, 16]
+DEBUG: MODELRUNNER: prepare decode context_lens: [17, 17]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 4180 to sequence 6
+DEBUG: SCHEDULER: Appending token 264 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [4180]
+DEBUG: MODELRUNNER: prepare decode positions: [17]
+DEBUG: MODELRUNNER: prepare decode context_lens: [18]
+DEBUG: MODELRUNNER: prepare decode input_ids: [4180, 264]
+DEBUG: MODELRUNNER: prepare decode positions: [17, 17]
+DEBUG: MODELRUNNER: prepare decode context_lens: [18, 18]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 374 to sequence 6
+DEBUG: SCHEDULER: Appending token 1584 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [374]
+DEBUG: MODELRUNNER: prepare decode positions: [18]
+DEBUG: MODELRUNNER: prepare decode context_lens: [19]
+DEBUG: MODELRUNNER: prepare decode input_ids: [374, 1584]
+DEBUG: MODELRUNNER: prepare decode positions: [18, 18]
+DEBUG: MODELRUNNER: prepare decode context_lens: [19, 19]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 264 to sequence 6
+DEBUG: SCHEDULER: Appending token 304 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [264]
+DEBUG: MODELRUNNER: prepare decode positions: [19]
+DEBUG: MODELRUNNER: prepare decode context_lens: [20]
+DEBUG: MODELRUNNER: prepare decode input_ids: [264, 304]
+DEBUG: MODELRUNNER: prepare decode positions: [19, 19]
+DEBUG: MODELRUNNER: prepare decode context_lens: [20, 20]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 7988 to sequence 6
+DEBUG: SCHEDULER: Appending token 279 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [7988]
+DEBUG: MODELRUNNER: prepare decode positions: [20]
+DEBUG: MODELRUNNER: prepare decode context_lens: [21]
+DEBUG: MODELRUNNER: prepare decode input_ids: [7988, 279]
+DEBUG: MODELRUNNER: prepare decode positions: [20, 20]
+DEBUG: MODELRUNNER: prepare decode context_lens: [21, 21]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 323 to sequence 6
+DEBUG: SCHEDULER: Appending token 3639 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [323]
+DEBUG: MODELRUNNER: prepare decode positions: [21]
+DEBUG: MODELRUNNER: prepare decode context_lens: [22]
+DEBUG: MODELRUNNER: prepare decode input_ids: [323, 3639]
+DEBUG: MODELRUNNER: prepare decode positions: [21, 21]
+DEBUG: MODELRUNNER: prepare decode context_lens: [22, 22]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 25542 to sequence 6
+DEBUG: SCHEDULER: Appending token 4180 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [25542]
+DEBUG: MODELRUNNER: prepare decode positions: [22]
+DEBUG: MODELRUNNER: prepare decode context_lens: [23]
+DEBUG: MODELRUNNER: prepare decode input_ids: [25542, 4180]
+DEBUG: MODELRUNNER: prepare decode positions: [22, 22]
+DEBUG: MODELRUNNER: prepare decode context_lens: [23, 23]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 6995 to sequence 6
+DEBUG: SCHEDULER: Appending token 11 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [6995]
+DEBUG: MODELRUNNER: prepare decode positions: [23]
+DEBUG: MODELRUNNER: prepare decode context_lens: [24]
+DEBUG: MODELRUNNER: prepare decode input_ids: [6995, 11]
+DEBUG: MODELRUNNER: prepare decode positions: [23, 23]
+DEBUG: MODELRUNNER: prepare decode context_lens: [24, 24]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 304 to sequence 6
+DEBUG: SCHEDULER: Appending token 3881 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [304]
+DEBUG: MODELRUNNER: prepare decode positions: [24]
+DEBUG: MODELRUNNER: prepare decode context_lens: [25]
+DEBUG: MODELRUNNER: prepare decode input_ids: [304, 3881]
+DEBUG: MODELRUNNER: prepare decode positions: [24, 24]
+DEBUG: MODELRUNNER: prepare decode context_lens: [25, 25]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 279 to sequence 6
+DEBUG: SCHEDULER: Appending token 369 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [279]
+DEBUG: MODELRUNNER: prepare decode positions: [25]
+DEBUG: MODELRUNNER: prepare decode context_lens: [26]
+DEBUG: MODELRUNNER: prepare decode input_ids: [279, 369]
+DEBUG: MODELRUNNER: prepare decode positions: [25, 25]
+DEBUG: MODELRUNNER: prepare decode context_lens: [26, 26]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 1879 to sequence 6
+DEBUG: SCHEDULER: Appending token 1181 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [1879]
+DEBUG: MODELRUNNER: prepare decode positions: [26]
+DEBUG: MODELRUNNER: prepare decode context_lens: [27]
+DEBUG: MODELRUNNER: prepare decode input_ids: [1879, 1181]
+DEBUG: MODELRUNNER: prepare decode positions: [26, 26]
+DEBUG: MODELRUNNER: prepare decode context_lens: [27, 27]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 13 to sequence 6
+DEBUG: SCHEDULER: Appending token 16807 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [13]
+DEBUG: MODELRUNNER: prepare decode positions: [27]
+DEBUG: MODELRUNNER: prepare decode context_lens: [28]
+DEBUG: MODELRUNNER: prepare decode input_ids: [13, 16807]
+DEBUG: MODELRUNNER: prepare decode positions: [27, 27]
+DEBUG: MODELRUNNER: prepare decode context_lens: [28, 28]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 1084 to sequence 6
+DEBUG: SCHEDULER: Appending token 54790 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [1084]
+DEBUG: MODELRUNNER: prepare decode positions: [28]
+DEBUG: MODELRUNNER: prepare decode context_lens: [29]
+DEBUG: MODELRUNNER: prepare decode input_ids: [1084, 54790]
+DEBUG: MODELRUNNER: prepare decode positions: [28, 28]
+DEBUG: MODELRUNNER: prepare decode context_lens: [29, 29]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 374 to sequence 6
+DEBUG: SCHEDULER: Appending token 11 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [374]
+DEBUG: MODELRUNNER: prepare decode positions: [29]
+DEBUG: MODELRUNNER: prepare decode context_lens: [30]
+DEBUG: MODELRUNNER: prepare decode input_ids: [374, 11]
+DEBUG: MODELRUNNER: prepare decode positions: [29, 29]
+DEBUG: MODELRUNNER: prepare decode context_lens: [30, 30]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 264 to sequence 6
+DEBUG: SCHEDULER: Appending token 9080 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [264]
+DEBUG: MODELRUNNER: prepare decode positions: [30]
+DEBUG: MODELRUNNER: prepare decode context_lens: [31]
+DEBUG: MODELRUNNER: prepare decode input_ids: [264, 9080]
+DEBUG: MODELRUNNER: prepare decode positions: [30, 30]
+DEBUG: MODELRUNNER: prepare decode context_lens: [31, 31]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 3146 to sequence 6
+DEBUG: SCHEDULER: Appending token 3840 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [3146]
+DEBUG: MODELRUNNER: prepare decode positions: [31]
+DEBUG: MODELRUNNER: prepare decode context_lens: [32]
+DEBUG: MODELRUNNER: prepare decode input_ids: [3146, 3840]
+DEBUG: MODELRUNNER: prepare decode positions: [31, 31]
+DEBUG: MODELRUNNER: prepare decode context_lens: [32, 32]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 448 to sequence 6
+DEBUG: SCHEDULER: Appending token 11 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [448]
+DEBUG: MODELRUNNER: prepare decode positions: [32]
+DEBUG: MODELRUNNER: prepare decode context_lens: [33]
+DEBUG: MODELRUNNER: prepare decode input_ids: [448, 11]
+DEBUG: MODELRUNNER: prepare decode positions: [32, 32]
+DEBUG: MODELRUNNER: prepare decode context_lens: [33, 33]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 264 to sequence 6
+DEBUG: SCHEDULER: Appending token 323 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [264]
+DEBUG: MODELRUNNER: prepare decode positions: [33]
+DEBUG: MODELRUNNER: prepare decode context_lens: [34]
+DEBUG: MODELRUNNER: prepare decode input_ids: [264, 323]
+DEBUG: MODELRUNNER: prepare decode positions: [33, 33]
+DEBUG: MODELRUNNER: prepare decode context_lens: [34, 34]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 9080 to sequence 6
+DEBUG: SCHEDULER: Appending token 12752 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [9080]
+DEBUG: MODELRUNNER: prepare decode positions: [34]
+DEBUG: MODELRUNNER: prepare decode context_lens: [35]
+DEBUG: MODELRUNNER: prepare decode input_ids: [9080, 12752]
+DEBUG: MODELRUNNER: prepare decode positions: [34, 34]
+DEBUG: MODELRUNNER: prepare decode context_lens: [35, 35]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 3840 to sequence 6
+DEBUG: SCHEDULER: Appending token 19492 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [3840]
+DEBUG: MODELRUNNER: prepare decode positions: [35]
+DEBUG: MODELRUNNER: prepare decode context_lens: [36]
+DEBUG: MODELRUNNER: prepare decode input_ids: [3840, 19492]
+DEBUG: MODELRUNNER: prepare decode positions: [35, 35]
+DEBUG: MODELRUNNER: prepare decode context_lens: [36, 36]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 11 to sequence 6
+DEBUG: SCHEDULER: Appending token 13 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [11]
+DEBUG: MODELRUNNER: prepare decode positions: [36]
+DEBUG: MODELRUNNER: prepare decode context_lens: [37]
+DEBUG: MODELRUNNER: prepare decode input_ids: [11, 13]
+DEBUG: MODELRUNNER: prepare decode positions: [36, 36]
+DEBUG: MODELRUNNER: prepare decode context_lens: [37, 37]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 16807 to sequence 6
+DEBUG: SCHEDULER: Appending token 1084 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [16807]
+DEBUG: MODELRUNNER: prepare decode positions: [37]
+DEBUG: MODELRUNNER: prepare decode context_lens: [38]
+DEBUG: MODELRUNNER: prepare decode input_ids: [16807, 1084]
+DEBUG: MODELRUNNER: prepare decode positions: [37, 37]
+DEBUG: MODELRUNNER: prepare decode context_lens: [38, 38]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 7674 to sequence 6
+DEBUG: SCHEDULER: Appending token 374 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [7674]
+DEBUG: MODELRUNNER: prepare decode positions: [38]
+DEBUG: MODELRUNNER: prepare decode context_lens: [39]
+DEBUG: MODELRUNNER: prepare decode input_ids: [7674, 374]
+DEBUG: MODELRUNNER: prepare decode positions: [38, 38]
+DEBUG: MODELRUNNER: prepare decode context_lens: [39, 39]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 11 to sequence 6
+DEBUG: SCHEDULER: Appending token 2114 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [11]
+DEBUG: MODELRUNNER: prepare decode positions: [39]
+DEBUG: MODELRUNNER: prepare decode context_lens: [40]
+DEBUG: MODELRUNNER: prepare decode input_ids: [11, 2114]
+DEBUG: MODELRUNNER: prepare decode positions: [39, 39]
+DEBUG: MODELRUNNER: prepare decode context_lens: [40, 40]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 323 to sequence 6
+DEBUG: SCHEDULER: Appending token 311 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [323]
+DEBUG: MODELRUNNER: prepare decode positions: [40]
+DEBUG: MODELRUNNER: prepare decode context_lens: [41]
+DEBUG: MODELRUNNER: prepare decode input_ids: [323, 311]
+DEBUG: MODELRUNNER: prepare decode positions: [40, 40]
+DEBUG: MODELRUNNER: prepare decode context_lens: [41, 41]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 264 to sequence 6
+DEBUG: SCHEDULER: Appending token 279 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [264]
+DEBUG: MODELRUNNER: prepare decode positions: [41]
+DEBUG: MODELRUNNER: prepare decode context_lens: [42]
+DEBUG: MODELRUNNER: prepare decode input_ids: [264, 279]
+DEBUG: MODELRUNNER: prepare decode positions: [41, 41]
+DEBUG: MODELRUNNER: prepare decode context_lens: [42, 42]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 3746 to sequence 6
+DEBUG: SCHEDULER: Appending token 17809 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [3746]
+DEBUG: MODELRUNNER: prepare decode positions: [42]
+DEBUG: MODELRUNNER: prepare decode context_lens: [43]
+DEBUG: MODELRUNNER: prepare decode input_ids: [3746, 17809]
+DEBUG: MODELRUNNER: prepare decode positions: [42, 42]
+DEBUG: MODELRUNNER: prepare decode context_lens: [43, 43]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 16266 to sequence 6
+DEBUG: SCHEDULER: Appending token 29243 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [16266]
+DEBUG: MODELRUNNER: prepare decode positions: [43]
+DEBUG: MODELRUNNER: prepare decode context_lens: [44]
+DEBUG: MODELRUNNER: prepare decode input_ids: [16266, 29243]
+DEBUG: MODELRUNNER: prepare decode positions: [43, 43]
+DEBUG: MODELRUNNER: prepare decode context_lens: [44, 44]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 304 to sequence 6
+DEBUG: SCHEDULER: Appending token 19874 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [304]
+DEBUG: MODELRUNNER: prepare decode positions: [44]
+DEBUG: MODELRUNNER: prepare decode context_lens: [45]
+DEBUG: MODELRUNNER: prepare decode input_ids: [304, 19874]
+DEBUG: MODELRUNNER: prepare decode positions: [44, 44]
+DEBUG: MODELRUNNER: prepare decode context_lens: [45, 45]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 8038 to sequence 6
+DEBUG: SCHEDULER: Appending token 11 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [8038]
+DEBUG: MODELRUNNER: prepare decode positions: [45]
+DEBUG: MODELRUNNER: prepare decode context_lens: [46]
+DEBUG: MODELRUNNER: prepare decode input_ids: [8038, 11]
+DEBUG: MODELRUNNER: prepare decode positions: [45, 45]
+DEBUG: MODELRUNNER: prepare decode context_lens: [46, 46]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 11 to sequence 6
+DEBUG: SCHEDULER: Appending token 279 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [11]
+DEBUG: MODELRUNNER: prepare decode positions: [46]
+DEBUG: MODELRUNNER: prepare decode context_lens: [47]
+DEBUG: MODELRUNNER: prepare decode input_ids: [11, 279]
+DEBUG: MODELRUNNER: prepare decode positions: [46, 46]
+DEBUG: MODELRUNNER: prepare decode context_lens: [47, 47]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 5440 to sequence 6
+DEBUG: SCHEDULER: Appending token 5836 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [5440]
+DEBUG: MODELRUNNER: prepare decode positions: [47]
+DEBUG: MODELRUNNER: prepare decode context_lens: [48]
+DEBUG: MODELRUNNER: prepare decode input_ids: [5440, 5836]
+DEBUG: MODELRUNNER: prepare decode positions: [47, 47]
+DEBUG: MODELRUNNER: prepare decode context_lens: [48, 48]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 11 to sequence 6
+DEBUG: SCHEDULER: Appending token 12879 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [11]
+DEBUG: MODELRUNNER: prepare decode positions: [48]
+DEBUG: MODELRUNNER: prepare decode context_lens: [49]
+DEBUG: MODELRUNNER: prepare decode input_ids: [11, 12879]
+DEBUG: MODELRUNNER: prepare decode positions: [48, 48]
+DEBUG: MODELRUNNER: prepare decode context_lens: [49, 49]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 323 to sequence 6
+DEBUG: SCHEDULER: Appending token 87739 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [323]
+DEBUG: MODELRUNNER: prepare decode positions: [49]
+DEBUG: MODELRUNNER: prepare decode context_lens: [50]
+DEBUG: MODELRUNNER: prepare decode input_ids: [323, 87739]
+DEBUG: MODELRUNNER: prepare decode positions: [49, 49]
+DEBUG: MODELRUNNER: prepare decode context_lens: [50, 50]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 3644 to sequence 6
+DEBUG: SCHEDULER: Appending token 11 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [3644]
+DEBUG: MODELRUNNER: prepare decode positions: [50]
+DEBUG: MODELRUNNER: prepare decode context_lens: [51]
+DEBUG: MODELRUNNER: prepare decode input_ids: [3644, 11]
+DEBUG: MODELRUNNER: prepare decode positions: [50, 50]
+DEBUG: MODELRUNNER: prepare decode context_lens: [51, 51]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 11438 to sequence 6
+DEBUG: SCHEDULER: Appending token 323 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [11438]
+DEBUG: MODELRUNNER: prepare decode positions: [51]
+DEBUG: MODELRUNNER: prepare decode context_lens: [52]
+DEBUG: MODELRUNNER: prepare decode input_ids: [11438, 323]
+DEBUG: MODELRUNNER: prepare decode positions: [51, 51]
+DEBUG: MODELRUNNER: prepare decode context_lens: [52, 52]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 13 to sequence 6
+DEBUG: SCHEDULER: Appending token 279 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [13]
+DEBUG: MODELRUNNER: prepare decode positions: [52]
+DEBUG: MODELRUNNER: prepare decode context_lens: [53]
+DEBUG: MODELRUNNER: prepare decode input_ids: [13, 279]
+DEBUG: MODELRUNNER: prepare decode positions: [52, 52]
+DEBUG: MODELRUNNER: prepare decode context_lens: [53, 53]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 576 to sequence 6
+DEBUG: SCHEDULER: Appending token 26277 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: LLM_ENGINE: Finished scheduler.schedule()
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [576]
+DEBUG: MODELRUNNER: prepare decode positions: [53]
+DEBUG: MODELRUNNER: prepare decode context_lens: [54]
+DEBUG: MODELRUNNER: prepare decode input_ids: [576, 26277]
+DEBUG: MODELRUNNER: prepare decode positions: [53, 53]
+DEBUG: MODELRUNNER: prepare decode context_lens: [54, 54]
+DEBUG: LLM_ENGINE: Finished model_runner.call()
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 547 to sequence 6
+DEBUG: SCHEDULER: Appending token 3283 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+
+=== Generation completed in 1.19 seconds ===
+Average time per sequence: 0.59 seconds
+Throughput: 1.69 sequences/second
+
+
+================================================================================
+SEQUENCE 1/2
+================================================================================
+Prompt: <|im_start|>user
+introduce USA<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+...
+
+Completion (198 chars):
+The United States is a powerful and democratic nation in the world. It is a country with a rich history, diverse culture, and a strong foundation in science, technology, and global leadership. The U
+
+Tokens generated: 40
+
+================================================================================
+SEQUENCE 2/2
+================================================================================
+Prompt: <|im_start|>user
+introduce California<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+...
+
+Completion (200 chars):
+California is a state in the United States, known for its diverse landscapes, rich history, and cultural diversity. It is home to the Golden Gate Bridge, the San Francisco skyline, and the iconic city
+
+Tokens generated: 40

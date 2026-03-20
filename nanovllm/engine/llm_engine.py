@@ -51,16 +51,16 @@ class LLMEngine:
             event = ctx.Event()
             process = ctx.Process(target=ModelRunner, args=(config, i, event))
             process.start()
-            logger.debug(f"Process {i} started")
+            logger.debug(f"LLM_ENGINE: Process {i} started")
             self.ps.append(process)
             self.events.append(event)
-        logger.debug("Starting the main model runner")
+        logger.debug("LLM_ENGINE: init Starting the main model runner")
         self.model_runner = ModelRunner(config, 0, self.events)
 
         # Tokenizer and scheduler
         self.tokenizer = AutoTokenizer.from_pretrained(config.model, use_fast=True)
         config.eos = self.tokenizer.eos_token_id
-        logger.debug("Instantiating scheduler")
+        logger.debug("LLM_ENGINE: init Instantiating scheduler")
         self.scheduler = Scheduler(config)
 
         atexit.register(self.exit)
@@ -72,22 +72,21 @@ class LLMEngine:
             p.join()
 
     def add_request(self, prompt: str | list[int], sampling_params: SamplingParams):
-        logger.info("Adding request")
+        logger.info("LLM_ENGINE: Adding request")
         if isinstance(prompt, str):
             prompt = self.tokenizer.encode(prompt)
         seq = Sequence(prompt, sampling_params)
-        logger.debug(f"LLM_ENGINE: sequence {seq.seq_id} - tokens: {len(seq)}, blocks needed: {seq.num_blocks}")
-        logger.debug(f"LLM_ENGINE: sequence {seq.seq_id} - block_table: {seq.block_table}")
+        logger.debug(f"LLM_ENGINE: created sequence {seq.seq_id} - tokens: {len(seq)}, blocks needed: {seq.num_blocks} - block_table: {seq.block_table}")
         
         self.scheduler.add(seq)
 
     def step(self):
             
-        logger.debug("LLM_ENGINE: Calling scheduler.schedule()")
+        logger.debug("LLM_ENGINE: step Calling scheduler.schedule()")
             
         seqs, is_prefill = self.scheduler.schedule()#Scheduler decides what to process:
         
-        logger.debug("LLM_ENGINE: Finished scheduler.schedule()")
+    
 
         logger.debug("LLM_ENGINE: Calling model_runner.call()")
             
@@ -99,7 +98,7 @@ class LLMEngine:
         Returns generated tokens (one per sequence)
         """
         
-        logger.debug("LLM_ENGINE: Finished model_runner.call()")
+
 
         logger.debug("LLM_ENGINE: Calling scheduler.postprocess()")
             
@@ -134,7 +133,7 @@ class LLMEngine:
         - Tracks progress/throughput
         - Returns output dicts with text and token IDs
         """
-        logger.info("Starting generation...")
+        logger.info("LLM_ENGINE:Starting generation...")
         
         if not isinstance(sampling_params, list):
             sampling_params = [sampling_params] * len(prompts)#prompts are a list, not prompt's tokens
@@ -145,7 +144,7 @@ class LLMEngine:
         prefill_throughput = decode_throughput = 0.#initialize throughput counters
         step_count = 0
 
-        logger.debug("Starting generation loop...")
+        logger.debug("LLM_ENGINE: Starting generation loop...")
         while not self.is_finished():
             t = perf_counter()
             output, num_tokens = self.step()

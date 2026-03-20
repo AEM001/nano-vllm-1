@@ -17,7 +17,7 @@ class Scheduler:
         self.eos = config.eos
         
         # KV cache memory management
-        logger.debug("Initializing block manager...")
+        logger.debug("SCHEDULER: init Initializing block manager...")
         self.block_manager = BlockManager(config.num_kvcache_blocks, config.kvcache_block_size)
         
         # Sequence queues
@@ -28,7 +28,7 @@ class Scheduler:
         return not self.waiting and not self.running
 
     def add(self, seq: Sequence):
-        logger.debug(f"Adding sequence {seq} to waiting queue")
+        logger.debug(f"SCHEDULER: Adding sequence {seq} to waiting queue")
         self.waiting.append(seq)
 
     def schedule(self) -> tuple[list[Sequence], bool]:
@@ -38,7 +38,7 @@ class Scheduler:
         - Fall back to decode if no prefill candidates
         - Preempt sequences if memory constraints require it
         """
-        logger.debug("Scheduling sequences")
+        logger.debug("SCHEDULER: Scheduling sequences")
         
         # THIS BATCH: sequences to execute RIGHT NOW
         scheduled_seqs = []
@@ -61,10 +61,11 @@ class Scheduler:
                 
             self.block_manager.allocate(seq)  # Reserve KV cache
             
-            logger.info(f"SCHEDULER: ALLOCATED seq {seq.seq_id} - blocks: {seq.block_table}, positions: {len(seq)} tokens")
-            logger.debug("SCHEDULER: Finished allocating sequence")
+            logger.info(f"SCHEDULER: prefill ALLOCATED seq {seq.seq_id} - blocks: {seq.block_table}, positions: {len(seq)} tokens")
             
-            logger.debug(f"SCHEDULER: num_batched_tokens: {num_batched_tokens}")
+            # Update batched tokens count (NEW tokens only, not cached ones)
+            num_batched_tokens += len(seq) - seq.num_cached_tokens
+            logger.debug(f"SCHEDULER: prefill num_batched_tokens: {num_batched_tokens} (added {len(seq) - seq.num_cached_tokens} new tokens)")
                 
             seq.status = SequenceStatus.RUNNING
             self.waiting.popleft()     # Remove from waiting queue

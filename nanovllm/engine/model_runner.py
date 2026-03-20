@@ -26,12 +26,13 @@ class ModelRunner:
 
         self.block_size = config.kvcache_block_size
         self.enforce_eager = config.enforce_eager
+        self.is_warmup = False  # Flag to suppress logging during warmup
         self.world_size = config.tensor_parallel_size#Total number of processes in tensor parallel group
 
         self.rank = rank#this process's ID
         self.event = events#Synchronization object for coordinating with other ranks,Rank 0 gets list[Event] from all workers
 
-        logger.info(f"Model runner {rank} initialized")
+        logger.info(f"MODEL_RUNNER: Model runner {rank} initialized")
 
         #Initialize pytorch distributed communication between process
         #set up NCCL for GPU-to-GPU communication
@@ -39,7 +40,7 @@ class ModelRunner:
 
         # Assign this process to a specific GPU
         torch.cuda.set_device(rank)
-        logger.info(f"GPU device set to rank {rank}")
+        logger.info(f"MODELRUNNER: GPU device set to rank {rank}")
         
         
         # Setup model precision and device
@@ -52,15 +53,15 @@ class ModelRunner:
         t0 = time.time()
         load_model(self.model, config.model)
         t1 = time.time()
-        logger.info(f"Model loaded on rank {rank} in {t1 - t0:.4f} seconds")
+        logger.info(f"MODELRUNNER: Model loaded on rank {rank} in {t1 - t0:.4f} seconds")
 
 
         self.sampler = Sampler()
         
         # Performance optimizations
-        logger.info(f"Warming up model on rank {rank}...")
+        logger.info(f"MODELRUNNER: Warming up model on rank {rank}...")
         self.warmup_model()
-        logger.info(f"Allocating KV cache on rank {rank}...")
+        logger.info(f"MODELRUNNER: Allocating KV cache on rank {rank}...")
         self.allocate_kv_cache()
 
         if not self.enforce_eager:
@@ -159,10 +160,17 @@ class ModelRunner:
         num_seqs = min(max_num_batched_tokens // max_model_len, self.config.max_num_seqs)
 
         seqs = [Sequence([0] * max_model_len) for _ in range(num_seqs)]
+        
+        # Set warmup flag to suppress verbose logging
+        self.is_warmup = True
+        
         t0 = time.time()
         self.run(seqs, True)
         t1 = time.time()
-        logger.info(f"Model warmed up in {t1 - t0:.4f} seconds")
+        logger.info(f"MODELRUNNER: Model warmed up in {t1 - t0:.4f} seconds")
+        
+        # Clear warmup flag
+        self.is_warmup = False
         torch.cuda.empty_cache()
 
     def allocate_kv_cache(self):
@@ -172,13 +180,13 @@ class ModelRunner:
         
         # Get GPU memory information
         free, total = torch.cuda.mem_get_info()
-        logger.info(f"Free memory: {free / 1024**3:.2f} GB")
+        logger.info(f"MODELRUNNER: Free memory: {free / 1024**3:.2f} GB")
      
         used = total - free 
         peak = torch.cuda.memory_stats()["allocated_bytes.all.peak"]
-        logger.info(f"Peak memory: {peak / 1024**3:.2f} GB")
+        logger.info(f"MODELRUNNER: Peak memory: {peak / 1024**3:.2f} GB")
         current = torch.cuda.memory_stats()["allocated_bytes.all.current"]
-        logger.info(f"Current memory: {current / 1024**3:.2f} GB")
+        logger.info(f"MODELRUNNER: Current memory: {current / 1024**3:.2f} GB")
         
         # Calculate KV cache parameters
         num_kv_heads = hf_config.num_key_value_heads // self.world_size
@@ -187,18 +195,20 @@ class ModelRunner:
 
         block_bytes = 2 * hf_config.num_hidden_layers * self.block_size * num_kv_heads * head_dim * hf_config.torch_dtype.itemsize
         
-
+        # Calculate maximum number of blocks we can allocate
+        # Available memory = total * utilization - peak (model weights)
+        # Don't subtract 'used' since it already includes peak
         available_memory = int(total * config.gpu_memory_utilization - peak)
         config.num_kvcache_blocks = available_memory // block_bytes
 
-        logger.info(f"Available memory for KV cache: {available_memory / 1024**3:.2f} GB")
+        logger.info(f"MODELRUNNER: Available memory for KV cache: {available_memory / 1024**3:.2f} GB")
         assert config.num_kvcache_blocks > 0
-        logger.info(f"Number of KV cache blocks: {config.num_kvcache_blocks}")
+        logger.info(f"MODELRUNNER: Number of KV cache blocks: {config.num_kvcache_blocks}")
 
 
         self.kv_cache = torch.empty(2, hf_config.num_hidden_layers, config.num_kvcache_blocks, self.block_size, num_kv_heads, head_dim)
 
-        logger.info(f"Free memory after KV cache allocation: {torch.cuda.mem_get_info()[0] / 1024**3:.2f} GB")
+        logger.info(f"MODELRUNNER: Free memory after KV cache allocation: {torch.cuda.mem_get_info()[0] / 1024**3:.2f} GB")
 
         layer_id = 0
 
@@ -244,35 +254,40 @@ class ModelRunner:
             
             # Extract only NEW tokens (skip cached ones for efficiency)
             input_ids.extend(seq[seq.num_cached_tokens:])
-            logger.debug(f"MODELRUNNER: prepare prefill input_ids: {input_ids}")
             # Generate REAL positions for new tokens (not 0,1,2!)
             positions.extend(list(range(seq.num_cached_tokens, seqlen)))
-            logger.debug(f"MODELRUNNER: prepare prefill positions: {positions}")
             # Example: Seq has tokens [10,20,30,40,50], cached=2
             # New tokens: [30,40,50], positions: [2,3,4] (not [0,1,2]!)
 
             # Build cumulative lengths for GPU batch processing
             seqlen_q = seqlen - seq.num_cached_tokens  # New tokens count
-            logger.debug(f"MODELRUNNER: prepare prefill seqlen_q: {seqlen_q}")
             seqlen_k = seqlen                           # Total tokens count
-            logger.debug(f"MODELRUNNER: prepare prefill seqlen_k: {seqlen_k}")
 
             cu_seqlens_q.append(cu_seqlens_q[-1] + seqlen_q)  # Running total of new tokens
             cu_seqlens_k.append(cu_seqlens_k[-1] + seqlen_k)  # Running total of all tokens
-            logger.debug(f"MODELRUNNER: prepare prefill cu_seqlens_q: {cu_seqlens_q}")
-            logger.debug(f"MODELRUNNER: prepare prefill cu_seqlens_k: {cu_seqlens_k}")
             # Example batch: Seq1(3 new), Seq2(2 new), Seq3(4 new)
             # cu_seqlens_q: [0, 3, 5, 9] → GPU knows: seq0=[0:3], seq1=[3:5], seq2=[5:9]
 
             max_seqlen_q = max(seqlen_q, max_seqlen_q)
             max_seqlen_k = max(seqlen_k, max_seqlen_k)
             
+            # Skip verbose logging during warmup
+            if not self.is_warmup:
+                logger.debug(f"MODELRUNNER: prepare prefill input_ids: {input_ids}")
+                logger.debug(f"MODELRUNNER: prepare prefill positions: {positions}")
+                logger.debug(f"MODELRUNNER: prepare prefill seqlen_q: {seqlen_q}")
+                logger.debug(f"MODELRUNNER: prepare prefill seqlen_k: {seqlen_k}")
+                logger.debug(f"MODELRUNNER: prepare prefill cu_seqlens_q: {cu_seqlens_q}")
+                logger.debug(f"MODELRUNNER: prepare prefill cu_seqlens_k: {cu_seqlens_k}")
+            
             
             # Map logical sequence blocks to physical KV cache memory (PagedAttention)
             if not seq.block_table:    # Skip warmup phase (no cache yet)
-                logger.debug("Skipping warmup phase in prepare_prefill")
+                logger.debug("MODELRUNNER: Skipping slot_mapping during warmup phase in prepare_prefill")
                 continue
-            logger.debug(f"Seq {seq.seq_id} - block_table: {seq.block_table}, cached_blocks: {seq.num_cached_blocks}, total_blocks: {seq.num_blocks}")
+            # Only log slot mapping for real sequences (not warmup)
+            if not self.is_warmup:
+                logger.debug(f"Seq {seq.seq_id} - block_table: {seq.block_table}, cached_blocks: {seq.num_cached_blocks}, total_blocks: {seq.num_blocks}")
             for i in range(seq.num_cached_blocks, seq.num_blocks):
                 start = seq.block_table[i] * self.block_size  # Physical start slot
 
@@ -282,7 +297,8 @@ class ModelRunner:
                     end = start + seq.last_block_num_tokens # Partial last block
 
                 slot_mapping.extend(list(range(start, end)))
-                logger.debug(f"Seq {seq.seq_id} block {i} -> slots [{start}:{end})")
+                if not self.is_warmup:  # Only log for real sequences
+                    logger.debug(f"MODELRUNNER: Seq {seq.seq_id} block {i} -> slots [{start}:{end})")
                 # Example: block_table=[7,3], block_size=4, cached_blocks=0
                 # Block 0: slots 7*4=28 to 31, Block 1: slots 3*4=12 to 15
                 # slot_mapping: [28,29,30,31,12,13,14,15]
@@ -290,7 +306,7 @@ class ModelRunner:
         # Optimization: only prepare block tables if we have cached data
         if cu_seqlens_k[-1] > cu_seqlens_q[-1]:
             block_tables = self.prepare_block_tables(seqs)
-            logger.info(f"prepare prefill block_tables: {block_tables}")
+            logger.info(f"MODELRUNNER: !!! prepare prefill block_tables: {block_tables}")
         
         # Convert to GPU tensors (pin_memory = faster CPU->GPU transfer)
         input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
@@ -314,19 +330,22 @@ class ModelRunner:
         for seq in seqs:
             # Each sequence contributes exactly ONE token for decode
             input_ids.append(seq.last_token)
-            logger.debug(f"MODELRUNNER: prepare decode input_ids: {input_ids}")
             # Position is always len(seq)-1 (the last position)
             positions.append(len(seq) - 1)
-            logger.debug(f"MODELRUNNER: prepare decode positions: {positions}")
             # Context length = full sequence length for attention mask
             context_lens.append(len(seq))
-            logger.debug(f"MODELRUNNER: prepare decode context_lens: {context_lens}")
             # Example: seq has 10 tokens, context_lens=10 means "attend to all 10 previous tokens"
             
             # Calculate KV cache slot for NEW token's KV state
             slot_mapping.append(seq.block_table[-1] * self.block_size + seq.last_block_num_tokens - 1)
             # Example: last_block=5, block_size=4, last_block_num_tokens=2
             # slot = 5*4 + 2 - 1 = 21 (where to store KV for new token)
+            
+            # Skip verbose logging during warmup
+            if not self.is_warmup:
+                logger.debug(f"MODELRUNNER: prepare decode input_ids: {input_ids}")
+                logger.debug(f"MODELRUNNER: prepare decode positions: {positions}")
+                logger.debug(f"MODELRUNNER: prepare decode context_lens: {context_lens}")
         
         # Convert to GPU tensors (pin_memory = faster CPU->GPU transfer)
         input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
@@ -335,6 +354,9 @@ class ModelRunner:
         context_lens = torch.tensor(context_lens, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
         
         block_tables = self.prepare_block_tables(seqs)
+        logger.info(f"MODELRUNNER: !!! prepare decode block_tables: {block_tables}")
+        logger.info(f"MODELRUNNER: block_tables shape: {block_tables.shape if hasattr(block_tables, 'shape') else 'N/A'}")
+        logger.info(f"MODELRUNNER: block_tables content: {block_tables.tolist() if hasattr(block_tables, 'tolist') else block_tables}")
         
         # Set global context for attention layers (decode mode = False)
         set_context(False, slot_mapping=slot_mapping, context_lens=context_lens, block_tables=block_tables)
