@@ -187,14 +187,19 @@ class ModelRunner:
 
         block_bytes = 2 * hf_config.num_hidden_layers * self.block_size * num_kv_heads * head_dim * hf_config.torch_dtype.itemsize
         
-        # Calculate maximum number of blocks we can allocate
-        config.num_kvcache_blocks = int(total * config.gpu_memory_utilization - used - peak + current) // block_bytes
+
+        available_memory = int(total * config.gpu_memory_utilization - peak)
+        config.num_kvcache_blocks = available_memory // block_bytes
+
+        logger.info(f"Available memory for KV cache: {available_memory / 1024**3:.2f} GB")
         assert config.num_kvcache_blocks > 0
         logger.info(f"Number of KV cache blocks: {config.num_kvcache_blocks}")
-        # Pre-allocate KV cache tensor
+
+
         self.kv_cache = torch.empty(2, hf_config.num_hidden_layers, config.num_kvcache_blocks, self.block_size, num_kv_heads, head_dim)
+
         logger.info(f"Free memory after KV cache allocation: {torch.cuda.mem_get_info()[0] / 1024**3:.2f} GB")
-        # Assign cache tensors to attention layers
+
         layer_id = 0
 
         for module in self.model.modules():
@@ -239,27 +244,35 @@ class ModelRunner:
             
             # Extract only NEW tokens (skip cached ones for efficiency)
             input_ids.extend(seq[seq.num_cached_tokens:])
+            logger.debug(f"MODELRUNNER: prepare prefill input_ids: {input_ids}")
             # Generate REAL positions for new tokens (not 0,1,2!)
             positions.extend(list(range(seq.num_cached_tokens, seqlen)))
+            logger.debug(f"MODELRUNNER: prepare prefill positions: {positions}")
             # Example: Seq has tokens [10,20,30,40,50], cached=2
             # New tokens: [30,40,50], positions: [2,3,4] (not [0,1,2]!)
 
             # Build cumulative lengths for GPU batch processing
             seqlen_q = seqlen - seq.num_cached_tokens  # New tokens count
+            logger.debug(f"MODELRUNNER: prepare prefill seqlen_q: {seqlen_q}")
             seqlen_k = seqlen                           # Total tokens count
+            logger.debug(f"MODELRUNNER: prepare prefill seqlen_k: {seqlen_k}")
 
             cu_seqlens_q.append(cu_seqlens_q[-1] + seqlen_q)  # Running total of new tokens
             cu_seqlens_k.append(cu_seqlens_k[-1] + seqlen_k)  # Running total of all tokens
+            logger.debug(f"MODELRUNNER: prepare prefill cu_seqlens_q: {cu_seqlens_q}")
+            logger.debug(f"MODELRUNNER: prepare prefill cu_seqlens_k: {cu_seqlens_k}")
             # Example batch: Seq1(3 new), Seq2(2 new), Seq3(4 new)
             # cu_seqlens_q: [0, 3, 5, 9] → GPU knows: seq0=[0:3], seq1=[3:5], seq2=[5:9]
 
             max_seqlen_q = max(seqlen_q, max_seqlen_q)
             max_seqlen_k = max(seqlen_k, max_seqlen_k)
             
+            
             # Map logical sequence blocks to physical KV cache memory (PagedAttention)
             if not seq.block_table:    # Skip warmup phase (no cache yet)
                 logger.debug("Skipping warmup phase in prepare_prefill")
                 continue
+            logger.debug(f"Seq {seq.seq_id} - block_table: {seq.block_table}, cached_blocks: {seq.num_cached_blocks}, total_blocks: {seq.num_blocks}")
             for i in range(seq.num_cached_blocks, seq.num_blocks):
                 start = seq.block_table[i] * self.block_size  # Physical start slot
 
@@ -269,6 +282,7 @@ class ModelRunner:
                     end = start + seq.last_block_num_tokens # Partial last block
 
                 slot_mapping.extend(list(range(start, end)))
+                logger.debug(f"Seq {seq.seq_id} block {i} -> slots [{start}:{end})")
                 # Example: block_table=[7,3], block_size=4, cached_blocks=0
                 # Block 0: slots 7*4=28 to 31, Block 1: slots 3*4=12 to 15
                 # slot_mapping: [28,29,30,31,12,13,14,15]
@@ -276,6 +290,7 @@ class ModelRunner:
         # Optimization: only prepare block tables if we have cached data
         if cu_seqlens_k[-1] > cu_seqlens_q[-1]:
             block_tables = self.prepare_block_tables(seqs)
+            logger.info(f"prepare prefill block_tables: {block_tables}")
         
         # Convert to GPU tensors (pin_memory = faster CPU->GPU transfer)
         input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
@@ -299,10 +314,13 @@ class ModelRunner:
         for seq in seqs:
             # Each sequence contributes exactly ONE token for decode
             input_ids.append(seq.last_token)
+            logger.debug(f"MODELRUNNER: prepare decode input_ids: {input_ids}")
             # Position is always len(seq)-1 (the last position)
             positions.append(len(seq) - 1)
+            logger.debug(f"MODELRUNNER: prepare decode positions: {positions}")
             # Context length = full sequence length for attention mask
             context_lens.append(len(seq))
+            logger.debug(f"MODELRUNNER: prepare decode context_lens: {context_lens}")
             # Example: seq has 10 tokens, context_lens=10 means "attend to all 10 previous tokens"
             
             # Calculate KV cache slot for NEW token's KV state

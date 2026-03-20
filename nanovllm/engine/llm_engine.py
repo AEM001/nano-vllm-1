@@ -76,18 +76,20 @@ class LLMEngine:
         if isinstance(prompt, str):
             prompt = self.tokenizer.encode(prompt)
         seq = Sequence(prompt, sampling_params)
+        logger.debug(f"LLM_ENGINE: sequence {seq.seq_id} - tokens: {len(seq)}, blocks needed: {seq.num_blocks}")
+        logger.debug(f"LLM_ENGINE: sequence {seq.seq_id} - block_table: {seq.block_table}")
+        
         self.scheduler.add(seq)
 
     def step(self):
-        logger.debug("Starting step")
             
-        logger.debug("Calling scheduler.schedule()")
+        logger.debug("LLM_ENGINE: Calling scheduler.schedule()")
             
         seqs, is_prefill = self.scheduler.schedule()#Scheduler decides what to process:
         
-        logger.debug("Finished scheduler.schedule()")
+        logger.debug("LLM_ENGINE: Finished scheduler.schedule()")
 
-        logger.debug("Calling model_runner.call()")
+        logger.debug("LLM_ENGINE: Calling model_runner.call()")
             
         token_ids = self.model_runner.call("run", seqs, is_prefill)#Model execution across all GPUs:
         """
@@ -97,9 +99,9 @@ class LLMEngine:
         Returns generated tokens (one per sequence)
         """
         
-        logger.debug("Finished model_runner.call()")
+        logger.debug("LLM_ENGINE: Finished model_runner.call()")
 
-        logger.debug("Calling scheduler.postprocess()")
+        logger.debug("LLM_ENGINE: Calling scheduler.postprocess()")
             
         self.scheduler.postprocess(seqs, token_ids)#Handle results and update state:
         """
@@ -113,7 +115,7 @@ class LLMEngine:
 
         num_tokens = sum(len(seq) for seq in seqs) if is_prefill else -len(seqs)#if there is only one sequence running, then, at one time, one new token is generated, so it is reasonable to be -1
         
-        logger.debug("Finished step()")
+        logger.debug("LLM_ENGINE: Finished step()")
             
         return outputs, num_tokens
 
@@ -123,8 +125,7 @@ class LLMEngine:
     def generate(
         self,
         prompts: list[str] | list[list[int]],
-        sampling_params: SamplingParams | list[SamplingParams],
-        use_tqdm: bool = True,
+        sampling_params: SamplingParams | list[SamplingParams]
     ) -> list[str]:
         """
         Complete generation pipeline:

@@ -57,14 +57,14 @@ class Scheduler:
             
             # Move: Waiting -> Running -> THIS BATCH
             num_seqs += 1
-            logger.debug("Calling block_manager to allocate sequence, creating block_tables and calculating hash for block")
+            logger.debug("SCHEDULER: Calling block_manager to allocate sequence, creating block_tables and calculating hash for block")
                 
             self.block_manager.allocate(seq)  # Reserve KV cache
             
-            logger.debug("Finished allocating sequence")
+            logger.info(f"SCHEDULER: ALLOCATED seq {seq.seq_id} - blocks: {seq.block_table}, positions: {len(seq)} tokens")
+            logger.debug("SCHEDULER: Finished allocating sequence")
             
-            num_batched_tokens += len(seq) - seq.num_cached_tokens
-            logger.debug(f"num_batched_tokens: {num_batched_tokens}")
+            logger.debug(f"SCHEDULER: num_batched_tokens: {num_batched_tokens}")
                 
             seq.status = SequenceStatus.RUNNING
             self.waiting.popleft()     # Remove from waiting queue
@@ -91,7 +91,7 @@ class Scheduler:
             else:
                 # Space available, add to THIS BATCH
                 num_seqs += 1
-                logger.debug("Calling block_manager.may_append to deal with newly generated token")
+                logger.debug("SCHEDULER: Calling block_manager.may_append to deal with newly generated token")
                     
                 self.block_manager.may_append(seq)
                 
@@ -112,7 +112,7 @@ class Scheduler:
         
         for seq, token_id in zip(seqs, token_ids):
             # Append generated token to sequence
-            logger.debug(f"Appending token {token_id} to sequence {seq.seq_id}")
+            logger.debug(f"SCHEDULER: Appending token {token_id} to sequence {seq.seq_id}")
                 
             seq.append_token(token_id)
             
