@@ -1,0 +1,4 @@
+INFO [nanovllm.engine.model_runner] [ModelRunner] Rank 0 initialized
+INFO [nanovllm.engine.model_runner] [ModelRunner] GPU device set to rank 0
+INFO [nanovllm.engine.model_runner] [ModelRunner] Model loaded on rank 0 in 0.12s
+INFO [nanovllm.engine.model_runner] [ModelRunner] Warming up model on rank 0...

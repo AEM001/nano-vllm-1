@@ -10,9 +10,27 @@ import time
 from huggingface_hub import snapshot_download
 from nanovllm import LLM, SamplingParams
 from transformers import AutoTokenizer
+import sys
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+def setup_logging(level=logging.INFO):
+    """Setup clean logging format for nano-vllm."""
+    formatter = logging.Formatter(
+        fmt='%(levelname)s [%(name)s] %(message)s',
+        datefmt='%H:%M:%S'
+    )
+    console = logging.StreamHandler(sys.stdout)
+    console.setFormatter(formatter)
+    
+    root_logger = logging.getLogger()
+    root_logger.setLevel(level)
+    root_logger.handlers = []
+    root_logger.addHandler(console)
+    
+    # Quiet down some noisy third-party loggers
+    logging.getLogger("transformers").setLevel(logging.WARNING)
+    logging.getLogger("huggingface_hub").setLevel(logging.WARNING)
+
+setup_logging(logging.INFO)
 
 def example_1_concurrent_sequences():
     """Example 1: Process multiple sequences concurrently"""

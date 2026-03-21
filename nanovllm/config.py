@@ -7,7 +7,7 @@ from transformers import AutoConfig
 class Config:
     model: str
     max_num_batched_tokens: int = 24800
-    max_num_seqs: int = 7
+    max_num_seqs: int = 60
     max_model_len: int = 4096
     gpu_memory_utilization: float = 0.9
     tensor_parallel_size: int = 1

@@ -17,7 +17,7 @@ class Scheduler:
         self.eos = config.eos
         
         # KV cache memory management
-        logger.debug("SCHEDULER: init Initializing block manager...")
+        logger.debug("[Scheduler] Initializing block manager...")
         self.block_manager = BlockManager(config.num_kvcache_blocks, config.kvcache_block_size)
         
         # Sequence queues
@@ -28,7 +28,7 @@ class Scheduler:
         return not self.waiting and not self.running
 
     def add(self, seq: Sequence):
-        logger.debug(f"SCHEDULER: Adding sequence {seq} to waiting queue")
+        logger.debug(f"[Scheduler] Adding seq={seq.seq_id} to waiting queue")
         self.waiting.append(seq)
 
     def schedule(self) -> tuple[list[Sequence], bool]:
@@ -38,7 +38,7 @@ class Scheduler:
         - Fall back to decode if no prefill candidates
         - Preempt sequences if memory constraints require it
         """
-        logger.debug("SCHEDULER: Scheduling sequences")
+        logger.debug("[Scheduler] Scheduling sequences")
         
         # THIS BATCH: sequences to execute RIGHT NOW
         scheduled_seqs = []
@@ -52,20 +52,20 @@ class Scheduler:
             
             # Check if we have resources for this sequence
             if num_batched_tokens + len(seq) > self.max_num_batched_tokens or not self.block_manager.can_allocate(seq):
-                logger.info(f"Cannot allocate sequence {seq}, num_batched_tokens: {num_batched_tokens}, len(seq): {len(seq)}")
+                logger.debug(f"[Scheduler] Cannot allocate seq={seq.seq_id} (tokens={num_batched_tokens}+{len(seq)})")
                 break  # No space, stop prefill
             
             # Move: Waiting -> Running -> THIS BATCH
             num_seqs += 1
-            logger.debug("SCHEDULER: Calling block_manager to allocate sequence, creating block_tables and calculating hash for block")
+            logger.debug(f"[Scheduler] Allocating seq={seq.seq_id}")
                 
             self.block_manager.allocate(seq)  # Reserve KV cache
             
-            logger.info(f"SCHEDULER: prefill ALLOCATED seq {seq.seq_id} - blocks: {seq.block_table}, positions: {len(seq)} tokens")
+            logger.info(f"[Scheduler] Prefill allocated seq={seq.seq_id} blocks={len(seq.block_table)} tokens={len(seq)}")
             
             # Update batched tokens count (NEW tokens only, not cached ones)
             num_batched_tokens += len(seq) - seq.num_cached_tokens
-            logger.debug(f"SCHEDULER: prefill num_batched_tokens: {num_batched_tokens} (added {len(seq) - seq.num_cached_tokens} new tokens)")
+            logger.debug(f"[Scheduler] Prefill batch_tokens={num_batched_tokens} (added {len(seq) - seq.num_cached_tokens})")
                 
             seq.status = SequenceStatus.RUNNING
             self.waiting.popleft()     # Remove from waiting queue
@@ -92,7 +92,7 @@ class Scheduler:
             else:
                 # Space available, add to THIS BATCH
                 num_seqs += 1
-                logger.debug("SCHEDULER: Calling block_manager.may_append to deal with newly generated token")
+                logger.debug(f"[Scheduler] Appending to seq={seq.seq_id}")
                     
                 self.block_manager.may_append(seq)
                 
@@ -113,7 +113,7 @@ class Scheduler:
         
         for seq, token_id in zip(seqs, token_ids):
             # Append generated token to sequence
-            logger.debug(f"SCHEDULER: Appending token {token_id} to sequence {seq.seq_id}")
+            logger.debug(f"[Scheduler] Appending token {token_id} to seq={seq.seq_id}")
                 
             seq.append_token(token_id)
             

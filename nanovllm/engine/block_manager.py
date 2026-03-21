@@ -41,10 +41,10 @@ class BlockManager:
         """
         self.block_size: int = block_size
 
-        logger.debug(f"BLOCK_MANAGER: Block size: {self.block_size}")
+        logger.debug(f"[BlockManager] Block size: {self.block_size}")
         
         self.blocks: list[Block] = [Block(i) for i in range(num_blocks)]
-        logger.debug(f"BLOCK_MANAGER: Number of blocks: {len(self.blocks)}")
+        logger.debug(f"[BlockManager] Total blocks: {len(self.blocks)}")
         self.hash_to_block_id: dict[int, int] = dict()  # Maps hash -> block_id for caching
         self.free_block_ids: deque[int] = deque(range(num_blocks)) 
     
@@ -68,7 +68,7 @@ class BlockManager:
 
     def _deallocate_block(self, block_id: int) -> None:
         assert self.blocks[block_id].ref_count == 0, f"Block {block_id} still has references"
-        logger.info(f"BLOCK_MANAGER: deallocating block {block_id}")
+        logger.debug(f"[BlockManager] Deallocating block {block_id}")
         self.used_block_ids.remove(block_id)
         self.free_block_ids.append(block_id)
 
@@ -82,7 +82,7 @@ class BlockManager:
 
         for i in range(seq.num_blocks):
             token_ids = seq.block(i)
-            logger.debug(f"BLOCK_MANAGER: Allocate: token ids: {token_ids}")
+            logger.debug(f"[BlockManager] Allocate block {i}: tokens={token_ids}")
             #compute hash if full block, otherwise use -1 to indicate cache miss
             h = self.compute_hash(token_ids, h) if len(token_ids) == self.block_size else -1
 
@@ -131,14 +131,14 @@ class BlockManager:
 
         if len(seq) % self.block_size == 1:
             assert last_block.hash != -1, "Previous block should be hashed before allocating new block"
-            logger.debug("BLOCK_MANAGER: allocating a new block")
+            logger.debug("[BlockManager] Allocating new block")
             block_id = self.free_block_ids[0]
             self._allocate_block(block_id)
             block_table.append(block_id)
             
         elif len(seq) % self.block_size == 0:
             assert last_block.hash == -1, "Block should not be hashed when full"
-            logger.debug("BLOCK_MANAGER: hashing a full block")
+            logger.debug("[BlockManager] Hashing full block")
             token_ids = seq.block(seq.num_blocks-1)
             prefix = self.blocks[block_table[-2]].hash if len(block_table) > 1 else -1
             h = self.compute_hash(token_ids, prefix)
@@ -146,4 +146,4 @@ class BlockManager:
             self.hash_to_block_id[h] = last_block.block_id
         else:
             assert last_block.hash == -1, "Partial block should not be hashed"
-            logger.debug("BLOCK_MANAGER: partial block, no hashing needed")
+            logger.debug("[BlockManager] Partial block, no hashing")
