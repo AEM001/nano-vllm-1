@@ -1,0 +1,385 @@
+DEBUG: LLM_ENGINE: init Starting the main model runner
+INFO: MODEL_RUNNER: Model runner 0 initialized
+INFO: MODELRUNNER: GPU device set to rank 0
+INFO: MODELRUNNER: Model loaded on rank 0 in 0.1206 seconds
+INFO: MODELRUNNER: Warming up model on rank 0...
+DEBUG: MODELRUNNER: Skipping slot_mapping during warmup phase in prepare_prefill
+DEBUG: MODELRUNNER: Skipping slot_mapping during warmup phase in prepare_prefill
+DEBUG: MODELRUNNER: Skipping slot_mapping during warmup phase in prepare_prefill
+DEBUG: MODELRUNNER: Skipping slot_mapping during warmup phase in prepare_prefill
+DEBUG: MODELRUNNER: Skipping slot_mapping during warmup phase in prepare_prefill
+DEBUG: MODELRUNNER: Skipping slot_mapping during warmup phase in prepare_prefill
+INFO: MODELRUNNER: Model warmed up in 10.7478 seconds
+INFO: MODELRUNNER: Allocating KV cache on rank 0...
+INFO: MODELRUNNER: Free memory: 9.83 GB
+INFO: MODELRUNNER: Peak memory: 4.20 GB
+INFO: MODELRUNNER: Current memory: 1.14 GB
+INFO: MODELRUNNER: Available memory for KV cache: 6.25 GB
+INFO: MODELRUNNER: Number of KV cache blocks: 228
+INFO: MODELRUNNER: Free memory after KV cache allocation: 3.59 GB
+DEBUG: LLM_ENGINE: init Instantiating scheduler
+DEBUG: SCHEDULER: init Initializing block manager...
+DEBUG: BLOCK_MANAGER: Block size: 256
+DEBUG: BLOCK_MANAGER: Number of blocks: 228
+INFO: LLM_ENGINE:Starting generation...
+INFO: LLM_ENGINE: Adding request
+DEBUG: LLM_ENGINE: created sequence 6 - tokens: 259, blocks needed: 2 - block_table: []
+DEBUG: SCHEDULER: Adding sequence <nanovllm.engine.sequence.Sequence object at 0x7ad884408350> to waiting queue
+INFO: LLM_ENGINE: Adding request
+DEBUG: LLM_ENGINE: created sequence 7 - tokens: 258, blocks needed: 2 - block_table: []
+DEBUG: SCHEDULER: Adding sequence <nanovllm.engine.sequence.Sequence object at 0x7ad8944dc320> to waiting queue
+DEBUG: LLM_ENGINE: Starting generation loop...
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager to allocate sequence, creating block_tables and calculating hash for block
+DEBUG: BLOCK_MANAGER: Allocate: token ids: [83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482]
+DEBUG: BLOCK_MANAGER: Allocate: token ids: [29728, 14155, 12126]
+INFO: SCHEDULER: prefill ALLOCATED seq 6 - blocks: [0, 1], positions: 259 tokens
+DEBUG: SCHEDULER: prefill num_batched_tokens: 259 (added 259 new tokens)
+DEBUG: SCHEDULER: Calling block_manager to allocate sequence, creating block_tables and calculating hash for block
+DEBUG: BLOCK_MANAGER: Allocate: token ids: [83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482]
+DEBUG: BLOCK_MANAGER: Allocate: token ids: [78857, 12126]
+INFO: SCHEDULER: prefill ALLOCATED seq 7 - blocks: [0, 2], positions: 258 tokens
+DEBUG: SCHEDULER: prefill num_batched_tokens: 261 (added 2 new tokens)
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare prefill input_ids: [83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 29728, 14155, 12126]
+DEBUG: MODELRUNNER: prepare prefill positions: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258]
+DEBUG: MODELRUNNER: prepare prefill seqlen_q: 259
+DEBUG: MODELRUNNER: prepare prefill seqlen_k: 259
+DEBUG: MODELRUNNER: prepare prefill cu_seqlens_q: [0, 259]
+DEBUG: MODELRUNNER: prepare prefill cu_seqlens_k: [0, 259]
+DEBUG: Seq 6 - block_table: [0, 1], cached_blocks: 0, total_blocks: 2
+DEBUG: MODELRUNNER: Seq 6 block 0 -> slots [0:256)
+DEBUG: MODELRUNNER: Seq 6 block 1 -> slots [256:259)
+DEBUG: MODELRUNNER: prepare prefill input_ids: [83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 83482, 29728, 14155, 12126, 78857, 12126]
+DEBUG: MODELRUNNER: prepare prefill positions: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 256, 257]
+DEBUG: MODELRUNNER: prepare prefill seqlen_q: 2
+DEBUG: MODELRUNNER: prepare prefill seqlen_k: 258
+DEBUG: MODELRUNNER: prepare prefill cu_seqlens_q: [0, 259, 261]
+DEBUG: MODELRUNNER: prepare prefill cu_seqlens_k: [0, 259, 517]
+DEBUG: Seq 7 - block_table: [0, 2], cached_blocks: 1, total_blocks: 2
+DEBUG: MODELRUNNER: Seq 7 block 1 -> slots [512:514)
+INFO: MODELRUNNER: !!! prepare prefill block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 481 to sequence 6
+DEBUG: SCHEDULER: Appending token 40864 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [481]
+DEBUG: MODELRUNNER: prepare decode positions: [259]
+DEBUG: MODELRUNNER: prepare decode context_lens: [260]
+DEBUG: MODELRUNNER: prepare decode input_ids: [481, 40864]
+DEBUG: MODELRUNNER: prepare decode positions: [259, 258]
+DEBUG: MODELRUNNER: prepare decode context_lens: [260, 259]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 1246 to sequence 6
+DEBUG: SCHEDULER: Appending token 65245 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [1246]
+DEBUG: MODELRUNNER: prepare decode positions: [260]
+DEBUG: MODELRUNNER: prepare decode context_lens: [261]
+DEBUG: MODELRUNNER: prepare decode input_ids: [1246, 65245]
+DEBUG: MODELRUNNER: prepare decode positions: [260, 259]
+DEBUG: MODELRUNNER: prepare decode context_lens: [261, 260]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 311 to sequence 6
+DEBUG: SCHEDULER: Appending token 198 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [311]
+DEBUG: MODELRUNNER: prepare decode positions: [261]
+DEBUG: MODELRUNNER: prepare decode context_lens: [262]
+DEBUG: MODELRUNNER: prepare decode input_ids: [311, 198]
+DEBUG: MODELRUNNER: prepare decode positions: [261, 260]
+DEBUG: MODELRUNNER: prepare decode context_lens: [262, 261]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 990 to sequence 6
+DEBUG: SCHEDULER: Appending token 65245 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [990]
+DEBUG: MODELRUNNER: prepare decode positions: [262]
+DEBUG: MODELRUNNER: prepare decode context_lens: [263]
+DEBUG: MODELRUNNER: prepare decode input_ids: [990, 65245]
+DEBUG: MODELRUNNER: prepare decode positions: [262, 261]
+DEBUG: MODELRUNNER: prepare decode context_lens: [263, 262]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 432 to sequence 6
+DEBUG: SCHEDULER: Appending token 198 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [432]
+DEBUG: MODELRUNNER: prepare decode positions: [263]
+DEBUG: MODELRUNNER: prepare decode context_lens: [264]
+DEBUG: MODELRUNNER: prepare decode input_ids: [432, 198]
+DEBUG: MODELRUNNER: prepare decode positions: [263, 262]
+DEBUG: MODELRUNNER: prepare decode context_lens: [264, 263]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 30 to sequence 6
+DEBUG: SCHEDULER: Appending token 16 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [30]
+DEBUG: MODELRUNNER: prepare decode positions: [264]
+DEBUG: MODELRUNNER: prepare decode context_lens: [265]
+DEBUG: MODELRUNNER: prepare decode input_ids: [30, 16]
+DEBUG: MODELRUNNER: prepare decode positions: [264, 263]
+DEBUG: MODELRUNNER: prepare decode context_lens: [265, 264]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 760 to sequence 6
+DEBUG: SCHEDULER: Appending token 22 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [760]
+DEBUG: MODELRUNNER: prepare decode positions: [265]
+DEBUG: MODELRUNNER: prepare decode context_lens: [266]
+DEBUG: MODELRUNNER: prepare decode input_ids: [760, 22]
+DEBUG: MODELRUNNER: prepare decode positions: [265, 264]
+DEBUG: MODELRUNNER: prepare decode context_lens: [266, 265]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 5573 to sequence 6
+DEBUG: SCHEDULER: Appending token 13 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [5573]
+DEBUG: MODELRUNNER: prepare decode positions: [266]
+DEBUG: MODELRUNNER: prepare decode context_lens: [267]
+DEBUG: MODELRUNNER: prepare decode input_ids: [5573, 13]
+DEBUG: MODELRUNNER: prepare decode positions: [266, 265]
+DEBUG: MODELRUNNER: prepare decode context_lens: [267, 266]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 11 to sequence 6
+DEBUG: SCHEDULER: Appending token 15 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [11]
+DEBUG: MODELRUNNER: prepare decode positions: [267]
+DEBUG: MODELRUNNER: prepare decode context_lens: [268]
+DEBUG: MODELRUNNER: prepare decode input_ids: [11, 15]
+DEBUG: MODELRUNNER: prepare decode positions: [267, 266]
+DEBUG: MODELRUNNER: prepare decode context_lens: [268, 267]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 13991 to sequence 6
+DEBUG: SCHEDULER: Appending token 19 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [13991]
+DEBUG: MODELRUNNER: prepare decode positions: [268]
+DEBUG: MODELRUNNER: prepare decode context_lens: [269]
+DEBUG: MODELRUNNER: prepare decode input_ids: [13991, 19]
+DEBUG: MODELRUNNER: prepare decode positions: [268, 267]
+DEBUG: MODELRUNNER: prepare decode context_lens: [269, 268]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 11 to sequence 6
+DEBUG: SCHEDULER: Appending token 25016 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [11]
+DEBUG: MODELRUNNER: prepare decode positions: [269]
+DEBUG: MODELRUNNER: prepare decode context_lens: [270]
+DEBUG: MODELRUNNER: prepare decode input_ids: [11, 25016]
+DEBUG: MODELRUNNER: prepare decode positions: [269, 268]
+DEBUG: MODELRUNNER: prepare decode context_lens: [270, 269]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 13991 to sequence 6
+DEBUG: SCHEDULER: Appending token 271 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [13991]
+DEBUG: MODELRUNNER: prepare decode positions: [270]
+DEBUG: MODELRUNNER: prepare decode context_lens: [271]
+DEBUG: MODELRUNNER: prepare decode input_ids: [13991, 271]
+DEBUG: MODELRUNNER: prepare decode positions: [270, 269]
+DEBUG: MODELRUNNER: prepare decode context_lens: [271, 270]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 11 to sequence 6
+DEBUG: SCHEDULER: Appending token 1986 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [11]
+DEBUG: MODELRUNNER: prepare decode positions: [271]
+DEBUG: MODELRUNNER: prepare decode context_lens: [272]
+DEBUG: MODELRUNNER: prepare decode input_ids: [11, 1986]
+DEBUG: MODELRUNNER: prepare decode positions: [271, 270]
+DEBUG: MODELRUNNER: prepare decode context_lens: [272, 271]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 323 to sequence 6
+DEBUG: SCHEDULER: Appending token 374 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [323]
+DEBUG: MODELRUNNER: prepare decode positions: [272]
+DEBUG: MODELRUNNER: prepare decode context_lens: [273]
+DEBUG: MODELRUNNER: prepare decode input_ids: [323, 374]
+DEBUG: MODELRUNNER: prepare decode positions: [272, 271]
+DEBUG: MODELRUNNER: prepare decode context_lens: [273, 272]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 13991 to sequence 6
+DEBUG: SCHEDULER: Appending token 264 to sequence 7
+DEBUG: LLM_ENGINE: Finished step()
+DEBUG: LLM_ENGINE: step Calling scheduler.schedule()
+DEBUG: SCHEDULER: Scheduling sequences
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: SCHEDULER: Calling block_manager.may_append to deal with newly generated token
+DEBUG: BLOCK_MANAGER: partial block, no hashing needed
+DEBUG: LLM_ENGINE: Calling model_runner.call()
+DEBUG: MODELRUNNER: prepare decode input_ids: [13991]
+DEBUG: MODELRUNNER: prepare decode positions: [273]
+DEBUG: MODELRUNNER: prepare decode context_lens: [274]
+DEBUG: MODELRUNNER: prepare decode input_ids: [13991, 264]
+DEBUG: MODELRUNNER: prepare decode positions: [273, 272]
+DEBUG: MODELRUNNER: prepare decode context_lens: [274, 273]
+INFO: MODELRUNNER: !!! prepare decode block_tables: tensor([[0, 1],
+        [0, 2]], device='cuda:0', dtype=torch.int32)
+INFO: MODELRUNNER: block_tables shape: torch.Size([2, 2])
+INFO: MODELRUNNER: block_tables content: [[0, 1], [0, 2]]
+DEBUG: LLM_ENGINE: Calling scheduler.postprocess()
+DEBUG: SCHEDULER: Appending token 481 to sequence 6
+INFO: BLOCK_MANAGER: deallocating block 1
+DEBUG: SCHEDULER: Appending token 2385 to sequence 7
+INFO: BLOCK_MANAGER: deallocating block 2
+INFO: BLOCK_MANAGER: deallocating block 0
+DEBUG: LLM_ENGINE: Finished step()

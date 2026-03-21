@@ -99,9 +99,12 @@ def _prefill_fallback(q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, scale: 
         if context.block_tables is not None:
             context_len = k_end - k_start
             block_size = k.size(1)
+            # Flatten cache before indexing (same as decode path)
+            flat_k = k.view(-1, k.size(-2), k.size(-1))
+            flat_v = v.view(-1, v.size(-2), v.size(-1))
             slots = _block_ids_to_slot_ids(context.block_tables[i], context_len, block_size)
-            k_i = k.index_select(0, slots[:context_len])
-            v_i = v.index_select(0, slots[:context_len])
+            k_i = flat_k.index_select(0, slots[:context_len])
+            v_i = flat_v.index_select(0, slots[:context_len])
         else:
             k_i = k[k_start:k_end]
             v_i = v[k_start:k_end]
