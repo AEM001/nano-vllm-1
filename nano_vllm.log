@@ -2,3 +2,13 @@ INFO [nanovllm.engine.model_runner] [ModelRunner] Rank 0 initialized
 INFO [nanovllm.engine.model_runner] [ModelRunner] GPU device set to rank 0
 INFO [nanovllm.engine.model_runner] [ModelRunner] Model loaded on rank 0 in 0.12s
 INFO [nanovllm.engine.model_runner] [ModelRunner] Warming up model on rank 0...
+INFO [nanovllm.engine.model_runner] [ModelRunner] Warmup completed in 7.51s
+INFO [nanovllm.engine.model_runner] [ModelRunner] Allocating KV cache on rank 0...
+INFO [nanovllm.engine.model_runner] [ModelRunner] GPU memory: 9.83GB free / 11.61GB total
+INFO [nanovllm.engine.model_runner] [ModelRunner] Model weights: 4.00GB
+INFO [nanovllm.engine.model_runner] [ModelRunner] KV cache memory: 6.45GB available, block_size=29360128 bytes
+INFO [nanovllm.engine.model_runner] [ModelRunner] KV cache blocks: 235
+INFO [nanovllm.engine.model_runner] [ModelRunner] KV cache allocated: torch.Size([2, 28, 235, 256, 8, 128])
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Starting generation...
+INFO [nanovllm.engine.scheduler] [Scheduler] Prefill allocated seq=4 blocks=1 tokens=243
+INFO [nanovllm.engine.scheduler] [Scheduler] Prefill allocated seq=5 blocks=1 tokens=168
