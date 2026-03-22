@@ -32,7 +32,7 @@ class Sequence:
         self.temperature: float = sampling_params.temperature
         self.max_tokens: int = sampling_params.max_tokens
         self.ignore_eos: bool = sampling_params.ignore_eos
-        self.prefilled_token:int=0
+        self.prefilled_tokens: int = 0
 
     def __len__(self) -> int:
 
@@ -70,8 +70,12 @@ class Sequence:
         return self.num_tokens - (self.num_blocks - 1) * self.block_size
 
     @property
-    def prefilled_tokens(self) -> int:
-        return self.prefilled_token
+    def is_prefilling(self) -> bool:
+        return self.prefilled_tokens < self.num_prompt_tokens
+    
+    @property
+    def remaining_prefill_tokens(self) -> int:
+        return self.num_prompt_tokens - self.prefilled_tokens
 
     def block(self, i) -> list[int]:
         assert 0 <= i < self.num_blocks

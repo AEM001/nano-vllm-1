@@ -60,9 +60,9 @@ class ModelRunner:
         self.sampler = Sampler()
         
         # Performance optimizations
-        logger.info(f"[ModelRunner] Warming up model on rank {rank}...")
-        self.warmup_model()
         logger.info(f"[ModelRunner] Allocating KV cache on rank {rank}...")
+        # Skip warmup for now - TODO: fix warmup to work with continuous batching
+        # self.warmup_model()
         self.allocate_kv_cache()
 
         if not self.enforce_eager:
@@ -162,6 +162,11 @@ class ModelRunner:
 
         seqs = [Sequence([0] * max_model_len) for _ in range(num_seqs)]
         
+        # Set sequences to PREFILL_ED status for warmup (they act like decode sequences)
+        for seq in seqs:
+            seq.status = SequenceStatus.PREFILL_ED
+            seq.prefilled_tokens = seq.num_prompt_tokens
+        
         # Set warmup flag to suppress verbose logging
         self.is_warmup = True
         
@@ -249,37 +254,44 @@ class ModelRunner:
         has_decode = False
         
         for seq in seqs:
-            if seq.status == SequenceStatus.PREFILL:
+            if seq.status == SequenceStatus.PREFILL_ING:
                 has_prefill = True
-                # Handle prefill sequences: process all (or new) tokens
-                seqlen = len(seq)
-                input_ids.extend(seq[seq.num_cached_tokens:])
-                positions.extend(list(range(seq.num_cached_tokens, seqlen)))
+                # Handle prefill sequences: process chunked tokens
+                # For chunked prefill, process from num_cached_tokens to current prefilled_tokens
+                start_idx = seq.num_cached_tokens
+                end_idx = len(seq) if seq.status == SequenceStatus.PREFILL_ED else seq.num_cached_tokens + min(self.config.chunk_size, seq.remaining_prefill_tokens)
                 
-                seqlen_q = seqlen - seq.num_cached_tokens
-                seqlen_k = seqlen
+                input_ids.extend(seq[start_idx:end_idx])
+                positions.extend(list(range(start_idx, end_idx)))
+                
+                seqlen_q = end_idx - start_idx
+                seqlen_k = len(seq)
                 cu_seqlens_q.append(cu_seqlens_q[-1] + seqlen_q)
                 cu_seqlens_k.append(cu_seqlens_k[-1] + seqlen_k)
                 max_seqlen_q = max(max_seqlen_q, seqlen_q)
                 max_seqlen_k = max(max_seqlen_k, seqlen_k)
                 
-                # Build slot mapping for new blocks
+                # Build slot mapping for NEW tokens only (not cached ones)
                 if seq.block_table:
-                    for i in range(seq.num_cached_blocks, seq.num_blocks):
-                        start = seq.block_table[i] * self.block_size
-                        if i != seq.num_blocks - 1:
-                            end = start + self.block_size
-                        else:
-                            end = start + seq.last_block_num_tokens
-                        slot_mapping.extend(list(range(start, end)))
+                    # Calculate which tokens in this chunk need slot mapping
+                    # We process tokens from start_idx to end_idx
+                    for token_pos in range(start_idx, end_idx):
+                        block_idx = token_pos // self.block_size
+                        block_offset = token_pos % self.block_size
+                        if block_idx < len(seq.block_table):
+                            physical_block = seq.block_table[block_idx]
+                            slot = physical_block * self.block_size + block_offset
+                            slot_mapping.append(slot)
                         
-            else:  # DECODE
+            elif seq.status == SequenceStatus.DECODE or seq.status == SequenceStatus.PREFILL_ED:
                 has_decode = True
                 # Handle decode sequences: process exactly 1 token (the last one)
                 input_ids.append(seq.last_token)
                 positions.append(len(seq) - 1)
                 context_lens.append(len(seq))
-                slot_mapping.append(seq.block_table[-1] * self.block_size + seq.last_block_num_tokens - 1)
+                # Only add slot mapping if block_table exists (skip during warmup)
+                if seq.block_table:
+                    slot_mapping.append(seq.block_table[-1] * self.block_size + seq.last_block_num_tokens - 1)
         
         # Prepare block tables if we have KV cache to access (not just new prefill)
         block_tables = None
@@ -350,24 +362,31 @@ class ModelRunner:
         # Convert deque to list for easier processing
         all_seqs = list(scheduled_seqs)
         
-        # Check if any sequences are prefilling
-        is_prefill = any(seq.status == SequenceStatus.PREFILL_ING for seq in all_seqs)
+        # Separate sequences by type to avoid shape mismatches
+        prefill_seqs = [seq for seq in all_seqs if seq.status == SequenceStatus.PREFILL_ING]
+        decode_seqs = [seq for seq in all_seqs if seq.status in (SequenceStatus.DECODE, SequenceStatus.PREFILL_ED)]
         
-        # Prepare batch data
-        input_ids, positions = self.prepare(all_seqs)
+        all_token_ids = []
         
-        # Prepare sampling parameters (rank 0 only)
-        temperatures = self.prepare_sample(all_seqs) if self.rank == 0 else None
+        # Process prefill sequences first
+        if prefill_seqs:
+            input_ids, positions = self.prepare(prefill_seqs)
+            temperatures = self.prepare_sample(prefill_seqs) if self.rank == 0 else None
+            logits = self.run_model(input_ids, positions, is_prefill=True)
+            token_ids = self.sampler(logits, temperatures).tolist() if self.rank == 0 else None
+            all_token_ids.extend(token_ids if token_ids else [])
+            reset_context()
         
-        # Execute model
-        logits = self.run_model(input_ids, positions, is_prefill)
+        # Process decode sequences
+        if decode_seqs:
+            input_ids, positions = self.prepare(decode_seqs)
+            temperatures = self.prepare_sample(decode_seqs) if self.rank == 0 else None
+            logits = self.run_model(input_ids, positions, is_prefill=False)
+            token_ids = self.sampler(logits, temperatures).tolist() if self.rank == 0 else None
+            all_token_ids.extend(token_ids if token_ids else [])
+            reset_context()
         
-        # Sample tokens (rank 0 only)
-        token_ids = self.sampler(logits, temperatures).tolist() if self.rank == 0 else None
-        
-        # Clean up global context
-        reset_context()
-        return token_ids
+        return all_token_ids
 
     @torch.inference_mode()
     def capture_cudagraph(self):

@@ -61,18 +61,24 @@ class LLMEngine:
         logger.debug("[LLMEngine] Calling scheduler.schedule()")
             
         scheduled_seqs = self.scheduler.schedule()
+        
+        if not scheduled_seqs:
+            return [], 0
 
         logger.debug("[LLMEngine] Calling model_runner.call()")
             
         token_ids = self.model_runner.call("run", scheduled_seqs)
 
         logger.debug("[LLMEngine] Calling scheduler.postprocess()")
-            
-        self.scheduler.postprocess(seqs, token_ids)
+        
+        # Convert deque to list for postprocess
+        scheduled_list = list(scheduled_seqs)
+        self.scheduler.postprocess(scheduled_list, token_ids)
 
-        outputs = [(seq.seq_id, seq.completion_token_ids) for seq in seqs if seq.is_finished]
+        outputs = [(seq.seq_id, seq.completion_token_ids) for seq in scheduled_list if seq.is_finished]
 
-        num_tokens = sum(len(seq) for seq in seqs) if is_prefill else -len(seqs)
+        # Calculate tokens processed (positive for prefill, negative for decode)
+        num_tokens = len(token_ids)
         
         logger.debug("[LLMEngine] Finished step()")
             
