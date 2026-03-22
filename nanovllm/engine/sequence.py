@@ -8,7 +8,8 @@ from nanovllm.sampling_params import SamplingParams
 
 class SequenceStatus(Enum):
     WAITING = auto()
-    PREFILL = auto()
+    PREFILL_ING = auto()
+    PREFILL_ED=auto()
     DECODE = auto()
     FINISHED = auto()
 
@@ -31,6 +32,7 @@ class Sequence:
         self.temperature: float = sampling_params.temperature
         self.max_tokens: int = sampling_params.max_tokens
         self.ignore_eos: bool = sampling_params.ignore_eos
+        self.prefilled_token:int=0
 
     def __len__(self) -> int:
 
@@ -67,6 +69,10 @@ class Sequence:
     def last_block_num_tokens(self) -> int:
         return self.num_tokens - (self.num_blocks - 1) * self.block_size
 
+    @property
+    def prefilled_tokens(self) -> int:
+        return self.prefilled_token
+
     def block(self, i) -> list[int]:
         assert 0 <= i < self.num_blocks
         return self.token_ids[i*self.block_size: (i+1)*self.block_size]
@@ -75,6 +81,7 @@ class Sequence:
         self.token_ids.append(token_id)
         self.last_token = token_id
         self.num_tokens += 1
+
 
     def __getstate__(self) -> tuple[int, int, int, list[int], Union[list[int], int]]:
         return (self.num_tokens, self.num_prompt_tokens, self.num_cached_tokens, self.block_table,

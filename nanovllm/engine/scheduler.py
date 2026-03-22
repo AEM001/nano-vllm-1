@@ -1,6 +1,5 @@
 from collections import deque
 import logging
-from tkinter import SE
 
 from nanovllm.config import Config
 from nanovllm.engine.sequence import Sequence, SequenceStatus
@@ -16,6 +15,7 @@ class Scheduler:
         self.max_num_seqs = config.max_num_seqs
         self.max_num_batched_tokens = config.max_num_batched_tokens
         self.eos = config.eos
+        self.chunk_size = config.chunk_size
         
         # KV cache memory management
         logger.debug("[Scheduler] Initializing block manager...")
@@ -32,20 +32,19 @@ class Scheduler:
         logger.debug(f"[Scheduler] Adding seq={seq.seq_id} to waiting queue")
         self.waiting.append(seq)
 
-    def schedule(self) -> dict[str, deque[Sequence]]:
+    def schedule(self) -> deque[Sequence]:
     
         logger.debug("[Scheduler] Scheduling sequences")
         
         # THIS BATCH: sequences to execute RIGHT NOW
-        scheduled_seqs = {"prefill": deque(), "decode": deque()}
+        scheduled_seqs = deque()
         num_batched_tokens = 0
         
         # Step 1: Process existing running sequences (decode phase)
-        running_seqs = list(self.running)
-        for seq in running_seqs:
+        for seq in self.running:
             if seq.status == SequenceStatus.DECODE:
                 # Check if we can append token to this sequence
-                other_running = [s for s in running_seqs if s != seq and s.status == SequenceStatus.DECODE]
+                other_running = [s for s in self.running if s != seq and s.status == SequenceStatus.DECODE]
                 
                 while not self.block_manager.can_append(seq):
                     if other_running:
@@ -57,20 +56,30 @@ class Scheduler:
                 if seq.status == SequenceStatus.DECODE:  # Check if not preempted
                     self.block_manager.may_append(seq)
                     num_batched_tokens += 1
-                    scheduled_seqs["decode"].append(seq)
+                    scheduled_seqs.append(seq)
         
         # Step 2: Process waiting sequences (prefill phase)
-        waiting_seqs = list(self.waiting)
-        for seq in waiting_seqs:
-            if num_batched_tokens + len(seq) > self.max_num_batched_tokens or not self.block_manager.can_allocate(seq):
+        for seq in self.waiting:
+            # Calculate how many tokens to prefill this chunk
+            remaining_tokens = len(seq) - seq.prefilled_tokens
+            len_to_prefill = min(self.chunk_size, remaining_tokens)
+            
+            if num_batched_tokens + len_to_prefill > self.max_num_batched_tokens or not self.block_manager.can_allocate(seq):
                 break
                 
-            self.block_manager.allocate(seq)
-            num_batched_tokens += len(seq)
-            seq.status = SequenceStatus.PREFILL
+            self.block_manager.allocate(seq, len_to_prefill)
+            num_batched_tokens += len_to_prefill
+            
+            # Move sequence from waiting to running
             self.waiting.remove(seq)
             self.running.append(seq)
-            scheduled_seqs["prefill"].append(seq)
+            
+            if seq.prefilled_tokens < len(seq):
+                seq.status = SequenceStatus.PREFILL_ING
+            else:
+                seq.status = SequenceStatus.DECODE
+            
+            scheduled_seqs.append(seq)
             
         return scheduled_seqs
 

@@ -3,12 +3,13 @@ import time
 import logging
 import torch
 import torch.distributed as dist
+from collections import deque
 
 from multiprocessing.synchronize import Event
 from multiprocessing.shared_memory import SharedMemory
 
 from nanovllm.config import Config
-from nanovllm.engine.sequence import Sequence
+from nanovllm.engine.sequence import Sequence, SequenceStatus
 from nanovllm.models.qwen3 import Qwen3ForCausalLM
 from nanovllm.utils.context import set_context, get_context, reset_context
 from nanovllm.utils.loader import load_model
@@ -165,7 +166,9 @@ class ModelRunner:
         self.is_warmup = True
         
         t0 = time.time()
-        self.run(seqs, True)
+        # Convert to deque for warmup
+        from collections import deque
+        self.run(deque(seqs))
         t1 = time.time()
         logger.info(f"[ModelRunner] Warmup completed in {t1 - t0:.2f}s")
         
@@ -343,10 +346,12 @@ class ModelRunner:
             graph.replay()
             return self.model.compute_logits(graph_vars["outputs"][:bs])
 
-    def run(self, scheduled_seqs: dict[str, deque[Sequence]]) -> list[int]:
-        # Flatten all scheduled sequences into a single list
-        all_seqs = list(scheduled_seqs["prefill"]) + list(scheduled_seqs["decode"])
-        is_prefill = len(scheduled_seqs["prefill"]) > 0
+    def run(self, scheduled_seqs: deque[Sequence]) -> list[int]:
+        # Convert deque to list for easier processing
+        all_seqs = list(scheduled_seqs)
+        
+        # Check if any sequences are prefilling
+        is_prefill = any(seq.status == SequenceStatus.PREFILL_ING for seq in all_seqs)
         
         # Prepare batch data
         input_ids, positions = self.prepare(all_seqs)
