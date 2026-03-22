@@ -1,5 +1,6 @@
 from collections import deque
 import logging
+from tkinter import SE
 
 from nanovllm.config import Config
 from nanovllm.engine.sequence import Sequence, SequenceStatus
@@ -31,77 +32,47 @@ class Scheduler:
         logger.debug(f"[Scheduler] Adding seq={seq.seq_id} to waiting queue")
         self.waiting.append(seq)
 
-    def schedule(self) -> tuple[list[Sequence], bool]:
-        """       
-        Scheduling Logic:
-        - Prioritize prefill to get new sequences started
-        - Fall back to decode if no prefill candidates
-        - Preempt sequences if memory constraints require it
-        """
+    def schedule(self) -> dict[str, deque[Sequence]]:
+    
         logger.debug("[Scheduler] Scheduling sequences")
         
         # THIS BATCH: sequences to execute RIGHT NOW
-        scheduled_seqs = []
-        num_seqs = 0
+        scheduled_seqs = {"prefill": deque(), "decode": deque()}
         num_batched_tokens = 0
         
-        # === PHASE 1: PREFILL ===
-        # Process NEW sequences from waiting queue
-        while self.waiting and num_seqs < self.max_num_seqs:
-            seq = self.waiting[0]  # Next new sequence
-            
-            # Check if we have resources for this sequence
+        # Step 1: Process existing running sequences (decode phase)
+        running_seqs = list(self.running)
+        for seq in running_seqs:
+            if seq.status == SequenceStatus.DECODE:
+                # Check if we can append token to this sequence
+                other_running = [s for s in running_seqs if s != seq and s.status == SequenceStatus.DECODE]
+                
+                while not self.block_manager.can_append(seq):
+                    if other_running:
+                        self.preempt(other_running.pop())
+                    else:
+                        self.preempt(seq)
+                        break
+                
+                if seq.status == SequenceStatus.DECODE:  # Check if not preempted
+                    self.block_manager.may_append(seq)
+                    num_batched_tokens += 1
+                    scheduled_seqs["decode"].append(seq)
+        
+        # Step 2: Process waiting sequences (prefill phase)
+        waiting_seqs = list(self.waiting)
+        for seq in waiting_seqs:
             if num_batched_tokens + len(seq) > self.max_num_batched_tokens or not self.block_manager.can_allocate(seq):
-                logger.debug(f"[Scheduler] Cannot allocate seq={seq.seq_id} (tokens={num_batched_tokens}+{len(seq)})")
-                break  # No space, stop prefill
-            
-            # Move: Waiting -> Running -> THIS BATCH
-            num_seqs += 1
-            logger.debug(f"[Scheduler] Allocating seq={seq.seq_id}")
+                break
                 
-            self.block_manager.allocate(seq)  # Reserve KV cache
+            self.block_manager.allocate(seq)
+            num_batched_tokens += len(seq)
+            seq.status = SequenceStatus.PREFILL
+            self.waiting.remove(seq)
+            self.running.append(seq)
+            scheduled_seqs["prefill"].append(seq)
             
-            logger.info(f"[Scheduler] Prefill allocated seq={seq.seq_id} blocks={len(seq.block_table)} tokens={len(seq)}")
-            
-            # Update batched tokens count (NEW tokens only, not cached ones)
-            num_batched_tokens += len(seq) - seq.num_cached_tokens
-            logger.debug(f"[Scheduler] Prefill batch_tokens={num_batched_tokens} (added {len(seq) - seq.num_cached_tokens})")
-                
-            seq.status = SequenceStatus.RUNNING
-            self.waiting.popleft()     # Remove from waiting queue
-            self.running.append(seq)    # Add to running queue
-            scheduled_seqs.append(seq)  # Add to THIS BATCH for execution
-        
-        if scheduled_seqs:# prefill until there is no space for more sequences
-            return scheduled_seqs, True  # PREFILL BATCH
-      
-        # === PHASE 2: DECODE ===
-        # Process EXISTING sequences from running queue
-        while self.running and num_seqs < self.max_num_seqs:
-            seq = self.running.popleft()#get next running sequence
-            
-            # Handle memory pressure: need to free up space
-            while not self.block_manager.can_append(seq):
-                if self.running:
-                    # Preempt another running sequence to free memory
-                    self.preempt(self.running.pop())
-                else:
-                    # No other sequences to preempt, preempt this one
-                    self.preempt(seq)
-                    break
-            else:
-                # Space available, add to THIS BATCH
-                num_seqs += 1
-                logger.debug(f"[Scheduler] Appending to seq={seq.seq_id}")
-                    
-                self.block_manager.may_append(seq)
-                
-                scheduled_seqs.append(seq)
-        
-        assert scheduled_seqs  # Should always have at least one sequence
-        # Restore running queue order (reversed to maintain fairness)
-        self.running.extendleft(reversed(scheduled_seqs))
-        return scheduled_seqs, False  # DECODE BATCH
+        return scheduled_seqs
 
     def preempt(self, seq: Sequence):
         # Kick out sequence to free memory: Running -> Waiting (high priority)
@@ -116,6 +87,10 @@ class Scheduler:
             logger.debug(f"[Scheduler] Appending token {token_id} to seq={seq.seq_id}")
                 
             seq.append_token(token_id)
+            
+            # Update sequence status from PREFILL to DECODE after first token generation
+            if seq.status == SequenceStatus.PREFILL:
+                seq.status = SequenceStatus.DECODE
             
             #eos matters and current generated token is eos or max tokens reached
             if (not seq.ignore_eos and token_id == self.eos) or seq.num_completion_tokens == seq.max_tokens:

@@ -231,123 +231,83 @@ class ModelRunner:
 
         return block_tables
 
-
-    def prepare_prefill(self, seqs: list[Sequence]):
-        # Batch preparation for prefill phase - processes multiple sequences efficiently
-
-        input_ids = []  # Flattened new tokens from all sequences
-        positions = []  # REAL positions for each token (critical for embeddings)
-
-        cu_seqlens_q = [0]  # Cumulative query lengths (new tokens only)
-        cu_seqlens_k = [0]  # Cumulative key lengths (all tokens for KV cache)
-
-        max_seqlen_q = 0    # Max new tokens in any sequence
-        max_seqlen_k = 0    # Max total tokens in any sequence
-
-        slot_mapping = []   # Maps logical positions to physical KV cache slots
+    def prepare(self, seqs: list[Sequence]):
+        input_ids = []
+        positions = []
+        slot_mapping = []
+        context_lens = []
+        
+        cu_seqlens_q = [0]
+        cu_seqlens_k = [0]
+        max_seqlen_q = 0
+        max_seqlen_k = 0
+        
+        has_prefill = False
+        has_decode = False
+        
+        for seq in seqs:
+            if seq.status == SequenceStatus.PREFILL:
+                has_prefill = True
+                # Handle prefill sequences: process all (or new) tokens
+                seqlen = len(seq)
+                input_ids.extend(seq[seq.num_cached_tokens:])
+                positions.extend(list(range(seq.num_cached_tokens, seqlen)))
+                
+                seqlen_q = seqlen - seq.num_cached_tokens
+                seqlen_k = seqlen
+                cu_seqlens_q.append(cu_seqlens_q[-1] + seqlen_q)
+                cu_seqlens_k.append(cu_seqlens_k[-1] + seqlen_k)
+                max_seqlen_q = max(max_seqlen_q, seqlen_q)
+                max_seqlen_k = max(max_seqlen_k, seqlen_k)
+                
+                # Build slot mapping for new blocks
+                if seq.block_table:
+                    for i in range(seq.num_cached_blocks, seq.num_blocks):
+                        start = seq.block_table[i] * self.block_size
+                        if i != seq.num_blocks - 1:
+                            end = start + self.block_size
+                        else:
+                            end = start + seq.last_block_num_tokens
+                        slot_mapping.extend(list(range(start, end)))
+                        
+            else:  # DECODE
+                has_decode = True
+                # Handle decode sequences: process exactly 1 token (the last one)
+                input_ids.append(seq.last_token)
+                positions.append(len(seq) - 1)
+                context_lens.append(len(seq))
+                slot_mapping.append(seq.block_table[-1] * self.block_size + seq.last_block_num_tokens - 1)
+        
+        # Prepare block tables if we have KV cache to access (not just new prefill)
         block_tables = None
-        
-        for seq in seqs:
-            seqlen = len(seq)
-            
-            # Extract only NEW tokens (skip cached ones for efficiency)
-            input_ids.extend(seq[seq.num_cached_tokens:])
-            # Generate REAL positions for new tokens (not 0,1,2!)
-            positions.extend(list(range(seq.num_cached_tokens, seqlen)))
-            # Example: Seq has tokens [10,20,30,40,50], cached=2
-            # New tokens: [30,40,50], positions: [2,3,4] (not [0,1,2]!)
-
-            # Build cumulative lengths for GPU batch processing
-            seqlen_q = seqlen - seq.num_cached_tokens  # New tokens count
-            seqlen_k = seqlen                           # Total tokens count
-
-            cu_seqlens_q.append(cu_seqlens_q[-1] + seqlen_q)  # Running total of new tokens
-            cu_seqlens_k.append(cu_seqlens_k[-1] + seqlen_k)  # Running total of all tokens
-            # Example batch: Seq1(3 new), Seq2(2 new), Seq3(4 new)
-            # cu_seqlens_q: [0, 3, 5, 9] → GPU knows: seq0=[0:3], seq1=[3:5], seq2=[5:9]
-
-            max_seqlen_q = max(seqlen_q, max_seqlen_q)
-            max_seqlen_k = max(seqlen_k, max_seqlen_k)
-            
-            # Skip verbose logging during warmup
-            if not self.is_warmup:
-                logger.debug(f"prepare prefill seq={seq.seq_id} new_tokens={seqlen_q} total_tokens={seqlen_k}")
-            
-            
-            # Map logical sequence blocks to physical KV cache memory (PagedAttention)
-            if not seq.block_table:    # Skip warmup phase (no cache yet)
-                logger.debug(f"prepare prefill: skipping slot_mapping (warmup)")
-                continue
-            logger.debug(f"seq={seq.seq_id} blocks={seq.block_table} cached={seq.num_cached_blocks} total={seq.num_blocks}")
-            for i in range(seq.num_cached_blocks, seq.num_blocks):
-                start = seq.block_table[i] * self.block_size  # Physical start slot
-
-                if i != seq.num_blocks - 1:
-                    end = start + self.block_size            # Full block
-                else:
-                    end = start + seq.last_block_num_tokens # Partial last block
-
-                slot_mapping.extend(list(range(start, end)))
-                logger.debug(f"seq={seq.seq_id} block={i} slots=[{start}:{end})")
-                # Example: block_table=[7,3], block_size=4, cached_blocks=0
-                # Block 0: slots 7*4=28 to 31, Block 1: slots 3*4=12 to 15
-                # slot_mapping: [28,29,30,31,12,13,14,15]
-        
-        # Optimization: only prepare block tables if we have cached data
-        if cu_seqlens_k[-1] > cu_seqlens_q[-1]:
+        if has_decode or (has_prefill and cu_seqlens_k[-1] > cu_seqlens_q[-1]):
             block_tables = self.prepare_block_tables(seqs)
-            logger.debug(f"prepare prefill block_tables shape: {block_tables.shape}")
         
-        # Convert to GPU tensors (pin_memory = faster CPU->GPU transfer)
-        input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
-        positions = torch.tensor(positions, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
-        cu_seqlens_q = torch.tensor(cu_seqlens_q, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
-        cu_seqlens_k = torch.tensor(cu_seqlens_k, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
-        slot_mapping = torch.tensor(slot_mapping, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
-        
-        # Set global context for attention layers (avoids passing many parameters)
-        set_context(True, cu_seqlens_q, cu_seqlens_k, max_seqlen_q, max_seqlen_k, slot_mapping, None, block_tables)
-        return input_ids, positions
-
-    def prepare_decode(self, seqs: list[Sequence]):
-        # Batch preparation for decode phase - processes exactly 1 token per sequence
-        
-        input_ids = []    # Last token of each sequence (only 1 token per seq!)
-        positions = []    # Position of that last token
-        slot_mapping = [] # Where to store NEW KV state for this token
-        context_lens = [] # How many tokens to attend to (sequence length)
-        
-        for seq in seqs:
-            # Each sequence contributes exactly ONE token for decode
-            input_ids.append(seq.last_token)
-            # Position is always len(seq)-1 (the last position)
-            positions.append(len(seq) - 1)
-            # Context length = full sequence length for attention mask
-            context_lens.append(len(seq))
-            # Example: seq has 10 tokens, context_lens=10 means "attend to all 10 previous tokens"
-            
-            # Calculate KV cache slot for NEW token's KV state
-            slot_mapping.append(seq.block_table[-1] * self.block_size + seq.last_block_num_tokens - 1)
-            # Example: last_block=5, block_size=4, last_block_num_tokens=2
-            # slot = 5*4 + 2 - 1 = 21 (where to store KV for new token)
-            
-            # Skip verbose logging during warmup
-            if not self.is_warmup:
-                logger.debug(f"prepare decode seq={seq.seq_id} input_id={seq.last_token} pos={len(seq)-1}")
-        
-        # Convert to GPU tensors (pin_memory = faster CPU->GPU transfer)
+        # Convert to GPU tensors
         input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
         positions = torch.tensor(positions, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
         slot_mapping = torch.tensor(slot_mapping, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
-        context_lens = torch.tensor(context_lens, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
         
-        block_tables = self.prepare_block_tables(seqs)
-        logger.debug(f"prepare decode block_tables shape: {block_tables.shape}, num_seqs: {len(seqs)}")
+        # Set context based on what we have
+        if has_prefill and has_decode:
+            # Mixed batch: use prefill-style context with cumulated lengths
+            cu_seqlens_q = torch.tensor(cu_seqlens_q, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+            cu_seqlens_k = torch.tensor(cu_seqlens_k, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+            context_lens = torch.tensor(context_lens, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True) if context_lens else None
+            set_context(True, cu_seqlens_q, cu_seqlens_k, max_seqlen_q, max_seqlen_k, slot_mapping, context_lens, block_tables)
+        elif has_prefill:
+            # Pure prefill
+            cu_seqlens_q = torch.tensor(cu_seqlens_q, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+            cu_seqlens_k = torch.tensor(cu_seqlens_k, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+            set_context(True, cu_seqlens_q, cu_seqlens_k, max_seqlen_q, max_seqlen_k, slot_mapping, None, block_tables)
+        else:
+            # Pure decode
+            context_lens = torch.tensor(context_lens, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+            set_context(False, slot_mapping=slot_mapping, context_lens=context_lens, block_tables=block_tables)
         
-        # Set global context for attention layers (decode mode = False)
-        set_context(False, slot_mapping=slot_mapping, context_lens=context_lens, block_tables=block_tables)
         return input_ids, positions
 
+    
     def prepare_sample(self, seqs: list[Sequence]):
      
         temperatures = []
@@ -383,12 +343,16 @@ class ModelRunner:
             graph.replay()
             return self.model.compute_logits(graph_vars["outputs"][:bs])
 
-    def run(self, seqs: list[Sequence], is_prefill: bool) -> list[int]:
-        # Prepare batch data based on phase
-        input_ids, positions = self.prepare_prefill(seqs) if is_prefill else self.prepare_decode(seqs)
+    def run(self, scheduled_seqs: dict[str, deque[Sequence]]) -> list[int]:
+        # Flatten all scheduled sequences into a single list
+        all_seqs = list(scheduled_seqs["prefill"]) + list(scheduled_seqs["decode"])
+        is_prefill = len(scheduled_seqs["prefill"]) > 0
+        
+        # Prepare batch data
+        input_ids, positions = self.prepare(all_seqs)
         
         # Prepare sampling parameters (rank 0 only)
-        temperatures = self.prepare_sample(seqs) if self.rank == 0 else None
+        temperatures = self.prepare_sample(all_seqs) if self.rank == 0 else None
         
         # Execute model
         logits = self.run_model(input_ids, positions, is_prefill)

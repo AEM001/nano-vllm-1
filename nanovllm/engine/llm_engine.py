@@ -84,13 +84,13 @@ class LLMEngine:
             
         logger.debug("[LLMEngine] Calling scheduler.schedule()")
             
-        seqs, is_prefill = self.scheduler.schedule()#Scheduler decides what to process:
+        scheduled_seqs = self.scheduler.schedule()#Scheduler decides what to process:
         
     
 
         logger.debug("[LLMEngine] Calling model_runner.call()")
             
-        token_ids = self.model_runner.call("run", seqs, is_prefill)#Model execution across all GPUs:
+        token_ids = self.model_runner.call("run", scheduled_seqs)#Model execution across all GPUs:
         """
         Sends batch to tensor parallel processes
         Rank 0 coordinates with ranks 1,2,3... via events
