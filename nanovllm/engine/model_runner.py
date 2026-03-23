@@ -229,17 +229,17 @@ class ModelRunner:
                 module.v_cache = self.kv_cache[1, layer_id]
                 layer_id += 1
 
-    def prepare_block_tables(self, seqs: list[Sequence]):
+    def prepare_block_tables(self, seqs: list[(Sequence,int)]):
         
-        max_len = max(len(seq.block_table) for seq in seqs)#find maximum block table length
+        max_len = max(len(seq.block_table) for seq,_ in seqs)#find maximum block table length
 
-        block_tables = [seq.block_table + [-1] * (max_len - len(seq.block_table)) for seq in seqs]#pad all tables to equal length with -1
+        block_tables = [seq.block_table + [-1] * (max_len - len(seq.block_table)) for seq,_ in seqs]#pad all tables to equal length with -1
 
         block_tables = torch.tensor(block_tables, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)#convert to tensor and move to GPU
 
         return block_tables
 
-    def prepare(self, seqs: list[Sequence]):
+    def prepare(self, seqs: list[(Sequence,int)]):
         input_ids = []
         positions = []
         slot_mapping = []
@@ -253,13 +253,13 @@ class ModelRunner:
         has_prefill = False
         has_decode = False
         
-        for seq in seqs:
+        for seq,num in seqs:
             if seq.status == SequenceStatus.PREFILL_ING:
                 has_prefill = True
                 # Handle prefill sequences: process chunked tokens
                 # For chunked prefill, process from num_cached_tokens to current prefilled_tokens
                 start_idx = seq.num_cached_tokens
-                end_idx = len(seq) if seq.status == SequenceStatus.PREFILL_ED else seq.num_cached_tokens + min(self.config.chunk_size, seq.remaining_prefill_tokens)
+                end_idx = len(seq) if seq.status == SequenceStatus.PREFILL_ED else seq.num_cached_tokens + num
                 
                 input_ids.extend(seq[start_idx:end_idx])
                 positions.extend(list(range(start_idx, end_idx)))
@@ -358,20 +358,20 @@ class ModelRunner:
             graph.replay()
             return self.model.compute_logits(graph_vars["outputs"][:bs])
 
-    def run(self, scheduled_seqs: deque[Sequence]) -> list[int]:
+    def run(self, scheduled_seqs: deque[(Sequence,int)]) -> list[int]:
         # Convert deque to list for easier processing
         all_seqs = list(scheduled_seqs)
         
         # Separate sequences by type to avoid shape mismatches
-        prefill_seqs = [seq for seq in all_seqs if seq.status == SequenceStatus.PREFILL_ING]
-        decode_seqs = [seq for seq in all_seqs if seq.status in (SequenceStatus.DECODE, SequenceStatus.PREFILL_ED)]
+        prefill_seqs = [(seq,num) for seq, num in all_seqs if seq.status == SequenceStatus.PREFILL_ING]
+        decode_seqs = [(seq,num) for seq, num in all_seqs if seq.status in (SequenceStatus.DECODE, SequenceStatus.PREFILL_ED)]
         
         all_token_ids = []
         
         # Process prefill sequences first
         if prefill_seqs:
             input_ids, positions = self.prepare(prefill_seqs)
-            temperatures = self.prepare_sample(prefill_seqs) if self.rank == 0 else None
+            temperatures = self.prepare_sample([seq for seq, _ in prefill_seqs]) if self.rank == 0 else None
             logits = self.run_model(input_ids, positions, is_prefill=True)
             token_ids = self.sampler(logits, temperatures).tolist() if self.rank == 0 else None
             all_token_ids.extend(token_ids if token_ids else [])
@@ -380,7 +380,7 @@ class ModelRunner:
         # Process decode sequences
         if decode_seqs:
             input_ids, positions = self.prepare(decode_seqs)
-            temperatures = self.prepare_sample(decode_seqs) if self.rank == 0 else None
+            temperatures = self.prepare_sample([seq for seq, _ in decode_seqs]) if self.rank == 0 else None
             logits = self.run_model(input_ids, positions, is_prefill=False)
             token_ids = self.sampler(logits, temperatures).tolist() if self.rank == 0 else None
             all_token_ids.extend(token_ids if token_ids else [])

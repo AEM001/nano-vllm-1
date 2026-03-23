@@ -7,7 +7,7 @@ import torch.multiprocessing as mp
 
 from nanovllm.config import Config
 from nanovllm.sampling_params import SamplingParams
-from nanovllm.engine.sequence import Sequence
+from nanovllm.engine.sequence import Sequence, SequenceStatus
 from nanovllm.engine.scheduler import Scheduler
 from nanovllm.engine.model_runner import ModelRunner
 
@@ -60,25 +60,32 @@ class LLMEngine:
             
         logger.debug("[LLMEngine] Calling scheduler.schedule()")
             
-        scheduled_seqs = self.scheduler.schedule()
+        scheduled_batch = self.scheduler.schedule()
         
-        if not scheduled_seqs:
+        if not scheduled_batch:
             return [], 0
 
         logger.debug("[LLMEngine] Calling model_runner.call()")
-            
-        token_ids = self.model_runner.call("run", scheduled_seqs)
+        
+        # Extract sequences and determine if this is prefill or decode
+        scheduled_seqs = [seq for seq, _ in scheduled_batch]
+        is_prefill = any(seq.status in [SequenceStatus.PREFILL_ING, SequenceStatus.PREFILL_ED] for seq in scheduled_seqs)
+        
+        token_ids = self.model_runner.call("run", scheduled_batch)
 
         logger.debug("[LLMEngine] Calling scheduler.postprocess()")
         
-        # Convert deque to list for postprocess
-        scheduled_list = list(scheduled_seqs)
+        # Convert batch format for postprocess
+        scheduled_list = [(seq, _) for seq, _ in scheduled_batch]
         self.scheduler.postprocess(scheduled_list, token_ids)
 
-        outputs = [(seq.seq_id, seq.completion_token_ids) for seq in scheduled_list if seq.is_finished]
+        outputs = [(seq.seq_id, seq.completion_token_ids) for seq, _ in scheduled_batch if seq.is_finished]
 
         # Calculate tokens processed (positive for prefill, negative for decode)
-        num_tokens = len(token_ids)
+        if is_prefill:
+            num_tokens = sum(token_count for _, token_count in scheduled_batch)
+        else:
+            num_tokens = -len(scheduled_batch)  # Negative for decode phase
         
         logger.debug("[LLMEngine] Finished step()")
             

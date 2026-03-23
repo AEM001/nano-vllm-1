@@ -32,7 +32,7 @@ class Scheduler:
         logger.debug(f"[Scheduler] Adding seq={seq.seq_id} to waiting queue")
         self.waiting.append(seq)
 
-    def schedule(self) -> deque[Sequence]:
+    def schedule(self) -> deque[(Sequence,int)]:
     
         logger.debug(f"[Scheduler] Scheduling: waiting={len(self.waiting)}, running={len(self.running)}")
         
@@ -61,7 +61,7 @@ class Scheduler:
                 if seq.status == SequenceStatus.DECODE:  # Check if not preempted
                     self.block_manager.may_append(seq)
                     num_batched_tokens += 1
-                    scheduled_seqs.append(seq)
+                    scheduled_seqs.append((seq, 1))
                     
             elif seq.status == SequenceStatus.PREFILL_ED:
                 # Prefill complete, ready for first decode
@@ -80,7 +80,7 @@ class Scheduler:
                 if seq.status == SequenceStatus.PREFILL_ED:  # Check if not preempted
                     self.block_manager.may_append(seq)
                     num_batched_tokens += 1
-                    scheduled_seqs.append(seq)
+                    scheduled_seqs.append((seq, 1))
                     
             elif seq.status == SequenceStatus.PREFILL_ING:
                 # Continue prefilling
@@ -92,7 +92,7 @@ class Scheduler:
                     continue
                     
                 num_batched_tokens += len_to_prefill
-                scheduled_seqs.append(seq)
+                scheduled_seqs.append((seq, len_to_prefill))
         
         # Step 2: Process waiting sequences (start prefill phase)
         waiting_list = list(self.waiting)  # Convert to list
@@ -116,7 +116,7 @@ class Scheduler:
             self.running.append(seq)
             
             seq.status = SequenceStatus.PREFILL_ING
-            scheduled_seqs.append(seq)
+            scheduled_seqs.append((seq, len_to_prefill))
         
         logger.debug(f"[Scheduler] Scheduled {len(scheduled_seqs)} sequences, {num_batched_tokens} tokens")
         return scheduled_seqs
@@ -132,7 +132,7 @@ class Scheduler:
 
     def postprocess(self, seqs: list[Sequence], token_ids: list[int]) -> list[bool]:
         
-        for seq, token_id in zip(seqs, token_ids):
+        for (seq, _), token_id in zip(seqs, token_ids):
             if seq.status == SequenceStatus.PREFILL_ING:
                 # Update prefill progress
                 chunk_processed = min(self.chunk_size, seq.remaining_prefill_tokens)
