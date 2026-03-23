@@ -39,17 +39,23 @@ class Scheduler:
         # THIS BATCH: sequences to execute RIGHT NOW
         scheduled_seqs = deque()
         num_batched_tokens = 0
-        
+        num_seqs=0
         # Step 1: Process existing running sequences (both prefilling and decoding)
         running_list = list(self.running)  # Convert to list to avoid modification during iteration
         for seq in running_list:
+            if num_seqs>=self.max_num_seqs:
+                break
+            num_seqs+=1
             if seq.status == SequenceStatus.DECODE:
                 # Decode phase: need 1 token
                 if num_batched_tokens + 1 > self.max_num_batched_tokens:
                     continue
-                    
-                # Check if we can append token to this sequence
-                other_running = [s for s in running_list if s != seq and s.status == SequenceStatus.DECODE]
+
+                # Line 52-53: Instead of random pop(), sort by progress:
+                other_running = sorted(
+                    [s for s in running_list if s != seq and s.status == SequenceStatus.DECODE],
+                    key=lambda s: s.num_completion_tokens  # Preempt those with least progress
+                )    
                 
                 while not self.block_manager.can_append(seq):
                     if other_running:
@@ -137,7 +143,7 @@ class Scheduler:
                 # Update prefill progress
                 chunk_processed = min(self.chunk_size, seq.remaining_prefill_tokens)
                 seq.prefilled_tokens += chunk_processed
-                
+                seq.num_cached_tokens=seq.prefilled_tokens
                 # Check if prefill is complete
                 if seq.prefilled_tokens >= seq.num_prompt_tokens:
                     seq.status = SequenceStatus.PREFILL_ED

@@ -115,16 +115,17 @@ class BlockManager:
             seq.block_table.append(block_id)#track block for this sequence
 
     def deallocate(self, seq: Sequence) -> None:
-
-        for block_id in reversed(seq.block_table):
+        blocks_to_keep = seq.prefilled_tokens // self.block_size  # Keep fully prefilled blocks
+ 
+        for block_id in range(blocks_to_keep, seq.num_blocks):
             block = self.blocks[block_id]
             block.ref_count -= 1
 
             if block.ref_count == 0:
                 self._deallocate_block(block_id)
 
-        seq.num_cached_tokens = 0
-        seq.block_table.clear()
+        seq.num_cached_tokens = blocks_to_keep * self.block_size
+        seq.block_table = seq.block_table[:blocks_to_keep]
 
     def can_append(self, seq: Sequence) -> bool:
         return len(self.free_block_ids) >= (len(seq) % self.block_size == 1)
