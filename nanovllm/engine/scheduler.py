@@ -69,7 +69,7 @@ class Scheduler:
                     num_batched_tokens += 1
                     scheduled_seqs.append((seq, 1))
                     
-            elif seq.status == SequenceStatus.PREFILL_ED:
+            elif seq.status == SequenceStatus.FULL_PREFILL:
                 # Prefill complete, ready for first decode
                 if num_batched_tokens + 1 > self.max_num_batched_tokens:
                     continue
@@ -83,12 +83,12 @@ class Scheduler:
                         self.preempt(seq)
                         break
                 
-                if seq.status == SequenceStatus.PREFILL_ED:  # Check if not preempted
+                if seq.status == SequenceStatus.FULL_PREFILL:  # Check if not preempted
                     self.block_manager.may_append(seq)
                     num_batched_tokens += 1
                     scheduled_seqs.append((seq, 1))
                     
-            elif seq.status == SequenceStatus.PREFILL_ING:
+            elif seq.status == SequenceStatus.PARTIAL_PREFILL:
                 # Continue prefilling
                 remaining_tokens = seq.remaining_prefill_tokens
                 remaining_budget = self.max_num_batched_tokens - num_batched_tokens
@@ -104,7 +104,7 @@ class Scheduler:
         waiting_list = list(self.waiting)  # Convert to list
         for seq in waiting_list:
             # Calculate how many tokens to prefill this chunk
-            remaining_tokens = len(seq) - seq.prefilled_tokens
+            remaining_tokens = len(seq) - seq.num_cached_tokens
             remaining_budget = self.max_num_batched_tokens - num_batched_tokens
             len_to_prefill = min(self.chunk_size, remaining_tokens, remaining_budget)
             logger.warning(f" !!! FRESH START: seq_id{seq.seq_id} is prefilling {len_to_prefill} tokens and is gonna be allocated")
@@ -121,7 +121,7 @@ class Scheduler:
             self.waiting.remove(seq)
             self.running.append(seq)
             
-            seq.status = SequenceStatus.PREFILL_ING
+            seq.status = SequenceStatus.PARTIAL_PREFILL
             scheduled_seqs.append((seq, len_to_prefill))
         
         logger.debug(f"[Scheduler] Scheduled {len(scheduled_seqs)} sequences, {num_batched_tokens} tokens")
@@ -129,29 +129,28 @@ class Scheduler:
 
     def preempt(self, seq: Sequence):
         # Kick out sequence to free memory: Running -> Waiting (high priority)
-        logger.info(f"[Scheduler] Preempting seq={seq.seq_id}, prefilled={seq.prefilled_tokens}/{seq.num_prompt_tokens}")
+        logger.info(f"[Scheduler] Preempting seq={seq.seq_id}, cached={seq.num_cached_tokens}/{seq.num_prompt_tokens}")
         seq.status = SequenceStatus.WAITING
         self.block_manager.deallocate(seq)  # Free KV cache memory
         # Reset prefill progress since we're deallocating blocks
-        seq.prefilled_tokens = 0
+        # seq.prefilled_tokens = 0  # No longer needed
         self.waiting.appendleft(seq)  # Front of waiting queue (priority)
 
     def postprocess(self, seqs: list[Sequence], token_ids: list[int]) -> list[bool]:
         
         for (seq, _), token_id in zip(seqs, token_ids):
-            if seq.status == SequenceStatus.PREFILL_ING:
+            if seq.status == SequenceStatus.PARTIAL_PREFILL:
                 # Update prefill progress
                 chunk_processed = min(self.chunk_size, seq.remaining_prefill_tokens)
-                seq.prefilled_tokens += chunk_processed
-                seq.num_cached_tokens=seq.prefilled_tokens
+                seq.num_cached_tokens += chunk_processed
                 # Check if prefill is complete
-                if seq.prefilled_tokens >= seq.num_prompt_tokens:
-                    seq.status = SequenceStatus.PREFILL_ED
+                if seq.num_cached_tokens >= seq.num_prompt_tokens:
+                    seq.status = SequenceStatus.FULL_PREFILL
                     logger.debug(f"[Scheduler] Seq {seq.seq_id} prefill complete")
                 else:
-                    logger.debug(f"[Scheduler] Seq {seq.seq_id} prefill progress: {seq.prefilled_tokens}/{seq.num_prompt_tokens}")
+                    logger.debug(f"[Scheduler] Seq {seq.seq_id} prefill progress: {seq.num_cached_tokens}/{seq.num_prompt_tokens}")
             
-            elif seq.status == SequenceStatus.PREFILL_ED:
+            elif seq.status == SequenceStatus.FULL_PREFILL:
                 # First decode step after prefill
                 seq.status = SequenceStatus.DECODE
                 seq.append_token(token_id)

@@ -115,7 +115,7 @@ class BlockManager:
             seq.block_table.append(block_id)#track block for this sequence
 
     def deallocate(self, seq: Sequence) -> None:
-        blocks_to_keep = seq.prefilled_tokens // self.block_size  # Keep fully prefilled blocks
+        blocks_to_keep = seq.num_cached_tokens // self.block_size  # Keep fully prefilled blocks
  
         for block_id in range(blocks_to_keep, seq.num_blocks):
             block = self.blocks[block_id]

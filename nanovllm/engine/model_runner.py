@@ -162,10 +162,10 @@ class ModelRunner:
 
         seqs = [Sequence([0] * max_model_len) for _ in range(num_seqs)]
         
-        # Set sequences to PREFILL_ED status for warmup (they act like decode sequences)
+        # Set sequences to FULL_PREFILL status for warmup (they act like decode sequences)
         for seq in seqs:
-            seq.status = SequenceStatus.PREFILL_ED
-            seq.prefilled_tokens = seq.num_prompt_tokens
+            seq.status = SequenceStatus.FULL_PREFILL
+            seq.num_cached_tokens = seq.num_prompt_tokens
         
         # Set warmup flag to suppress verbose logging
         self.is_warmup = True
@@ -254,13 +254,12 @@ class ModelRunner:
         has_decode = False
         
         for seq,num in seqs:
-            if seq.status == SequenceStatus.PREFILL_ING:
+            if seq.status == SequenceStatus.PARTIAL_PREFILL:
                 has_prefill = True
                 # Handle prefill sequences: process chunked tokens
-                # For chunked prefill, process from num_cached_tokens to current prefilled_tokens
+                # For chunked prefill, process from num_cached_tokens to current cached_tokens + chunk
                 start_idx = seq.num_cached_tokens
-                end_idx = len(seq) if seq.status == SequenceStatus.PREFILL_ED else seq.num_cached_tokens + num
-                
+                end_idx = min(seq.num_cached_tokens+num,seq.num_prompt_tokens)#newly prefilled tokens?
                 input_ids.extend(seq[start_idx:end_idx])
                 positions.extend(list(range(start_idx, end_idx)))
                 
@@ -283,7 +282,7 @@ class ModelRunner:
                             slot = physical_block * self.block_size + block_offset
                             slot_mapping.append(slot)
                         
-            elif seq.status == SequenceStatus.DECODE or seq.status == SequenceStatus.PREFILL_ED:
+            elif seq.status == SequenceStatus.DECODE or seq.status == SequenceStatus.FULL_PREFILL:
                 has_decode = True
                 # Handle decode sequences: process exactly 1 token (the last one)
                 input_ids.append(seq.last_token)
@@ -363,8 +362,8 @@ class ModelRunner:
         all_seqs = list(scheduled_seqs)
         
         # Separate sequences by type to avoid shape mismatches
-        prefill_seqs = [(seq,num) for seq, num in all_seqs if seq.status == SequenceStatus.PREFILL_ING]
-        decode_seqs = [(seq,num) for seq, num in all_seqs if seq.status in (SequenceStatus.DECODE, SequenceStatus.PREFILL_ED)]
+        prefill_seqs = [(seq,num) for seq, num in all_seqs if seq.status == SequenceStatus.PARTIAL_PREFILL]
+        decode_seqs = [(seq,num) for seq, num in all_seqs if seq.status in (SequenceStatus.DECODE, SequenceStatus.FULL_PREFILL)]
         
         all_token_ids = []
         

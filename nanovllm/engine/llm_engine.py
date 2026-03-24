@@ -69,7 +69,7 @@ class LLMEngine:
         
         # Extract sequences and determine if this is prefill or decode
         scheduled_seqs = [seq for seq, _ in scheduled_batch]
-        is_prefill = any(seq.status in [SequenceStatus.PREFILL_ING, SequenceStatus.PREFILL_ED] for seq in scheduled_seqs)
+        is_prefill = any(seq.status in [SequenceStatus.PARTIAL_PREFILL, SequenceStatus.FULL_PREFILL] for seq in scheduled_seqs)
         
         token_ids = self.model_runner.call("run", scheduled_batch)
 
