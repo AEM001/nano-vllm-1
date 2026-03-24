@@ -8,9 +8,7 @@ from nanovllm.sampling_params import SamplingParams
 
 class SequenceStatus(Enum):
     WAITING = auto()
-    PARTIAL_PREFILL = auto()
-    FULL_PREFILL = auto()
-    DECODE = auto()
+    RUNNING = auto()
     FINISHED = auto()
 
 
@@ -69,13 +67,6 @@ class Sequence:
     def last_block_num_tokens(self) -> int:
         return self.num_tokens - (self.num_blocks - 1) * self.block_size
 
-    @property
-    def is_prefilling(self) -> bool:
-        return self.num_cached_tokens < self.num_prompt_tokens
-    
-    @property
-    def remaining_prefill_tokens(self) -> int:
-        return self.num_prompt_tokens - self.num_cached_tokens
 
     def block(self, i) -> list[int]:
         assert 0 <= i < self.num_blocks

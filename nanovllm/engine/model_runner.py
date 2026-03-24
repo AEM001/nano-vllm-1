@@ -162,9 +162,8 @@ class ModelRunner:
 
         seqs = [Sequence([0] * max_model_len) for _ in range(num_seqs)]
         
-        # Set sequences to FULL_PREFILL status for warmup (they act like decode sequences)
+        # Set sequences to fully prefilled for warmup (they act like decode sequences)
         for seq in seqs:
-            seq.status = SequenceStatus.FULL_PREFILL
             seq.num_cached_tokens = seq.num_prompt_tokens
         
         # Set warmup flag to suppress verbose logging
@@ -255,7 +254,7 @@ class ModelRunner:
 
         for seq,num in seqs:
 
-            if seq.status == SequenceStatus.PARTIAL_PREFILL:
+            if seq.num_cached_tokens < seq.num_prompt_tokens:
                 # Handle prefill sequences: process chunked tokens
                 # For chunked prefill, process from num_cached_tokens to current cached_tokens + chunk
                 start_idx = seq.num_cached_tokens
@@ -283,7 +282,7 @@ class ModelRunner:
                             slot = physical_block * self.block_size + block_offset
                             slot_mapping.append(slot)
                         
-            elif seq.status == SequenceStatus.DECODE or seq.status == SequenceStatus.FULL_PREFILL:
+            elif seq.num_cached_tokens >= seq.num_prompt_tokens:
                 # Handle decode sequences: process exactly 1 token (the last one)
                 
                 input_ids.append(seq.last_token)
@@ -360,19 +359,22 @@ class ModelRunner:
             return self.model.compute_logits(graph_vars["outputs"][:bs])
 
     def run(self, scheduled_seqs: deque[(Sequence,int)]) -> list[int]:
+        # create a list of token_ids for the whole scheduled sequences
         token_ids = [0] * len(scheduled_seqs) if self.rank == 0 else None
         input_ids, positions, mask = self.prepare(scheduled_seqs)
         logits=self.run_model(input_ids, positions, mask)
         if self.rank == 0:
             sample_indices = [
                 i for i, (seq, _) in enumerate(scheduled_seqs)
-                if seq.status in (SequenceStatus.DECODE, SequenceStatus.FULL_PREFILL)
-            ]
+                if seq.num_cached_tokens >= seq.num_prompt_tokens
+            ]#filter the seqs that need to be sampled
             if sample_indices:
                 temperatures = self.prepare_sample([scheduled_seqs[i][0] for i in sample_indices])
                 sampled_token_ids = self.sampler(logits, temperatures).tolist()
+
                 for batch_idx, token_id in zip(sample_indices, sampled_token_ids):
                     token_ids[batch_idx] = token_id
+                #since the sampl_indices are only the index, while the sampled_token_ids are the real output, use the index and value to update the original token_ids 
         reset_context()
 
         return token_ids if token_ids is not None else []
