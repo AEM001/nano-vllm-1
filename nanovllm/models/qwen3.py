@@ -245,8 +245,30 @@ class Qwen3ForCausalLM(nn.Module):
         self,
         input_ids: torch.Tensor,
         positions: torch.Tensor,
+        mask: list[list[int]] | torch.Tensor | None = None,
     ) -> torch.Tensor:
-        return self.model(input_ids, positions)
+        hidden_states = self.model(input_ids, positions)
+        if mask is None:
+            return hidden_states
+
+        if isinstance(mask, torch.Tensor):
+            flat_mask = mask.reshape(-1).to(hidden_states.device)
+        else:
+            flat_mask = torch.tensor(
+                [value for group in mask for value in group],
+                dtype=torch.int32,
+                device=hidden_states.device,
+            )
+
+        if flat_mask.numel() != hidden_states.size(0):
+            raise ValueError(
+                f"Mask size {flat_mask.numel()} does not match hidden states {hidden_states.size(0)}"
+            )
+
+        keep = flat_mask.ne(-1)
+        if keep.all():
+            return hidden_states
+        return hidden_states[keep]
 
     def compute_logits(
         self,

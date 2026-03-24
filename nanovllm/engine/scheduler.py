@@ -138,11 +138,10 @@ class Scheduler:
 
     def postprocess(self, seqs: list[Sequence], token_ids: list[int]) -> list[bool]:
         
-        for (seq, _), token_id in zip(seqs, token_ids):
+        for (seq, scheduled_len), token_id in zip(seqs, token_ids):
             if seq.status == SequenceStatus.PARTIAL_PREFILL:
                 # Update prefill progress
-                chunk_processed = min(self.chunk_size, seq.remaining_prefill_tokens)
-                seq.num_cached_tokens += chunk_processed
+                seq.num_cached_tokens += scheduled_len
                 # Check if prefill is complete
                 if seq.num_cached_tokens >= seq.num_prompt_tokens:
                     seq.status = SequenceStatus.FULL_PREFILL

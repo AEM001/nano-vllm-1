@@ -2,7 +2,7 @@ INFO [nanovllm.engine.model_runner] [ModelRunner] Rank 0 initialized
 INFO [nanovllm.engine.model_runner] [ModelRunner] GPU device set to rank 0
 INFO [nanovllm.engine.model_runner] [ModelRunner] Model loaded on rank 0 in 0.12s
 INFO [nanovllm.engine.model_runner] [ModelRunner] Allocating KV cache on rank 0...
-INFO [nanovllm.engine.model_runner] [ModelRunner] GPU memory: 9.52GB free / 11.61GB total
+INFO [nanovllm.engine.model_runner] [ModelRunner] GPU memory: 9.57GB free / 11.61GB total
 INFO [nanovllm.engine.model_runner] [ModelRunner] Model weights: 1.42GB
 INFO [nanovllm.engine.model_runner] [ModelRunner] KV cache memory: 9.03GB available, block_size=29360128 bytes
 INFO [nanovllm.engine.model_runner] [ModelRunner] KV cache blocks: 330

@@ -141,6 +141,113 @@ def _decode_fallback(q: torch.Tensor, k_cache: torch.Tensor, v_cache: torch.Tens
     return torch.cat(outputs, dim=0)
 
 
+def _mixed_prefill_fallback(
+    q: torch.Tensor,
+    k_cache: torch.Tensor,
+    v_cache: torch.Tensor,
+    scale: float,
+    num_heads: int,
+    cu_seqlens_q: torch.Tensor,
+    cu_seqlens_k: torch.Tensor,
+    block_tables: torch.Tensor,
+) -> torch.Tensor:
+    outputs = []
+    num_seqs = cu_seqlens_q.numel() - 1
+    flat_k = k_cache.view(-1, k_cache.size(-2), k_cache.size(-1))
+    flat_v = v_cache.view(-1, v_cache.size(-2), v_cache.size(-1))
+
+    for i in range(num_seqs):
+        q_start = cu_seqlens_q[i].item()
+        q_end = cu_seqlens_q[i + 1].item()
+        k_start = cu_seqlens_k[i].item()
+        k_end = cu_seqlens_k[i + 1].item()
+        context_len = k_end - k_start
+        block_size = k_cache.size(1)
+        slots = _block_ids_to_slot_ids(block_tables[i], context_len, block_size)
+        k_i = flat_k.index_select(0, slots[:context_len])
+        v_i = flat_v.index_select(0, slots[:context_len])
+        k_i = _repeat_kv_heads(k_i, num_heads)
+        v_i = _repeat_kv_heads(v_i, num_heads)
+        outputs.append(_causal_attention(q[q_start:q_end], k_i, v_i, scale))
+
+    return torch.cat(outputs, dim=0)
+
+
+def _mixed_decode_fallback(
+    q: torch.Tensor,
+    k_cache: torch.Tensor,
+    v_cache: torch.Tensor,
+    scale: float,
+    num_heads: int,
+    context_lens: torch.Tensor,
+    block_tables: torch.Tensor,
+) -> torch.Tensor:
+    outputs = []
+    flat_k = k_cache.view(-1, k_cache.size(-2), k_cache.size(-1))
+    flat_v = v_cache.view(-1, v_cache.size(-2), v_cache.size(-1))
+
+    for i in range(q.size(0)):
+        context_len = context_lens[i].item()
+        block_size = k_cache.size(1)
+        slots = _block_ids_to_slot_ids(block_tables[i], context_len, block_size)
+        k_i = flat_k.index_select(0, slots[:context_len])
+        v_i = flat_v.index_select(0, slots[:context_len])
+        k_i = _repeat_kv_heads(k_i, num_heads)
+        v_i = _repeat_kv_heads(v_i, num_heads)
+        outputs.append(_causal_attention(q[i:i + 1], k_i, v_i, scale, is_causal=False))
+
+    return torch.cat(outputs, dim=0)
+
+
+def _mixed_attention(
+    q: torch.Tensor,
+    k_cache: torch.Tensor,
+    v_cache: torch.Tensor,
+    scale: float,
+    num_heads: int,
+) -> torch.Tensor:
+    context = get_context()
+    query_mask = context.query_mask
+    seq_mask = context.seq_mask
+    output = torch.empty_like(q)
+
+    prefill_token_idx = (query_mask == -1).nonzero(as_tuple=False).flatten()
+    decode_token_idx = (query_mask == 0).nonzero(as_tuple=False).flatten()
+    prefill_seq_idx = (seq_mask == -1).nonzero(as_tuple=False).flatten()
+    decode_seq_idx = (seq_mask == 0).nonzero(as_tuple=False).flatten()
+
+    if prefill_token_idx.numel() > 0:
+        prefill_q = q.index_select(0, prefill_token_idx)
+        prefill_block_tables = context.block_tables.index_select(0, prefill_seq_idx)
+        prefill_output = _mixed_prefill_fallback(
+            prefill_q,
+            k_cache,
+            v_cache,
+            scale,
+            num_heads,
+            context.cu_seqlens_q,
+            context.cu_seqlens_k,
+            prefill_block_tables,
+        )
+        output.index_copy_(0, prefill_token_idx, prefill_output)
+
+    if decode_token_idx.numel() > 0:
+        decode_q = q.index_select(0, decode_token_idx)
+        decode_block_tables = context.block_tables.index_select(0, decode_seq_idx)
+        decode_output = _mixed_decode_fallback(
+            decode_q,
+            k_cache,
+            v_cache,
+            scale,
+            num_heads,
+            context.context_lens,
+            decode_block_tables,
+        )
+        output.index_copy_(0, decode_token_idx, decode_output)
+
+    return output
+
+
 class Attention(nn.Module):
     def __init__(
         self,
@@ -165,6 +272,10 @@ class Attention(nn.Module):
             store_kvcache(k, v, k_cache, v_cache, context.slot_mapping)
         
         use_flash_attn = flash_attn_varlen_func is not None and flash_attn_with_kvcache is not None
+        is_mixed = context.is_prefill and context.context_lens is not None and context.query_mask is not None and context.seq_mask is not None
+
+        if is_mixed:
+            return _mixed_attention(q, k_cache, v_cache, self.scale, self.num_heads)
         
         if context.is_prefill:
             if context.block_tables is not None:
