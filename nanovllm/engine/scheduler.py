@@ -17,6 +17,8 @@ class Scheduler:
         self.eos = config.eos
         self.chunk_size = config.chunk_size
         self.long_prefill_threshold=config.long_prefill_threshold
+        self.max_num_partial_prefills = config.max_num_partial_prefills
+        self.max_long_partial_prefills = config.max_long_partial_prefills
         # KV cache memory management
         logger.debug("[Scheduler] Initializing block manager...")
         self.block_manager = BlockManager(config.num_kvcache_blocks, config.kvcache_block_size)
@@ -75,6 +77,11 @@ class Scheduler:
             len_to_prefill = min(self.chunk_size, remaining_tokens, remaining_budget)
             logger.warning(f"PARTIALLY PREFILLING: seq_id{seq.seq_id} is prefilled {len_to_prefill} tokens")
             
+            # Allocate blocks for this partial prefill chunk
+            if not self.block_manager.can_allocate(seq, len_to_prefill):
+                break
+            self.block_manager.allocate(seq, len_to_prefill)
+            
             # Check num_seqs before adding
             num_batched_tokens += len_to_prefill
             scheduled_seqs.append((seq, len_to_prefill))
@@ -105,10 +112,10 @@ class Scheduler:
             len_to_prefill = min(self.chunk_size, remaining_tokens, remaining_budget)
             logger.warning(f" !!! FRESH START: seq_id{seq.seq_id} is prefilling {len_to_prefill} tokens and is gonna be allocated")
             
-            if not self.block_manager.can_allocate(seq):#!!!!!!!!!!!!!!!fix this
+            if not self.block_manager.can_allocate(seq,len_to_prefill):#!!!!!!!!!!!!!!!fix this
                 break
                 
-            self.block_manager.allocate(seq)
+            self.block_manager.allocate(seq,len_to_prefill)
             num_batched_tokens += len_to_prefill
             
             # Move sequence from waiting to running
@@ -136,8 +143,10 @@ class Scheduler:
         
         for (seq, scheduled_len), token_id in zip(seqs, token_ids):
             if seq.status == SequenceStatus.RUNNING:
-                # Update prefill progress
-                seq.num_cached_tokens += scheduled_len
+                # Update cached tokens after processing (for prefill phase)
+                if seq.num_cached_tokens < seq.num_prompt_tokens:
+                    seq.num_cached_tokens += scheduled_len
+                
                 # Check if prefill is complete
                 if seq.num_cached_tokens >= seq.num_prompt_tokens:
                     # seq.status remains RUNNING (fully prefilled)
