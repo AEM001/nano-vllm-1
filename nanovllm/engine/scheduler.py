@@ -26,6 +26,7 @@ class Scheduler:
         # Sequence queues
         self.waiting: deque[Sequence] = deque()  # Sequences waiting to be processed
         self.running: deque[Sequence] = deque()  # Currently executing sequences
+        self.finished: deque[Sequence] = deque()  # Completed sequences
 
     def is_finished(self):
         return not self.waiting and not self.running
@@ -60,6 +61,7 @@ class Scheduler:
             while not (self.max_num_batched_tokens - num_batched_tokens >= 1):
                 if other_running:
                     self.preempt(other_running.pop())
+                    logger.warning(f"[Scheduler] Preempted seq={seq.seq_id} due to budget")
                 else:
                     self.preempt(seq)
                     break
@@ -110,7 +112,7 @@ class Scheduler:
                 num_partial_prefills += 1
             
             len_to_prefill = min(self.chunk_size, remaining_tokens, remaining_budget)
-            logger.warning(f" !!! FRESH START: seq_id{seq.seq_id} is prefilling {len_to_prefill} tokens and is gonna be allocated")
+            logger.warning(f" !!! Prefill !!!: seq_id{seq.seq_id} is prefilling {len_to_prefill} tokens and is gonna be allocated")
             
             if not self.block_manager.can_allocate(seq,len_to_prefill):#!!!!!!!!!!!!!!!fix this
                 break
@@ -127,6 +129,7 @@ class Scheduler:
             num_seqs += 1  # Increment when actually scheduled
         
         logger.debug(f"[Scheduler] Scheduled {len(scheduled_seqs)} sequences, {num_batched_tokens} tokens")
+        logger.info(f"number of running and waiting seqs: {len(self.running)} and {len(self.waiting)}")
         return scheduled_seqs
 
     def preempt(self, seq: Sequence):
@@ -165,4 +168,5 @@ class Scheduler:
                     seq.status = SequenceStatus.FINISHED
                     self.block_manager.deallocate(seq)
                     self.running.remove(seq)
+                    self.finished.append(seq)  # Track finished sequences
                     logger.info(f"[Scheduler] Seq {seq.seq_id} finished")

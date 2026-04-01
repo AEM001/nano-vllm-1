@@ -2,6 +2,7 @@ import torch
 from torch import nn
 import triton
 import triton.language as tl
+import logging
 
 try:
     from flash_attn import flash_attn_varlen_func, flash_attn_with_kvcache
@@ -9,7 +10,7 @@ except ImportError:
     flash_attn_varlen_func = None
     flash_attn_with_kvcache = None
 from nanovllm.utils.context import get_context
-
+logger = logging.getLogger(__name__)
 
 @triton.jit
 def store_kvcache_kernel(
@@ -106,6 +107,7 @@ def _mixed_prefill_fallback(
         context_len = k_end - k_start
         block_size = k_cache.size(1)
         slots = _block_ids_to_slot_ids(block_tables[i], context_len, block_size)
+        # logger.info(f"mixed prefill: slots={slots}")
         k_i = flat_k.index_select(0, slots[:context_len])
         v_i = flat_v.index_select(0, slots[:context_len])
         k_i = _repeat_kv_heads(k_i, num_heads)
@@ -131,6 +133,7 @@ def _mixed_decode_fallback(
     for i in range(q.size(0)):
         context_len = context_lens[i].item()
         block_size = k_cache.size(1)
+
         slots = _block_ids_to_slot_ids(block_tables[i], context_len, block_size)
         k_i = flat_k.index_select(0, slots[:context_len])
         v_i = flat_v.index_select(0, slots[:context_len])

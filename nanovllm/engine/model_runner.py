@@ -305,7 +305,7 @@ class ModelRunner:
         context_lens = torch.tensor(context_lens, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
         
         set_context(True, cu_seqlens_q, cu_seqlens_k, max_seqlen_q, max_seqlen_k, slot_mapping, context_lens, block_tables, query_mask, seq_mask)
-
+        # logger.info(f"mask: {mask}")
         return input_ids, positions, mask
 
     
@@ -349,6 +349,14 @@ class ModelRunner:
         # create a list of token_ids for the whole scheduled sequences
         token_ids = [0] * len(scheduled_seqs) if self.rank == 0 else None
         input_ids, positions, mask = self.prepare(scheduled_seqs)
+        
+        # Count prefill vs decode tokens from mask
+        flat_mask = [m for seq_mask in mask for m in seq_mask]
+        num_prefill_tokens = sum(1 for m in flat_mask if m == -1)
+        num_decode_tokens = sum(1 for m in flat_mask if m == 0)
+        
+        # logger.info(f"the number of batched tokens: {input_ids.size(0)}")
+        # logger.info(f"prefill tokens: {num_prefill_tokens}, decode tokens: {num_decode_tokens}")
         logits=self.run_model(input_ids, positions, mask)
         if self.rank == 0:
             sample_indices = [

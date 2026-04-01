@@ -67,7 +67,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(path)
     llm = LLM(path, enforce_eager=True, tensor_parallel_size=1)  # disable cuda graphs, use eager execution
 
-    sampling_params = SamplingParams(temperature=0.6, max_tokens=30)
+    sampling_params = SamplingParams(temperature=0.6)
 
     # Load prompts from JSON file
     prompts = load_prompts("short_prompts.json")
@@ -106,6 +106,7 @@ def main():
         print(f"Prompt: {prompt_text[:100]}...")
         print(f"\nCompletion ({len(output['text'])} chars):")
         print(output['text'][:500] + "..." if len(output['text']) > 500 else output['text'])
+        print(f"TTFT: {output.get('ttft', -1):.3f}s")
         # print(f"\nTokens generated: {len(output['token_ids'])}")
         # print(f"Prompt tokens: {len(tokenizer.encode(prompt)) if isinstance(prompt, str) else len(prompt)}")
 

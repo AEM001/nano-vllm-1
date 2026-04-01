@@ -114,6 +114,7 @@ class LLMEngine:
         for prompt, sp in zip(prompts, sampling_params):
             self.add_request(prompt, sp)
         outputs = {}
+        seqs = {}  # Track sequences for TTFT
         prefill_throughput = decode_throughput = 0.
         step_count = 0
 
@@ -126,7 +127,14 @@ class LLMEngine:
 
             for seq_id, token_ids in output:
                 outputs[seq_id] = token_ids
+                if seq_id not in seqs:
+                    # Find the sequence object to get TTFT
+                    for seq in self.scheduler.running + self.scheduler.finished:
+                        if seq.seq_id == seq_id:
+                            seqs[seq_id] = seq
+                            break
                     
         outputs = [outputs[seq_id] for seq_id in sorted(outputs.keys())]
-        outputs = [{"text": self.tokenizer.decode(token_ids), "token_ids": token_ids} for token_ids in outputs]
+        seq_list = [seqs[seq_id] for seq_id in sorted(seqs.keys())]
+        outputs = [{"text": self.tokenizer.decode(token_ids), "token_ids": token_ids, "ttft": seq.ttft} for token_ids, seq in zip(outputs, seq_list)]
         return outputs

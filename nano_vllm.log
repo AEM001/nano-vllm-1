@@ -8,11 +8,962 @@ INFO [nanovllm.engine.model_runner] [ModelRunner] KV cache memory: 9.03GB availa
 INFO [nanovllm.engine.model_runner] [ModelRunner] KV cache blocks: 330
 INFO [nanovllm.engine.model_runner] [ModelRunner] KV cache allocated: torch.Size([2, 28, 330, 256, 8, 128])
 INFO [nanovllm.engine.llm_engine] [LLMEngine] Starting generation...
-WARNING [nanovllm.engine.scheduler]  !!! FRESH START: seq_id0 is prefilling 1024 tokens and is gonna be allocated
-WARNING [nanovllm.engine.scheduler]  !!! FRESH START: seq_id1 is prefilling 1024 tokens and is gonna be allocated
-WARNING [nanovllm.engine.scheduler]  !!! FRESH START: seq_id2 is prefilling 1024 tokens and is gonna be allocated
-WARNING [nanovllm.engine.scheduler]  !!! FRESH START: seq_id3 is prefilling 336 tokens and is gonna be allocated
-WARNING [nanovllm.engine.scheduler]  !!! FRESH START: seq_id4 is prefilling 367 tokens and is gonna be allocated
-WARNING [nanovllm.engine.scheduler] PARTIALLY PREFILLING: seq_id0 is prefilled 4 tokens
-WARNING [nanovllm.engine.scheduler] PARTIALLY PREFILLING: seq_id1 is prefilled 116 tokens
-WARNING [nanovllm.engine.scheduler] PARTIALLY PREFILLING: seq_id2 is prefilled 228 tokens
+WARNING [nanovllm.engine.scheduler]  !!! Prefill !!!: seq_id0 is prefilling 7 tokens and is gonna be allocated
+WARNING [nanovllm.engine.scheduler]  !!! Prefill !!!: seq_id1 is prefilling 9 tokens and is gonna be allocated
+WARNING [nanovllm.engine.scheduler]  !!! Prefill !!!: seq_id2 is prefilling 12 tokens and is gonna be allocated
+WARNING [nanovllm.engine.scheduler]  !!! Prefill !!!: seq_id3 is prefilling 7 tokens and is gonna be allocated
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[-1, -1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1, -1]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 35
+INFO [nanovllm.engine.model_runner] prefill tokens: 35, decode tokens: 0
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([0, 1, 2, 3, 4, 5, 6], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([256, 257, 258, 259, 260, 261, 262, 263, 264], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([768, 769, 770, 771, 772, 773, 774], device='cuda:0')
+WARNING [nanovllm.engine.scheduler] PARTIALLY PREFILLING: seq_id2 is prefilled 12 tokens
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 15
+INFO [nanovllm.engine.model_runner] prefill tokens: 12, decode tokens: 3
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535], device='cuda:0')
+WARNING [nanovllm.engine.scheduler] PARTIALLY PREFILLING: seq_id2 is prefilled 12 tokens
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 15
+INFO [nanovllm.engine.model_runner] prefill tokens: 12, decode tokens: 3
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([512, 513, 514, 515, 516, 517, 518, 519, 520, 521, 522, 523, 524, 525,
+        526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538, 539,
+        540, 541, 542, 543, 544, 545, 546, 547], device='cuda:0')
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 4 and 2
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 4
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 4
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 finished
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 finished
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 3 finished
+WARNING [nanovllm.engine.scheduler]  !!! Prefill !!!: seq_id4 is prefilling 7 tokens and is gonna be allocated
+WARNING [nanovllm.engine.scheduler]  !!! Prefill !!!: seq_id5 is prefilling 12 tokens and is gonna be allocated
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 3 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [-1, -1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 20
+INFO [nanovllm.engine.model_runner] prefill tokens: 19, decode tokens: 1
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1024, 1025, 1026, 1027, 1028, 1029, 1030], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291],
+       device='cuda:0')
+WARNING [nanovllm.engine.scheduler] PARTIALLY PREFILLING: seq_id5 is prefilled 7 tokens
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 3 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0], [-1, -1, -1, -1, -1, -1, -1]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 9
+INFO [nanovllm.engine.model_runner] prefill tokens: 7, decode tokens: 2
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.layers.attention] mixed prefill: slots=tensor([1280, 1281, 1282, 1283, 1284, 1285, 1286, 1287, 1288, 1289, 1290, 1291,
+        1292, 1293, 1294, 1295, 1296, 1297, 1298], device='cuda:0')
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 finished
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 2 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0], [0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 2
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 2
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 4 finished
+INFO [nanovllm.engine.scheduler] number of running and waiting seqs: 1 and 0
+INFO [nanovllm.engine.model_runner] mask: [[0]]
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 1
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 1
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 5 finished

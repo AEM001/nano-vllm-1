@@ -2,7 +2,7 @@ import torch
 from torch import nn
 import torch.distributed as dist
 from transformers import Qwen3Config
-
+import logging
 from nanovllm.layers.activation import SiluAndMul
 from nanovllm.layers.attention import Attention
 from nanovllm.layers.layernorm import RMSNorm
@@ -10,6 +10,8 @@ from nanovllm.layers.linear import QKVParallelLinear, MergedColumnParallelLinear
 from nanovllm.layers.rotary_embedding import get_rope
 from nanovllm.layers.embed_head import VocabParallelEmbedding, ParallelLMHead
 
+
+logger = logging.getLogger(__name__)
 
 class Qwen3Attention(nn.Module):
 
@@ -208,17 +210,24 @@ class Qwen3Model(nn.Module):
         self.embed_tokens = VocabParallelEmbedding(config.vocab_size, config.hidden_size)
         self.layers = nn.ModuleList([Qwen3DecoderLayer(config) for _ in range(config.num_hidden_layers)])
         self.norm = RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+        # logger.info("Qwen3Model initialized")
 
     def forward(
         self,
         input_ids: torch.Tensor,
         positions: torch.Tensor,
     ) -> torch.Tensor:
+        logger.debug(f"[Qwen3Model] Input: {input_ids.size(0)} tokens, positions: {positions.size(0)}")
         hidden_states = self.embed_tokens(input_ids)
+        logger.debug(f"[Qwen3Model] After embedding: {hidden_states.shape}")
         residual = None
-        for layer in self.layers:
+        for i, layer in enumerate(self.layers):
+            pre_layer_shape = hidden_states.shape
             hidden_states, residual = layer(positions, hidden_states, residual)
+            logger.debug(f"[Qwen3Model] Layer {i}: {pre_layer_shape} -> {hidden_states.shape}")
+            
         hidden_states, _ = self.norm(hidden_states, residual)
+        logger.debug(f"[Qwen3Model] After norm: {hidden_states.shape}")
         return hidden_states
 
 
@@ -241,6 +250,8 @@ class Qwen3ForCausalLM(nn.Module):
         if config.tie_word_embeddings:
             self.lm_head.weight.data = self.model.embed_tokens.weight.data
 
+        # logger.info("Qwen3ForCausalLM initialized")
+
     def forward(
         self,
         input_ids: torch.Tensor,
@@ -248,10 +259,12 @@ class Qwen3ForCausalLM(nn.Module):
         mask: list[list[int]] | torch.Tensor | None = None,
     ) -> torch.Tensor:
         hidden_states = self.model(input_ids, positions)
+        # logger.info("got hidden states, ready to deal with mask")
         if mask is None:
             return hidden_states
 
         if isinstance(mask, torch.Tensor):
+            # logger.warning(f"torch.Tensor mask is {mask}")
             flat_mask = mask.reshape(-1).to(hidden_states.device)
         else:
             flat_mask = torch.tensor(
@@ -274,4 +287,5 @@ class Qwen3ForCausalLM(nn.Module):
         self,
         hidden_states: torch.Tensor,
     ) -> torch.Tensor:
+        # logger.info("computing logits")
         return self.lm_head(hidden_states)

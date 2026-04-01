@@ -2,6 +2,7 @@ from copy import copy
 from enum import Enum, auto
 from itertools import count
 from typing import Any, Iterator, List, Tuple, Union
+import time
 
 from nanovllm.sampling_params import SamplingParams
 
@@ -30,6 +31,9 @@ class Sequence:
         self.temperature: float = sampling_params.temperature
         self.max_tokens: int = sampling_params.max_tokens
         self.ignore_eos: bool = sampling_params.ignore_eos
+        self.start_time: float = time.time()
+        self.ttft: float = -1.0  # Time to first token (set when first token generated)
+        
         
 
     def __len__(self) -> int:
@@ -73,6 +77,9 @@ class Sequence:
         return self.token_ids[i*self.block_size: (i+1)*self.block_size]
 
     def append_token(self, token_id: int) -> None:
+        # Compute TTFT on first generated token
+        if self.num_completion_tokens == 0 and self.ttft < 0:
+            self.ttft = time.time() - self.start_time
         self.token_ids.append(token_id)
         self.last_token = token_id
         self.num_tokens += 1
