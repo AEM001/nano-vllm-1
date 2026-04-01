@@ -94,7 +94,7 @@ def _mixed_prefill_fallback(
     block_tables: torch.Tensor,
 ) -> torch.Tensor:
     outputs = []
-    num_seqs = cu_seqlens_q.numel() - 1
+    num_seqs = block_tables.size(0)
     flat_k = k_cache.view(-1, k_cache.size(-2), k_cache.size(-1))
     flat_v = v_cache.view(-1, k_cache.size(-2), k_cache.size(-1))
 
@@ -161,16 +161,23 @@ def _mixed_attention(
     if prefill_token_idx.numel() > 0:
         prefill_q = q.index_select(0, prefill_token_idx)
         prefill_block_tables = context.block_tables.index_select(0, prefill_seq_idx)
+        # Filter cu_seqlens to only prefill sequences and rebuild cumulative
+        prefill_indices = torch.cat([prefill_seq_idx, prefill_seq_idx[-1:] + 1])
+        prefill_cu_seqlens_q = context.cu_seqlens_q.index_select(0, prefill_indices)
+        prefill_cu_seqlens_k = context.cu_seqlens_k.index_select(0, prefill_indices)
+        # Rebase to start from 0
+        prefill_cu_seqlens_q = prefill_cu_seqlens_q - prefill_cu_seqlens_q[0]
+        prefill_cu_seqlens_k = prefill_cu_seqlens_k - prefill_cu_seqlens_k[0]
         prefill_output = _mixed_prefill_fallback(
             prefill_q,
             k_cache,
             v_cache,
             scale,
             num_heads,
-            context.cu_seqlens_q,
-            context.cu_seqlens_k,
+            prefill_cu_seqlens_q,
+            prefill_cu_seqlens_k,
             prefill_block_tables,
-        )
+        )#mainly just recompute the actual number of prefill,not directly getting from context
         output.index_copy_(0, prefill_token_idx, prefill_output)
 
     if decode_token_idx.numel() > 0:

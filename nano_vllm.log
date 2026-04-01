@@ -1,0 +1,18 @@
+INFO [nanovllm.engine.model_runner] [ModelRunner] Rank 0 initialized
+INFO [nanovllm.engine.model_runner] [ModelRunner] GPU device set to rank 0
+INFO [nanovllm.engine.model_runner] [ModelRunner] Model loaded on rank 0 in 0.11s
+INFO [nanovllm.engine.model_runner] [ModelRunner] Allocating KV cache on rank 0...
+INFO [nanovllm.engine.model_runner] [ModelRunner] GPU memory: 9.71GB free / 11.61GB total
+INFO [nanovllm.engine.model_runner] [ModelRunner] Model weights: 1.42GB
+INFO [nanovllm.engine.model_runner] [ModelRunner] KV cache memory: 9.03GB available, block_size=29360128 bytes
+INFO [nanovllm.engine.model_runner] [ModelRunner] KV cache blocks: 330
+INFO [nanovllm.engine.model_runner] [ModelRunner] KV cache allocated: torch.Size([2, 28, 330, 256, 8, 128])
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Starting generation...
+WARNING [nanovllm.engine.scheduler]  !!! FRESH START: seq_id0 is prefilling 1024 tokens and is gonna be allocated
+WARNING [nanovllm.engine.scheduler]  !!! FRESH START: seq_id1 is prefilling 1024 tokens and is gonna be allocated
+WARNING [nanovllm.engine.scheduler]  !!! FRESH START: seq_id2 is prefilling 1024 tokens and is gonna be allocated
+WARNING [nanovllm.engine.scheduler]  !!! FRESH START: seq_id3 is prefilling 336 tokens and is gonna be allocated
+WARNING [nanovllm.engine.scheduler]  !!! FRESH START: seq_id4 is prefilling 367 tokens and is gonna be allocated
+WARNING [nanovllm.engine.scheduler] PARTIALLY PREFILLING: seq_id0 is prefilled 4 tokens
+WARNING [nanovllm.engine.scheduler] PARTIALLY PREFILLING: seq_id1 is prefilled 116 tokens
+WARNING [nanovllm.engine.scheduler] PARTIALLY PREFILLING: seq_id2 is prefilled 228 tokens
