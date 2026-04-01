@@ -84,16 +84,6 @@ class ModelRunner:
                 self.shm = SharedMemory(name="nanovllm")
                 self.loop()#rank0 doesn't execute
 
-    def prepare_block_tables(self, seqs: list[Sequence]):
-        
-        max_len = max(len(seq.block_table) for seq in seqs)#find maximum block table length
-
-        block_tables = [seq.block_table + [-1] * (max_len - len(seq.block_table)) for seq in seqs]#pad all tables to equal length with -1
-
-        block_tables = torch.tensor(block_tables, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)#convert to tensor and move to GPU
-
-        return block_tables
-
 
     def exit(self):
 
@@ -256,24 +246,23 @@ class ModelRunner:
 
             if seq.num_cached_tokens < seq.num_prompt_tokens:
                 # Handle prefill sequences: process chunked tokens
-                # For chunked prefill, process from num_cached_tokens to current cached_tokens + chunk
                 start_idx = seq.num_cached_tokens
                 end_idx = start_idx + num
                 input_ids.extend(seq[start_idx:end_idx])
                 positions.extend(list(range(start_idx, end_idx)))
                 
                 seqlen_q = end_idx - start_idx
-                seqlen_k = end_idx# changed this
+                seqlen_k = end_idx
                 cu_seqlens_q.append(cu_seqlens_q[-1] + seqlen_q)
                 cu_seqlens_k.append(cu_seqlens_k[-1] + seqlen_k)
                 max_seqlen_q = max(max_seqlen_q, seqlen_q)
                 max_seqlen_k = max(max_seqlen_k, seqlen_k)
                 mask.append([-1]*seqlen_q)
                 seq_mask.append(-1)
-                # Build slot mapping for NEW tokens only (not cached ones)
+                context_lens.append(end_idx)  # Always set context_lens for mixed path
+                
+                # Build slot mapping for NEW tokens only
                 if seq.block_table:
-                    # Calculate which tokens in this chunk need slot mapping
-                    # We process tokens from start_idx to end_idx
                     for token_pos in range(start_idx, end_idx):
                         block_idx = token_pos // self.block_size
                         block_offset = token_pos % self.block_size
@@ -283,22 +272,25 @@ class ModelRunner:
                             slot_mapping.append(slot)
                         
             elif seq.num_cached_tokens >= seq.num_prompt_tokens:
-                # Handle decode sequences: process exactly 1 token (the last one)
-                
+                # Handle decode sequences: process exactly 1 token
                 input_ids.append(seq.last_token)
                 positions.append(len(seq) - 1)
-                context_lens.append(len(seq))
+                seqlen_q = 1
+                seqlen_k = len(seq)
+                cu_seqlens_q.append(cu_seqlens_q[-1] + seqlen_q)
+                cu_seqlens_k.append(cu_seqlens_k[-1] + seqlen_k)
+                max_seqlen_q = max(max_seqlen_q, seqlen_q)
+                max_seqlen_k = max(max_seqlen_k, seqlen_k)
                 mask.append([0])
                 seq_mask.append(0)
-                # Only add slot mapping if block_table exists (skip during warmup)
+                context_lens.append(len(seq))
+                
+                # Only add slot mapping if block_table exists
                 if seq.block_table:
                     slot_mapping.append(seq.block_table[-1] * self.block_size + seq.last_block_num_tokens - 1)
         
-        # Prepare block tables if we have KV cache to access (not just new prefill)
-        block_tables = None
-        
-        if cu_seqlens_k[-1] > cu_seqlens_q[-1] or context_lens:
-            block_tables = self.prepare_block_tables(seqs)
+        # Always prepare block tables for mixed path
+        block_tables = self.prepare_block_tables(seqs)
         
         # Convert to GPU tensors
         input_ids = torch.tensor(input_ids, dtype=torch.int64, pin_memory=True).cuda(non_blocking=True)
@@ -307,17 +299,12 @@ class ModelRunner:
         query_mask = torch.tensor([value for group in mask for value in group], dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
         seq_mask = torch.tensor(seq_mask, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
 
-        has_prefill = len(cu_seqlens_q) > 1
-        has_decode = len(context_lens) > 0
-
-        if has_prefill:
-            cu_seqlens_q = torch.tensor(cu_seqlens_q, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
-            cu_seqlens_k = torch.tensor(cu_seqlens_k, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
-            context_lens_tensor = torch.tensor(context_lens, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True) if has_decode else None
-            set_context(True, cu_seqlens_q, cu_seqlens_k, max_seqlen_q, max_seqlen_k, slot_mapping, context_lens_tensor, block_tables, query_mask, seq_mask)
-        else:
-            context_lens = torch.tensor(context_lens, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
-            set_context(False, slot_mapping=slot_mapping, context_lens=context_lens, block_tables=block_tables, query_mask=query_mask, seq_mask=seq_mask)
+        # Always use mixed batch context format
+        cu_seqlens_q = torch.tensor(cu_seqlens_q, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+        cu_seqlens_k = torch.tensor(cu_seqlens_k, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+        context_lens = torch.tensor(context_lens, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
+        
+        set_context(True, cu_seqlens_q, cu_seqlens_k, max_seqlen_q, max_seqlen_k, slot_mapping, context_lens, block_tables, query_mask, seq_mask)
 
         return input_ids, positions, mask
 
