@@ -19,6 +19,7 @@ class Scheduler:
         self.long_prefill_threshold=config.long_prefill_threshold
         self.max_num_partial_prefills = config.max_num_partial_prefills
         self.max_long_partial_prefills = config.max_long_partial_prefills
+        Sequence.block_size = config.kvcache_block_size
         # KV cache memory management
         logger.debug("[Scheduler] Initializing block manager...")
         self.block_manager = BlockManager(config.num_kvcache_blocks, config.kvcache_block_size)
@@ -129,7 +130,7 @@ class Scheduler:
             num_seqs += 1  # Increment when actually scheduled
         
         logger.debug(f"[Scheduler] Scheduled {len(scheduled_seqs)} sequences, {num_batched_tokens} tokens")
-        logger.info(f"number of running and waiting seqs: {len(self.running)} and {len(self.waiting)}")
+        # logger.info(f"number of running and waiting seqs: {len(self.running)} and {len(self.waiting)}")
         return scheduled_seqs
 
     def preempt(self, seq: Sequence):

@@ -25,7 +25,7 @@ class ModelRunner:
         self.config = config
         hf_config = config.hf_config#due to model runner is gonna directly working with the GPU, it is neccessary to knwo the exact structure
 
-        self.block_size = Sequence.block_size
+        self.block_size = config.kvcache_block_size
         self.enforce_eager = config.enforce_eager
         self.is_warmup = False  # Flag to suppress logging during warmup
         self.world_size = config.tensor_parallel_size#Total number of processes in tensor parallel group

@@ -1,0 +1,272 @@
+{
+  "timestamp": "2026-04-01 23:43:34",
+  "total_experiments": 12,
+  "successful": 12,
+  "failed": 0,
+  "results": [
+    {
+      "chunk_size": 128,
+      "prompt_length": 256,
+      "num_prompts": 4,
+      "avg_ttft": 1.1559156775474548,
+      "throughput": 1.2176300870437902,
+      "total_time": 3.2850699424743652,
+      "ttfts": [
+        1.1562526226043701,
+        1.156019687652588,
+        1.15580153465271,
+        1.1555888652801514
+      ],
+      "actual_prompt_lengths": [
+        256,
+        256,
+        256,
+        256
+      ],
+      "success": true,
+      "error": ""
+    },
+    {
+      "chunk_size": 128,
+      "prompt_length": 512,
+      "num_prompts": 4,
+      "avg_ttft": 1.3448549509048462,
+      "throughput": 1.061743745937112,
+      "total_time": 3.7673873901367188,
+      "ttfts": [
+        1.3454844951629639,
+        1.3450415134429932,
+        1.3446321487426758,
+        1.344261646270752
+      ],
+      "actual_prompt_lengths": [
+        512,
+        512,
+        512,
+        512
+      ],
+      "success": true,
+      "error": ""
+    },
+    {
+      "chunk_size": 128,
+      "prompt_length": 1024,
+      "num_prompts": 4,
+      "avg_ttft": 1.7911654114723206,
+      "throughput": 0.8081727044327391,
+      "total_time": 4.949437141418457,
+      "ttfts": [
+        1.7923424243927002,
+        1.791513204574585,
+        1.7907774448394775,
+        1.7900285720825195
+      ],
+      "actual_prompt_lengths": [
+        1024,
+        1024,
+        1024,
+        1024
+      ],
+      "success": true,
+      "error": ""
+    },
+    {
+      "chunk_size": 256,
+      "prompt_length": 256,
+      "num_prompts": 4,
+      "avg_ttft": 1.2146134972572327,
+      "throughput": 1.2030898006017452,
+      "total_time": 3.324772596359253,
+      "ttfts": [
+        1.2149474620819092,
+        1.2147159576416016,
+        1.2144999504089355,
+        1.2142906188964844
+      ],
+      "actual_prompt_lengths": [
+        256,
+        256,
+        256,
+        256
+      ],
+      "success": true,
+      "error": ""
+    },
+    {
+      "chunk_size": 256,
+      "prompt_length": 512,
+      "num_prompts": 4,
+      "avg_ttft": 1.3136635422706604,
+      "throughput": 1.0685794738188024,
+      "total_time": 3.7432873249053955,
+      "ttfts": [
+        1.3143298625946045,
+        1.3138549327850342,
+        1.3134281635284424,
+        1.3130412101745605
+      ],
+      "actual_prompt_lengths": [
+        512,
+        512,
+        512,
+        512
+      ],
+      "success": true,
+      "error": ""
+    },
+    {
+      "chunk_size": 256,
+      "prompt_length": 1024,
+      "num_prompts": 4,
+      "avg_ttft": 1.700965166091919,
+      "throughput": 0.8226906507219303,
+      "total_time": 4.862094879150391,
+      "ttfts": [
+        1.7021188735961914,
+        1.701308012008667,
+        1.7005798816680908,
+        1.6998538970947266
+      ],
+      "actual_prompt_lengths": [
+        1024,
+        1024,
+        1024,
+        1024
+      ],
+      "success": true,
+      "error": ""
+    },
+    {
+      "chunk_size": 512,
+      "prompt_length": 256,
+      "num_prompts": 4,
+      "avg_ttft": 1.1573890447616577,
+      "throughput": 1.217537834481139,
+      "total_time": 3.2853188514709473,
+      "ttfts": [
+        1.1577231884002686,
+        1.15749192237854,
+        1.1572740077972412,
+        1.157067060470581
+      ],
+      "actual_prompt_lengths": [
+        256,
+        256,
+        256,
+        256
+      ],
+      "success": true,
+      "error": ""
+    },
+    {
+      "chunk_size": 512,
+      "prompt_length": 512,
+      "num_prompts": 4,
+      "avg_ttft": 1.3133501410484314,
+      "throughput": 1.0687761361676018,
+      "total_time": 3.742598533630371,
+      "ttfts": [
+        1.3139925003051758,
+        1.3135313987731934,
+        1.3131191730499268,
+        1.3127574920654297
+      ],
+      "actual_prompt_lengths": [
+        512,
+        512,
+        512,
+        512
+      ],
+      "success": true,
+      "error": ""
+    },
+    {
+      "chunk_size": 512,
+      "prompt_length": 1024,
+      "num_prompts": 4,
+      "avg_ttft": 1.6634860634803772,
+      "throughput": 0.8317286024744909,
+      "total_time": 4.809261083602905,
+      "ttfts": [
+        1.6646475791931152,
+        1.6638357639312744,
+        1.6630971431732178,
+        1.6623637676239014
+      ],
+      "actual_prompt_lengths": [
+        1024,
+        1024,
+        1024,
+        1024
+      ],
+      "success": true,
+      "error": ""
+    },
+    {
+      "chunk_size": 1024,
+      "prompt_length": 256,
+      "num_prompts": 4,
+      "avg_ttft": 1.1569522619247437,
+      "throughput": 1.2178924293320066,
+      "total_time": 3.284362316131592,
+      "ttfts": [
+        1.1572954654693604,
+        1.1570534706115723,
+        1.1568360328674316,
+        1.1566240787506104
+      ],
+      "actual_prompt_lengths": [
+        256,
+        256,
+        256,
+        256
+      ],
+      "success": true,
+      "error": ""
+    },
+    {
+      "chunk_size": 1024,
+      "prompt_length": 512,
+      "num_prompts": 4,
+      "avg_ttft": 1.3251298069953918,
+      "throughput": 1.0674131739879524,
+      "total_time": 3.747377395629883,
+      "ttfts": [
+        1.3257455825805664,
+        1.3253140449523926,
+        1.32491135597229,
+        1.3245482444763184
+      ],
+      "actual_prompt_lengths": [
+        512,
+        512,
+        512,
+        512
+      ],
+      "success": true,
+      "error": ""
+    },
+    {
+      "chunk_size": 1024,
+      "prompt_length": 1024,
+      "num_prompts": 4,
+      "avg_ttft": 2.283736526966095,
+      "throughput": 0.7365366697864185,
+      "total_time": 5.4308226108551025,
+      "ttfts": [
+        2.2848715782165527,
+        2.2840733528137207,
+        2.283355236053467,
+        2.2826459407806396
+      ],
+      "actual_prompt_lengths": [
+        1024,
+        1024,
+        1024,
+        1024
+      ],
+      "success": true,
+      "error": ""
+    }
+  ]
+}

@@ -73,8 +73,8 @@ class BlockManager:
         self.free_block_ids.append(block_id)
 
     def can_allocate(self, seq: Sequence, new_num_tokens: int) -> bool:
-        current_block = (seq.num_cached_tokens+Sequence.block_size-1) // Sequence.block_size
-        target_blocks = (seq.num_cached_tokens + new_num_tokens + Sequence.block_size - 1) // Sequence.block_size
+        current_block = (seq.num_cached_tokens + self.block_size - 1) // self.block_size
+        target_blocks = (seq.num_cached_tokens + new_num_tokens + self.block_size - 1) // self.block_size
         needed_blocks = target_blocks - current_block
         return len(self.free_block_ids) >= needed_blocks
 
@@ -82,8 +82,8 @@ class BlockManager:
         # For chunked prefill: only allocate blocks we haven't allocated yet
         h = -1
         cache_miss = False#track if we need new blocks
-        current_block = (seq.num_cached_tokens+Sequence.block_size-1) // Sequence.block_size
-        target_blocks = (seq.num_cached_tokens + num_tokens + Sequence.block_size - 1) // Sequence.block_size
+        current_block = (seq.num_cached_tokens + self.block_size - 1) // self.block_size
+        target_blocks = (seq.num_cached_tokens + num_tokens + self.block_size - 1) // self.block_size
         for i in range(current_block, target_blocks):
             # Skip blocks already allocated(fucking stupid)
             # if i < len(seq.block_table):
@@ -92,7 +92,7 @@ class BlockManager:
             token_ids = seq.block(i)
             logger.debug(f"[BlockManager] Allocate block {i}: tokens={token_ids}")
             #compute hash if full block, otherwise use -1 to indicate cache miss
-            h = self.compute_hash(token_ids, h) if len(token_ids) == Sequence.block_size else -1
+            h = self.compute_hash(token_ids, h) if len(token_ids) == self.block_size else -1
 
             block_id = self.hash_to_block_id.get(h, -1)#find if there is block has the same hash, if not find, return -1
             if block_id == -1 or self.blocks[block_id].token_ids != token_ids:# the block_id corresponding to the hash is not the actual block id
@@ -105,7 +105,7 @@ class BlockManager:
                 block = self._allocate_block(block_id)
             else:
                 
-                seq.num_cached_tokens += Sequence.block_size
+                seq.num_cached_tokens += self.block_size
 
                 if block_id in self.used_block_ids:
                     block = self.blocks[block_id]
@@ -130,20 +130,20 @@ class BlockManager:
         seq.num_cached_tokens = 0
 
     def can_append(self, seq: Sequence) -> bool:
-        return len(self.free_block_ids) >= (len(seq) % Sequence.block_size == 1)
+        return len(self.free_block_ids) >= (len(seq) % self.block_size == 1)
 
     def may_append(self, seq: Sequence) -> None:#for newly generated token
         block_table = seq.block_table
         last_block = self.blocks[block_table[-1]]
 
-        if len(seq) % Sequence.block_size == 1:
+        if len(seq) % self.block_size == 1:
             assert last_block.hash != -1, "Previous block should be hashed before allocating new block"
             logger.debug("[BlockManager] Allocating new block")
             block_id = self.free_block_ids[0]
             self._allocate_block(block_id)
             block_table.append(block_id)
             
-        elif len(seq) % Sequence.block_size == 0:
+        elif len(seq) % self.block_size == 0:
             assert last_block.hash == -1, "Block should not be hashed when full"
             logger.debug("[BlockManager] Hashing full block")
             token_ids = seq.block(seq.num_blocks-1)
