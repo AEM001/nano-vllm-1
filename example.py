@@ -67,7 +67,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(path)
     llm = LLM(path, enforce_eager=True, tensor_parallel_size=1)  # disable cuda graphs, use eager execution
 
-    sampling_params = SamplingParams(temperature=0.6, max_tokens=30)
+    sampling_params = SamplingParams(temperature=1.0, max_tokens=512, ignore_eos=True)
 
     # Load prompts from JSON file
     prompts = load_prompts("short_prompts.json")
@@ -80,34 +80,34 @@ def main():
     
     outputs = llm.generate(prompts, sampling_params)
     
-    # end_time = time.time()
-    # total_time = end_time - start_time
+    # Save generated text as JSON array like short_prompts.json
+    generated_prompts = []
+    for i, (prompt, output) in enumerate(zip(prompts, outputs)):
+        # Only save the generated completion text (256 tokens), not the prompt
+        generated_prompts.append(output['text'])
     
-    # Calculate token throughput metrics
-    # total_prompt_tokens = sum(len(tokenizer.encode(p)) if isinstance(p, str) else len(p) for p in prompts)
-    # total_generated_tokens = sum(len(output['token_ids']) for output in outputs)
-    # total_tokens = total_prompt_tokens + total_generated_tokens
+    # Save as JSON file
+    output_file = "generated_prompts.json"
+    with open(output_file, 'w', encoding='utf-8') as f:
+        json.dump(generated_prompts, f, indent=2, ensure_ascii=False)
     
-    # print(f"\n{'='*60}")
-    # print(f"PERFORMANCE METRICS")
-    # print(f"{'='*60}")
-    # print(f"Total time: {total_time:.2f} seconds")
-    # print(f"Number of sequences: {len(outputs)}")
-    # print(f"\nSequence throughput: {len(outputs)/total_time:.2f} seq/sec")
-    # print(f"Token throughput: {total_tokens/total_time:.2f} tokens/sec (input+output)")
-    # print(f"Generation throughput: {total_generated_tokens/total_time:.2f} tokens/sec (output only)")
-    # print(f"{'='*60}\n")
+    print(f"\nGenerated prompts saved to: {output_file}")
+    print(f"Total sequences generated: {len(outputs)}")
     
+    # Display results with token counts
     for i, (prompt, output) in enumerate(zip(prompts, outputs)):
         prompt_text = tokenizer.decode(prompt) if isinstance(prompt, list) else prompt
+        prompt_tokens = len(tokenizer.encode(prompt)) if isinstance(prompt, str) else len(prompt)
+        completion_tokens = len(output['token_ids'])
+        total_tokens = prompt_tokens + completion_tokens
+        
         print(f"\n{'='*80}")
-        print(f"SEQUENCE {i+1}/{len(prompts)}")
+        print(f"SEQUENCE {i+1}/{len(outputs)}")
         print(f"{'='*80}")
+        print(f"Total tokens: {total_tokens} (prompt: {prompt_tokens}, completion: {completion_tokens})")
         print(f"Prompt: {prompt_text[:100]}...")
         print(f"\nCompletion ({len(output['text'])} chars):")
         print(output['text'][:500] + "..." if len(output['text']) > 500 else output['text'])
-        # print(f"\nTokens generated: {len(output['token_ids'])}")
-        # print(f"Prompt tokens: {len(tokenizer.encode(prompt)) if isinstance(prompt, str) else len(prompt)}")
 
 
 if __name__ == "__main__":
