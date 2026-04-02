@@ -323,9 +323,27 @@ class ModelRunner:
 
         if context.is_prefill or self.enforce_eager or input_ids.size(0) > 512:
             # Eager execution for prefill, forced eager, or large batches
-            return self.model.compute_logits(self.model(input_ids, positions,mask))
+            start_time = time.perf_counter()
+            logits = self.model.compute_logits(self.model(input_ids, positions,mask))
+            end_time = time.perf_counter()
+            
+            # Calculate prefill and decode tokens from mask
+            flat_mask = [m for seq_mask in mask for m in seq_mask]
+            num_prefill_tokens = sum(1 for m in flat_mask if m == -1)
+            num_decode_tokens = sum(1 for m in flat_mask if m == 0)
+            
+            if num_prefill_tokens > 0:
+                prefill_time_per_token = (end_time - start_time) / num_prefill_tokens
+                logger.info(f"[Timing] Prefill: {num_prefill_tokens} tokens, {prefill_time_per_token*1000:.2f}ms/token")
+            
+            if num_decode_tokens > 0:
+                decode_time_per_token = (end_time - start_time) / num_decode_tokens
+                logger.info(f"[Timing] Decode: {num_decode_tokens} tokens, {decode_time_per_token*1000:.2f}ms/token")
+            
+            return logits
         else:
             # CUDA graph execution for optimized decode
+            start_time = time.perf_counter()
             bs = input_ids.size(0)#get batch size
 
             graph = self.graphs[next(x for x in self.graph_bs if x >= bs)]
@@ -343,7 +361,15 @@ class ModelRunner:
             
             # Replay captured graph
             graph.replay()
-            return self.model.compute_logits(graph_vars["outputs"][:bs])
+            logits = self.model.compute_logits(graph_vars["outputs"][:bs])
+            end_time = time.perf_counter()
+            
+            # Calculate decode tokens from context_lens
+            num_decode_tokens = bs  # Each batch item is 1 decode token
+            decode_time_per_token = (end_time - start_time) / num_decode_tokens
+            logger.info(f"[Timing] Decode: {num_decode_tokens} tokens, {decode_time_per_token*1000:.2f}ms/token")
+            
+            return logits
 
     def run(self, scheduled_seqs: deque[(Sequence,int)]) -> list[int]:
         # create a list of token_ids for the whole scheduled sequences
@@ -359,6 +385,9 @@ class ModelRunner:
         # logger.info(f"prefill tokens: {num_prefill_tokens}, decode tokens: {num_decode_tokens}")
         logits=self.run_model(input_ids, positions, mask)
         if self.rank == 0:
+            # Measure sampling overhead
+            sample_start = time.perf_counter()
+            
             sample_indices = [
                 i for i, (seq, _) in enumerate(scheduled_seqs)
                 if seq.num_cached_tokens >= seq.num_prompt_tokens
@@ -370,6 +399,13 @@ class ModelRunner:
                 for batch_idx, token_id in zip(sample_indices, sampled_token_ids):
                     token_ids[batch_idx] = token_id
                 #since the sampl_indices are only the index, while the sampled_token_ids are the real output, use the index and value to update the original token_ids 
+            
+            sample_end = time.perf_counter()
+            num_sampled_tokens = len(sample_indices)
+            if num_sampled_tokens > 0:
+                sampling_time_per_token = (sample_end - sample_start) / num_sampled_tokens
+                logger.info(f"[Timing] Sampling: {num_sampled_tokens} tokens, {sampling_time_per_token*1000:.2f}ms/token")
+                
         reset_context()
 
         return token_ids if token_ids is not None else []
