@@ -59,7 +59,7 @@ class LLMEngine:
     def step(self):
             
         logger.debug("[LLMEngine] Calling scheduler.schedule()")
-            
+        time_before_schedule=perf_counter()  
         scheduled_batch = self.scheduler.schedule()
         
         if not scheduled_batch:
@@ -70,7 +70,12 @@ class LLMEngine:
         # Extract sequences and determine if this is prefill or decode
         scheduled_seqs = [seq for seq, _ in scheduled_batch]
         is_prefill = any(seq.num_cached_tokens < seq.num_prompt_tokens for seq in scheduled_seqs)
+        time_after_schedule = perf_counter()
         
+        with open("time_log.txt", "a", encoding="utf-8") as f:
+            f.write(f"start_schedule:{time_before_schedule}\n")
+            f.write(f"end_schedule:{time_after_schedule}\n")
+
         token_ids = self.model_runner.call("run", scheduled_batch)
 
         logger.debug("[LLMEngine] Calling scheduler.postprocess()")
