@@ -67,7 +67,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(path)
     llm = LLM(path, enforce_eager=True, tensor_parallel_size=1)  # disable cuda graphs, use eager execution
 
-    sampling_params = SamplingParams(temperature=1.0, max_tokens=512, ignore_eos=True)
+    sampling_params = SamplingParams(temperature=1.0, max_tokens=128, ignore_eos=False)
 
     # Load prompts from JSON file
     prompts = load_prompts("short_prompts.json")
