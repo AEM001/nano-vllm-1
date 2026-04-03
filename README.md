@@ -2,88 +2,86 @@
 <img width="300" src="assets/logo.png">
 </p>
 
-# Nano-vLLM
+# awesome-nano-vllm
 
-A lightweight vLLM implementation built from scratch. Supports continuous batching, chunked prefill, and mixed-batch execution.
+Enhanced nano-vllm with production-grade features: **chunked prefill** and **mixed-batch execution**.
 
-## Features
+## What I Built
 
-- **Continuous Batching** - Dynamic batch composition allowing sequences to enter/exit mid-generation
-- **Chunked Prefill** - Process long prompts in chunks to avoid blocking short requests  
-- **Mixed-Batch Execution** - Run prefill and decode operations in a single forward pass
-- **PagedAttention** - Efficient KV cache management with block-based memory allocation
+### Chunked Prefill
 
-## Installation
+The original nano-vllm processed entire prompts in one go — a 1024-token prompt would monopolize the GPU while short requests waited. I implemented chunked prefill that splits long prompts into configurable chunks.
 
-```bash
-git clone <repo-url>
-cd nano-vllm-src
-pip install -e .
+Key implementation details:
+- `chunk_size` config controls max tokens per prefill step
+- `max_num_partial_prefills` limits how many "in-progress" sequences can coexist
+- `long_prefill_threshold` + `max_long_partial_prefills` prevents head-of-line blocking from very long prompts
+- Sequences stay in `RUNNING` state across steps until fully prefilled
+
+Experimental results (see `Experiments/chunk_size&prompt_length/`):
+- 512+ chunk sizes reduce TTFT by 83% for short prompts
+- Sweet spot around 1024 tokens for general workloads
+- Diminishing returns beyond 2048 tokens
+
+### Mixed-Batch Execution
+
+Instead of separating prefill and decode phases, I enabled both in the same forward pass. This is the key to low-latency serving.
+
+What the logs show:
+```
+INFO: prefill tokens: 10, decode tokens: 3
 ```
 
-Requirements: Python 3.10-3.12, CUDA-capable GPU
+How it works:
+- Scheduler prioritizes decode sequences (1 token each) for low latency
+- Fills remaining `max_num_batched_tokens` budget with partial prefills
+- Uses a "mask trick": prefill tokens get `mask=-1` (skip sampling), decode get `mask=0` (sample)
+- Same CUDA graph replay works for both cases
 
-## Quick Start
+The `Scheduler.schedule()` logic:
+1. First, schedule all decode sequences (already prefilled)
+2. If budget remains, continue partial prefills from running sequences
+3. Finally, admit new sequences from waiting queue with chunked prefill
+4. Preempt (kick to waiting) lowest-progress sequences if budget exceeded
 
-```python
-from nanovllm import LLM, SamplingParams
+### Continuous Batching
 
-llm = LLM("path/to/Qwen3-0.6B/", enforce_eager=True)
-sampling_params = SamplingParams(temperature=0.6, max_tokens=1024)
-outputs = llm.generate(["Hello, how are you?"], sampling_params)
-print(outputs[0]['text'])
+Sequences enter and exit the batch dynamically:
+```
+INFO: [Scheduler] Seq 3 finished
+WARNING:  !!! Prefill !!!: seq_id4 is prefilling 7 tokens and is gonna be allocated
+INFO: number of running and waiting seqs: 4 and 2
 ```
 
-## Example
+When a sequence hits EOS or `max_tokens`, it immediately frees its blocks. New sequences from the waiting queue fill those slots — all within the same scheduling step.
 
-```bash
-python example.py
-```
+## Experiments
 
-## API
+Systematic evaluation in `Experiments/`:
 
-### LLM
-```python
-LLM(
-    path: str,                    # Model path
-    enforce_eager: bool = False,  # Disable CUDA graphs
-    tensor_parallel_size: int = 1  # TP size
-)
+| Experiment | What It Tests |
+|------------|---------------|
+| `chunk_size&prompt_length/` | TTFT vs throughput tradeoffs across chunk sizes (256-2048) and prompt lengths |
+| `mixed-batch/` | Validation that prefill+decode coexist in same batch |
+| `one-long-one-short/` | Head-of-line blocking mitigation |
+| `latency/` | End-to-end latency measurements |
 
-llm.generate(prompts: list[str], sampling_params: SamplingParams) -> list[dict]
-```
+## Core Changes
 
-### SamplingParams
-```python
-SamplingParams(
-    temperature: float = 0.3,     # Sampling temperature
-    max_tokens: int = 64,          # Max tokens to generate
-    ignore_eos: bool = False       # Continue past EOS token
-)
-```
+The heavy lifting happens in:
 
-## Architecture
+- `nanovllm/engine/scheduler.py` — `Scheduler.schedule()` with chunked prefill + continuous batching
+- `nanovllm/engine/model_runner.py` — `prepare()` with mixed-batch tensor building
+- `nanovllm/layers/attention.py` — `_mixed_attention()` handling both prefill and decode in one call
 
-```
-nanovllm/
-├── engine/          # Core execution engine
-│   ├── llm_engine.py       # Main LLM interface
-│   ├── scheduler.py        # Request scheduling & batching
-│   ├── model_runner.py     # Model execution
-│   ├── block_manager.py    # KV cache block management
-│   └── sequence.py         # Sequence state tracking
-├── layers/          # Model layers
-│   ├── attention.py        # PagedAttention implementation
-│   ├── linear.py           # Custom fused linear layers
-│   └── ...
-└── models/          # Model implementations
-    └── qwen3.py            # Qwen3 model architecture
-```
+Git history shows the evolution: initial chunked prefill → mixed-batch support → scheduler refinements → preemptive scheduling.
 
-## Original Project
+## What Makes This Different
 
-Based on [GeeeekExplorer/nano-vllm](https://github.com/GeeeekExplorer/nano-vllm).
+Original nano-vllm was a clean educational implementation. This version is production-oriented:
 
-## License
+- Token-level scheduling instead of sequence-level
+- Configurable partial prefill limits prevent resource starvation
+- Mixed batches maximize GPU utilization without latency spikes
 
-MIT
+The sophistication isn't in complex abstractions — it's in precise token-level orchestration of simple primitives.
