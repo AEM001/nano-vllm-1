@@ -219,15 +219,15 @@ class Qwen3Model(nn.Module):
     ) -> torch.Tensor:
         logger.debug(f"[Qwen3Model] Input: {input_ids.size(0)} tokens, positions: {positions.size(0)}")
         hidden_states = self.embed_tokens(input_ids)
-        logger.debug(f"[Qwen3Model] After embedding: {hidden_states.shape}")
+        # logger.debug(f"[Qwen3Model] After embedding: {hidden_states.shape}")
         residual = None
         for i, layer in enumerate(self.layers):
             pre_layer_shape = hidden_states.shape
             hidden_states, residual = layer(positions, hidden_states, residual)
-            logger.debug(f"[Qwen3Model] Layer {i}: {pre_layer_shape} -> {hidden_states.shape}")
+            # logger.debug(f"[Qwen3Model] Layer {i}: {pre_layer_shape} -> {hidden_states.shape}")
             
         hidden_states, _ = self.norm(hidden_states, residual)
-        logger.debug(f"[Qwen3Model] After norm: {hidden_states.shape}")
+        # logger.debug(f"[Qwen3Model] After norm: {hidden_states.shape}")
         return hidden_states
 
 

@@ -6,9 +6,14 @@ from huggingface_hub import snapshot_download
 from nanovllm import LLM, SamplingParams
 from transformers import AutoTokenizer
 import sys
+from datetime import datetime
 
 def setup_logging(level=logging.INFO):
     """Setup clean logging format for nano-vllm."""
+    # Create timestamp for log filename
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_filename = f'nano_vllm_{timestamp}.log'
+    
     formatter = logging.Formatter(
         fmt='%(levelname)s [%(name)s] %(message)s',
         datefmt='%H:%M:%S'
@@ -18,8 +23,8 @@ def setup_logging(level=logging.INFO):
     console = logging.StreamHandler(sys.stdout)
     console.setFormatter(formatter)
     
-    # File handler
-    file_handler = logging.FileHandler('nano_vllm.log', mode='w')
+    # File handler with timestamped filename
+    file_handler = logging.FileHandler(log_filename, mode='w')
     file_handler.setFormatter(formatter)
     
     # Configure root logger
@@ -34,7 +39,7 @@ def setup_logging(level=logging.INFO):
     logging.getLogger("huggingface_hub").setLevel(logging.WARNING)
 
 # Setup logging
-setup_logging(logging.INFO)
+setup_logging(logging.DEBUG)
 
 
 def load_prompts(json_file="short_prompts.json"):

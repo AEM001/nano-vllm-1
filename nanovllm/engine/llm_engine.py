@@ -52,6 +52,22 @@ class LLMEngine:
         if isinstance(prompt, str):
             prompt = self.tokenizer.encode(prompt)
         seq = Sequence(prompt, sampling_params)
+        
+        # Log detailed block information during initialization
+        logger.debug(f"[LLMEngine] Sequence {seq.seq_id} initialization:")
+        logger.debug(f"[LLMEngine] - Total tokens: {len(seq)}")
+        logger.debug(f"[LLMEngine] - Block size: {seq.block_size}")
+        logger.debug(f"[LLMEngine] - Required blocks: {seq.num_blocks}")
+        logger.debug(f"[LLMEngine] - Last block tokens: {seq.last_block_num_tokens}")
+        
+        # Show block allocation details
+        logger.debug(f"[LLMEngine] - Block table (initial): {seq.block_table}")
+        
+        # Show what each block would contain
+        for i in range(seq.num_blocks):
+            block_tokens = seq.block(i)
+            logger.debug(f"[LLMEngine] - Block {i}: {len(block_tokens)} tokens, shape={len(block_tokens)}x1, content={block_tokens[:10]}{'...' if len(block_tokens) > 10 else ''}")
+        
         logger.debug(f"[LLMEngine] Created seq={seq.seq_id} tokens={len(seq)} blocks={seq.num_blocks}")
         
         self.scheduler.add(seq)

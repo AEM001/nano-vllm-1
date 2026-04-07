@@ -203,8 +203,41 @@ class ModelRunner:
 
         self.kv_cache = torch.empty(2, hf_config.num_hidden_layers, config.num_kvcache_blocks, self.block_size, num_kv_heads, head_dim)
 
-        logger.info(f"[ModelRunner] KV cache allocated: {self.kv_cache.shape}")
-
+        logger.info(f"[ModelRunner] KV cache !!!allocated!!!: {self.kv_cache.shape}")
+        #========
+        # Log detailed KV cache physical information
+        logger.info(f"[ModelRunner] KV Cache Physical Details:")
+        logger.info(f"[ModelRunner] - Tensor shape: {self.kv_cache.shape}")
+        logger.info(f"[ModelRunner] - Data type: {self.kv_cache.dtype}")
+        logger.info(f"[ModelRunner] - Device: {self.kv_cache.device}")
+        logger.info(f"[ModelRunner] - Memory layout: {self.kv_cache.stride()}")
+        
+        # Calculate and log physical memory addresses
+        kv_cache_ptr = self.kv_cache.data_ptr()
+        element_size = self.kv_cache.element_size()
+        total_elements = self.kv_cache.numel()
+        total_memory_bytes = total_elements * element_size
+        
+        logger.info(f"[ModelRunner] - Base memory address: 0x{kv_cache_ptr:x}")
+        logger.info(f"[ModelRunner] - Element size: {element_size} bytes")
+        logger.info(f"[ModelRunner] - Total elements: {total_elements}")
+        logger.info(f"[ModelRunner] - Total memory: {total_memory_bytes/1024**3:.2f}GB")
+        
+        # Show addresses for first few blocks
+        block_size_elements = 2 * hf_config.num_hidden_layers * self.block_size * num_kv_heads * head_dim
+        for i in range(min(5, config.num_kvcache_blocks)):
+            block_ptr = kv_cache_ptr + i * block_size_elements * element_size
+            logger.info(f"[ModelRunner] - Block {i} address: 0x{block_ptr:x} (offset: {i * block_size_elements * element_size} bytes)")
+        
+        # Show KV cache structure breakdown
+        logger.info(f"[ModelRunner] KV Cache Structure:")
+        logger.info(f"[ModelRunner] - Dimension 0 (KV): 0=Keys, 1=Values")
+        logger.info(f"[ModelRunner] - Dimension 1 (Layers): {hf_config.num_hidden_layers} transformer layers")
+        logger.info(f"[ModelRunner] - Dimension 2 (Blocks): {config.num_kvcache_blocks} memory blocks")
+        logger.info(f"[ModelRunner] - Dimension 3 (Tokens): {self.block_size} tokens per block")
+        logger.info(f"[ModelRunner] - Dimension 4 (Heads): {num_kv_heads} KV heads")
+        logger.info(f"[ModelRunner] - Dimension 5 (Dim): {head_dim} head dimension")
+        #========
         layer_id = 0
 
         for module in self.model.modules():
@@ -216,6 +249,15 @@ class ModelRunner:
                 """
                 module.k_cache = self.kv_cache[0, layer_id]#Each layer gets its own memory slice
                 module.v_cache = self.kv_cache[1, layer_id]
+               #======= 
+                # Log KV cache layer assignment details
+                logger.debug(f"[ModelRunner] Layer {layer_id} KV Cache Assignment:")
+                logger.debug(f"[ModelRunner] - k_cache shape: {module.k_cache.shape}")
+                logger.debug(f"[ModelRunner] - v_cache shape: {module.v_cache.shape}")
+                logger.debug(f"[ModelRunner] - k_cache address: 0x{module.k_cache.data_ptr():x}")
+                logger.debug(f"[ModelRunner] - v_cache address: 0x{module.v_cache.data_ptr():x}")
+                logger.debug(f"[ModelRunner] - Memory per layer: {module.k_cache.numel() * module.k_cache.element_size() / 1024**2:.2f}MB")
+                #=====
                 layer_id += 1
 
     def prepare_block_tables(self, seqs: list[(Sequence,int)]):
@@ -240,7 +282,14 @@ class ModelRunner:
         cu_seqlens_k = [0]
         max_seqlen_q = 0
         max_seqlen_k = 0
-        
+        #=======
+        # Get KV cache info for address calculation
+        kv_cache_ptr = self.kv_cache.data_ptr()
+        element_size = self.kv_cache.element_size()
+        hf_config = self.config.hf_config
+        num_kv_heads = hf_config.num_key_value_heads // self.world_size
+        head_dim = getattr(hf_config, "head_dim", hf_config.hidden_size // hf_config.num_attention_heads)
+        #======
 
         for seq,num in seqs:
 
@@ -263,6 +312,11 @@ class ModelRunner:
                 
                 # Build slot mapping for NEW tokens only
                 if seq.block_table:
+                #=============
+                    logger.debug(f"[ModelRunner] Building slot mapping for seq {seq.seq_id}:")
+                    logger.debug(f"[ModelRunner] - Processing tokens {start_idx} to {end_idx}")
+                    logger.debug(f"[ModelRunner] - Block table: {seq.block_table}")
+                #==========
                     for token_pos in range(start_idx, end_idx):
                         block_idx = token_pos // self.block_size
                         block_offset = token_pos % self.block_size
@@ -270,7 +324,17 @@ class ModelRunner:
                             physical_block = seq.block_table[block_idx]
                             slot = physical_block * self.block_size + block_offset
                             slot_mapping.append(slot)
-                        
+                        #=============
+                            # Log detailed slot mapping for first few tokens
+                            if token_pos < min(3, end_idx):
+                                logger.debug(f"[ModelRunner] - Token {token_pos}: block_idx={block_idx}, offset={block_offset}, physical_block={physical_block}, slot={slot}")
+                                
+                                # Calculate actual KV cache address for this slot
+                                layer_kv_size = self.block_size * num_kv_heads * head_dim
+                                slot_offset_bytes = slot * layer_kv_size * element_size
+                                actual_kv_address = kv_cache_ptr + slot_offset_bytes
+                                logger.debug(f"[ModelRunner] - KV cache address: 0x{actual_kv_address:x} (offset: {slot_offset_bytes} bytes)")
+                        #==========
             elif seq.num_cached_tokens >= seq.num_prompt_tokens:
                 # Handle decode sequences: process exactly 1 token
                 input_ids.append(seq.last_token)
@@ -287,8 +351,23 @@ class ModelRunner:
                 
                 # Only add slot mapping if block_table exists
                 if seq.block_table:
-                    slot_mapping.append(seq.block_table[-1] * self.block_size + seq.last_block_num_tokens - 1)
-        
+        #==============
+                    slot = seq.block_table[-1] * self.block_size + seq.last_block_num_tokens - 1
+                    slot_mapping.append(slot)
+                    
+                    # Log decode phase slot mapping
+                    logger.debug(f"[ModelRunner] Decode slot mapping for seq {seq.seq_id}:")
+                    logger.debug(f"[ModelRunner] - Last token position: {len(seq) - 1}")
+                    logger.debug(f"[ModelRunner] - Block table: {seq.block_table}")
+                    logger.debug(f"[ModelRunner] - Last block: {seq.block_table[-1]}, offset: {seq.last_block_num_tokens - 1}")
+                    logger.debug(f"[ModelRunner] - Slot: {slot}")
+                    
+                    # Calculate KV cache address for decode token
+                    layer_kv_size = self.block_size * num_kv_heads * head_dim
+                    slot_offset_bytes = slot * layer_kv_size * element_size
+                    actual_kv_address = kv_cache_ptr + slot_offset_bytes
+                    logger.debug(f"[ModelRunner] - KV cache address: 0x{actual_kv_address:x} (offset: {slot_offset_bytes} bytes)")
+        #==========
         # Always prepare block tables for mixed path
         block_tables = self.prepare_block_tables(seqs)
         
@@ -306,6 +385,8 @@ class ModelRunner:
         
         set_context(True, cu_seqlens_q, cu_seqlens_k, max_seqlen_q, max_seqlen_k, slot_mapping, context_lens, block_tables, query_mask, seq_mask)
         # logger.info(f"mask: {mask}")
+        logger.info(f"the input_ids:{input_ids} and the positions:{positions}")
+        logger.warning(f"slot_mapping:{slot_mapping}")
         return input_ids, positions, mask
 
     
