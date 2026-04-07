@@ -34,6 +34,7 @@ class Sequence:
         self.ignore_eos: bool = sampling_params.ignore_eos
         self.start_time: float = time.time()
         self.ttft: float = -1.0  # Time to first token (set when first token generated)
+        self.completion_time: float = -1.0  # Total time to complete sequence
         
         
 

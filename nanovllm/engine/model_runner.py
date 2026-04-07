@@ -230,13 +230,13 @@ class ModelRunner:
             logger.info(f"[ModelRunner] - Block {i} address: 0x{block_ptr:x} (offset: {i * block_size_elements * element_size} bytes)")
         
         # Show KV cache structure breakdown
-        logger.info(f"[ModelRunner] KV Cache Structure:")
-        logger.info(f"[ModelRunner] - Dimension 0 (KV): 0=Keys, 1=Values")
-        logger.info(f"[ModelRunner] - Dimension 1 (Layers): {hf_config.num_hidden_layers} transformer layers")
-        logger.info(f"[ModelRunner] - Dimension 2 (Blocks): {config.num_kvcache_blocks} memory blocks")
-        logger.info(f"[ModelRunner] - Dimension 3 (Tokens): {self.block_size} tokens per block")
-        logger.info(f"[ModelRunner] - Dimension 4 (Heads): {num_kv_heads} KV heads")
-        logger.info(f"[ModelRunner] - Dimension 5 (Dim): {head_dim} head dimension")
+        # logger.info(f"[ModelRunner] KV Cache Structure:")
+        # logger.info(f"[ModelRunner] - Dimension 0 (KV): 0=Keys, 1=Values")
+        # logger.info(f"[ModelRunner] - Dimension 1 (Layers): {hf_config.num_hidden_layers} transformer layers")
+        # logger.info(f"[ModelRunner] - Dimension 2 (Blocks): {config.num_kvcache_blocks} memory blocks")
+        # logger.info(f"[ModelRunner] - Dimension 3 (Tokens): {self.block_size} tokens per block")
+        # logger.info(f"[ModelRunner] - Dimension 4 (Heads): {num_kv_heads} KV heads")
+        # logger.info(f"[ModelRunner] - Dimension 5 (Dim): {head_dim} head dimension")
         #========
         layer_id = 0
 
@@ -251,12 +251,12 @@ class ModelRunner:
                 module.v_cache = self.kv_cache[1, layer_id]
                #======= 
                 # Log KV cache layer assignment details
-                logger.debug(f"[ModelRunner] Layer {layer_id} KV Cache Assignment:")
-                logger.debug(f"[ModelRunner] - k_cache shape: {module.k_cache.shape}")
-                logger.debug(f"[ModelRunner] - v_cache shape: {module.v_cache.shape}")
-                logger.debug(f"[ModelRunner] - k_cache address: 0x{module.k_cache.data_ptr():x}")
-                logger.debug(f"[ModelRunner] - v_cache address: 0x{module.v_cache.data_ptr():x}")
-                logger.debug(f"[ModelRunner] - Memory per layer: {module.k_cache.numel() * module.k_cache.element_size() / 1024**2:.2f}MB")
+                # logger.debug(f"[ModelRunner] Layer {layer_id} KV Cache Assignment:")
+                # logger.debug(f"[ModelRunner] - k_cache shape: {module.k_cache.shape}")
+                # logger.debug(f"[ModelRunner] - v_cache shape: {module.v_cache.shape}")
+                # logger.debug(f"[ModelRunner] - k_cache address: 0x{module.k_cache.data_ptr():x}")
+                # logger.debug(f"[ModelRunner] - v_cache address: 0x{module.v_cache.data_ptr():x}")
+                # logger.debug(f"[ModelRunner] - Memory per layer: {module.k_cache.numel() * module.k_cache.element_size() / 1024**2:.2f}MB")
                 #=====
                 layer_id += 1
 
@@ -384,8 +384,7 @@ class ModelRunner:
         context_lens = torch.tensor(context_lens, dtype=torch.int32, pin_memory=True).cuda(non_blocking=True)
         
         set_context(True, cu_seqlens_q, cu_seqlens_k, max_seqlen_q, max_seqlen_k, slot_mapping, context_lens, block_tables, query_mask, seq_mask)
-        # logger.info(f"mask: {mask}")
-        logger.info(f"the input_ids:{input_ids} and the positions:{positions}")
+        logger.debug(f"the input_ids:{input_ids} and the positions:{positions}")
         logger.warning(f"slot_mapping:{slot_mapping}")
         return input_ids, positions, mask
 
@@ -462,9 +461,11 @@ class ModelRunner:
         num_prefill_tokens = sum(1 for m in flat_mask if m == -1)
         num_decode_tokens = sum(1 for m in flat_mask if m == 0)
         
-        # logger.info(f"the number of batched tokens: {input_ids.size(0)}")
-        # logger.info(f"prefill tokens: {num_prefill_tokens}, decode tokens: {num_decode_tokens}")
+        logger.info(f"the number of batched tokens: {input_ids.size(0)}")
+        logger.info(f"prefill tokens: {num_prefill_tokens}, decode tokens: {num_decode_tokens}")
+
         logits=self.run_model(input_ids, positions, mask)
+
         if self.rank == 0:
             # Measure sampling overhead
             sample_start = time.perf_counter()
@@ -488,8 +489,12 @@ class ModelRunner:
                 logger.info(f"[Timing] Sampling: {num_sampled_tokens} tokens, {sampling_time_per_token*1000:.2f}ms/token")
                 
         reset_context()
+        total_tokens = num_prefill_tokens + num_decode_tokens
 
-        return token_ids if token_ids is not None else []
+        if token_ids is not None:
+            return token_ids, total_tokens
+        else:
+            return [], 0
 
     @torch.inference_mode()
     def capture_cudagraph(self):

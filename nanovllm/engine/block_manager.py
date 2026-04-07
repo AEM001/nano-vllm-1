@@ -88,7 +88,7 @@ class BlockManager:
         logger.debug(f"[BlockManager] Allocating for seq {seq.seq_id}:")
         logger.debug(f"[BlockManager] - Tokens to allocate: {num_tokens}")
         logger.debug(f"[BlockManager] - Current block: {current_block}, target blocks: {target_blocks}")
-        logger.debug(f"[BlockManager] - Free blocks before: {list(self.free_block_ids)}")
+        logger.debug(f"[BlockManager] - Free 10 blocks before: {list(self.free_block_ids)[:10]}")
         
         for i in range(current_block, target_blocks):
             # Skip blocks already allocated(fucking stupid)
@@ -97,41 +97,43 @@ class BlockManager:
                 
             token_ids = seq.block(i)
             logger.debug(f"[BlockManager] Allocate block {i}: tokens={token_ids}")
-            #compute hash if full block, otherwise use -1 to indicate cache miss
+
+            #compute hash if full block, otherwise use -1 
             h = self.compute_hash(token_ids, h) if len(token_ids) == self.block_size else -1
 
-            block_id = self.hash_to_block_id.get(h, -1)#find if there is block has the same hash, if not find, return -1
-            if block_id == -1 or self.blocks[block_id].token_ids != token_ids:# the block_id corresponding to the hash is not the actual block id
+            #find if there is block has the same hash, if not find, return -1
+            block_id = self.hash_to_block_id.get(h, -1)
+            # the block_id corresponding to the hash is not the actual block id
+            if block_id == -1 or self.blocks[block_id].token_ids != token_ids:
                 cache_miss = True
-
-
 
             if cache_miss:#need new block
                 block_id = self.free_block_ids[0]
                 block = self._allocate_block(block_id)
-                logger.debug(f"[BlockManager] - Allocated NEW physical block {block_id} for logical block {i}")
-                logger.debug(f"[BlockManager] - Block {block_id} location: index {block_id}, ref_count={block.ref_count}")
+                logger.info(f"[BlockManager] cache_miss- Allocated NEW physical block {block_id} for logical block {i}")
+                logger.debug(f"[BlockManager] cache_miss- Block {block_id} location: index {block_id}, ref_count={block.ref_count}")
             else:
-                
                 seq.num_cached_tokens += self.block_size
 
                 if block_id in self.used_block_ids:
                     block = self.blocks[block_id]
                     block.ref_count += 1
-                    logger.debug(f"[BlockManager] - Reused CACHED physical block {block_id} for logical block {i}")
+                    logger.info(f"[BlockManager] - Reused CACHED physical block {block_id} for logical block {i}")
                 else:
                     block = self._allocate_block(block_id)
-                    logger.debug(f"[BlockManager] - Allocated existing physical block {block_id} for logical block {i}")
+                    logger.info(f"[BlockManager] - Allocated existing physical block {block_id} for logical block {i}")
 
             if h != -1:
-                block.update(h, token_ids)#store hash and tokens
-                self.hash_to_block_id[h] = block_id#update cache mapping
-                logger.debug(f"[BlockManager] - Block {block_id} hashed: {h}")
-            seq.block_table.append(block_id)#track block for this sequence
+                #store hash and tokens
+                block.update(h, token_ids)
+                #update cache mapping
+                self.hash_to_block_id[h] = block_id
+                logger.info(f"[BlockManager] - Block {block_id} hashed: {h}")
+
+            seq.block_table.append(block_id)
             logger.debug(f"[BlockManager] - Sequence {seq.seq_id} block_table: {seq.block_table}")
-        
-        logger.debug(f"[BlockManager] - Free blocks after: {list(self.free_block_ids)}")
-        logger.debug(f"[BlockManager] - Used blocks: {list(self.used_block_ids)}")
+            logger.debug(f"[BlockManager] - Free blocks after: {list(self.free_block_ids)}")
+            logger.debug(f"[BlockManager] - Used blocks: {list(self.used_block_ids)}")
 
     def deallocate(self, seq: Sequence) -> None:
         for block_id in seq.block_table:
@@ -153,14 +155,14 @@ class BlockManager:
 
         if len(seq) % self.block_size == 1:
             assert last_block.hash != -1, "Previous block should be hashed before allocating new block"
-            logger.debug("[BlockManager] Allocating new block")
+            logger.info("[BlockManager] Decode: may_append: Allocating new block")
             block_id = self.free_block_ids[0]
             self._allocate_block(block_id)
             block_table.append(block_id)
             
         elif len(seq) % self.block_size == 0:
             assert last_block.hash == -1, "Block should not be hashed when full"
-            logger.debug("[BlockManager] Hashing full block")
+            logger.info("[BlockManager] Decode: may_append: Hashing full block")
             token_ids = seq.block(seq.num_blocks-1)
             prefix = self.blocks[block_table[-2]].hash if len(block_table) > 1 else -1
             h = self.compute_hash(token_ids, prefix)

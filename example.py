@@ -39,7 +39,7 @@ def setup_logging(level=logging.INFO):
     logging.getLogger("huggingface_hub").setLevel(logging.WARNING)
 
 # Setup logging
-setup_logging(logging.DEBUG)
+setup_logging(logging.INFO)
 
 
 def load_prompts(json_file="short_prompts.json"):

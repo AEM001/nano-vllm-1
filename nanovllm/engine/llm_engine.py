@@ -88,7 +88,7 @@ class LLMEngine:
         is_prefill = any(seq.num_cached_tokens < seq.num_prompt_tokens for seq in scheduled_seqs)
         time_after_schedule = perf_counter()
 
-        token_ids = self.model_runner.call("run", scheduled_batch)
+        token_ids ,total_tokens = self.model_runner.call("run", scheduled_batch)
 
         logger.debug("[LLMEngine] Calling scheduler.postprocess()")
         
@@ -116,13 +116,7 @@ class LLMEngine:
         prompts: list[str] | list[list[int]],
         sampling_params: SamplingParams | list[SamplingParams]
     ) -> list[str]:
-        """
-        Complete generation pipeline:
-        - Submits requests
-        - Runs generation loop
-        - Tracks progress/throughput
-        - Returns output dicts with text and token IDs
-        """
+        
         logger.info("[LLMEngine] Starting generation...")
         
         if not isinstance(sampling_params, list):
@@ -139,6 +133,13 @@ class LLMEngine:
         while not self.is_finished():
             t = perf_counter()
             output, num_tokens = self.step()
+            step_latency = perf_counter() - t
+            
+            # Calculate throughput (use abs since decode returns negative)
+            tokens_processed = abs(num_tokens)
+            throughput = tokens_processed / step_latency if step_latency > 0 else 0
+            
+            logger.info(f"[LLMEngine] Step {step_count}: latency={step_latency*1000:.2f}ms, tokens={tokens_processed}, throughput={throughput:.2f} tokens/s")
            
             step_count += 1
 
@@ -153,5 +154,7 @@ class LLMEngine:
                     
         outputs = [outputs[seq_id] for seq_id in sorted(outputs.keys())]
         seq_list = [seqs[seq_id] for seq_id in sorted(seqs.keys())]
-        outputs = [{"text": self.tokenizer.decode(token_ids), "token_ids": token_ids, "ttft": seq.ttft} for token_ids, seq in zip(outputs, seq_list)]
+        logger.info(f"Per-sequence TTFT: {[f'Seq{i+1}={s.ttft:.4f}s' for i, s in enumerate(seq_list)]}")
+        logger.info(f"Per-sequence completion time: {[f'Seq{i+1}={s.completion_time:.4f}s' for i, s in enumerate(seq_list)]}")
+        outputs = [{"text": self.tokenizer.decode(token_ids), "token_ids": token_ids, "ttft": seq.ttft, "completion_time": seq.completion_time} for token_ids, seq in zip(outputs, seq_list)]
         return outputs

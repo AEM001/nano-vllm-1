@@ -1,10 +1,10 @@
 from collections import deque
 import logging
+import time
 
 from nanovllm.config import Config
 from nanovllm.engine.sequence import Sequence, SequenceStatus
 from nanovllm.engine.block_manager import BlockManager
-
 # Configure logger
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,6 @@ class Scheduler:
         self.max_long_partial_prefills = config.max_long_partial_prefills
         Sequence.block_size = config.kvcache_block_size
         # KV cache memory management
-        logger.debug("[Scheduler] Initializing block manager...")
         self.block_manager = BlockManager(config.num_kvcache_blocks, config.kvcache_block_size)
         
         # Sequence queues
@@ -113,7 +112,7 @@ class Scheduler:
                 num_partial_prefills += 1
             
             len_to_prefill = min(self.chunk_size, remaining_tokens, remaining_budget)
-            logger.warning(f" !!! Prefill !!!: seq_id{seq.seq_id} is prefilling {len_to_prefill} tokens and is gonna be allocated")
+            logger.warning(f" First Prefill: seq_id{seq.seq_id} is prefilling {len_to_prefill} tokens and gonna be allocated")
             
             if not self.block_manager.can_allocate(seq,len_to_prefill):#!!!!!!!!!!!!!!!fix this
                 break
@@ -128,9 +127,10 @@ class Scheduler:
             seq.status = SequenceStatus.RUNNING
             scheduled_seqs.append((seq, len_to_prefill))
             num_seqs += 1  # Increment when actually scheduled
+        #already have in model_runner, here is no need
+        # logger.info(f"[Scheduler] Scheduled {len(scheduled_seqs)} sequences, {num_batched_tokens} tokens")
         
-        logger.debug(f"[Scheduler] Scheduled {len(scheduled_seqs)} sequences, {num_batched_tokens} tokens")
-        # logger.info(f"number of running and waiting seqs: {len(self.running)} and {len(self.waiting)}")
+        logger.debug(f"number of running and waiting seqs: {len(self.running)} and {len(self.waiting)}")
         return scheduled_seqs
 
     def preempt(self, seq: Sequence):
@@ -154,7 +154,7 @@ class Scheduler:
                 # Check if prefill is complete
                 if seq.num_cached_tokens >= seq.num_prompt_tokens:
                     # seq.status remains RUNNING (fully prefilled)
-                    logger.debug(f"[Scheduler] Seq {seq.seq_id} prefill complete")
+                    logger.info(f"[Scheduler] Seq {seq.seq_id} prefill complete")
                 else:
                     logger.debug(f"[Scheduler] Seq {seq.seq_id} prefill progress: {seq.num_cached_tokens}/{seq.num_prompt_tokens}")
             
@@ -167,7 +167,8 @@ class Scheduler:
             if seq.num_cached_tokens >= seq.num_prompt_tokens:
                 if (not seq.ignore_eos and token_id == self.eos) or seq.num_completion_tokens == seq.max_tokens:
                     seq.status = SequenceStatus.FINISHED
+                    seq.completion_time = time.time() - seq.start_time
                     self.block_manager.deallocate(seq)
                     self.running.remove(seq)
                     self.finished.append(seq)  # Track finished sequences
-                    logger.info(f"[Scheduler] Seq {seq.seq_id} finished")
+                    logger.info(f"[Scheduler] Seq {seq.seq_id} finished in {seq.completion_time:.2f}s")

@@ -1,0 +1,1196 @@
+INFO [nanovllm.engine.model_runner] [ModelRunner] Rank 0 initialized
+INFO [nanovllm.engine.model_runner] [ModelRunner] GPU device set to rank 0
+INFO [nanovllm.engine.model_runner] [ModelRunner] Model loaded on rank 0 in 0.11s
+INFO [nanovllm.engine.model_runner] [ModelRunner] Allocating KV cache on rank 0...
+INFO [nanovllm.engine.model_runner] [ModelRunner] GPU memory: 9.76GB free / 11.61GB total
+INFO [nanovllm.engine.model_runner] [ModelRunner] Model weights: 1.42GB
+INFO [nanovllm.engine.model_runner] [ModelRunner] KV cache memory: 9.03GB available, block_size=7340032 bytes
+INFO [nanovllm.engine.model_runner] [ModelRunner] KV cache blocks: 1320
+INFO [nanovllm.engine.model_runner] [ModelRunner] KV cache !!!allocated!!!: torch.Size([2, 28, 1320, 64, 8, 128])
+INFO [nanovllm.engine.model_runner] [ModelRunner] KV Cache Physical Details:
+INFO [nanovllm.engine.model_runner] [ModelRunner] - Tensor shape: torch.Size([2, 28, 1320, 64, 8, 128])
+INFO [nanovllm.engine.model_runner] [ModelRunner] - Data type: torch.bfloat16
+INFO [nanovllm.engine.model_runner] [ModelRunner] - Device: cuda:0
+INFO [nanovllm.engine.model_runner] [ModelRunner] - Memory layout: (2422210560, 86507520, 65536, 1024, 128, 1)
+INFO [nanovllm.engine.model_runner] [ModelRunner] - Base memory address: 0x753f48000000
+INFO [nanovllm.engine.model_runner] [ModelRunner] - Element size: 2 bytes
+INFO [nanovllm.engine.model_runner] [ModelRunner] - Total elements: 4844421120
+INFO [nanovllm.engine.model_runner] [ModelRunner] - Total memory: 9.02GB
+INFO [nanovllm.engine.model_runner] [ModelRunner] - Block 0 address: 0x753f48000000 (offset: 0 bytes)
+INFO [nanovllm.engine.model_runner] [ModelRunner] - Block 1 address: 0x753f48700000 (offset: 7340032 bytes)
+INFO [nanovllm.engine.model_runner] [ModelRunner] - Block 2 address: 0x753f48e00000 (offset: 14680064 bytes)
+INFO [nanovllm.engine.model_runner] [ModelRunner] - Block 3 address: 0x753f49500000 (offset: 22020096 bytes)
+INFO [nanovllm.engine.model_runner] [ModelRunner] - Block 4 address: 0x753f49c00000 (offset: 29360128 bytes)
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Starting generation...
+WARNING [nanovllm.engine.scheduler]  First Prefill: seq_id0 is prefilling 3 tokens and gonna be allocated
+INFO [nanovllm.engine.block_manager] [BlockManager] cache_miss- Allocated NEW physical block 0 for logical block 0
+WARNING [nanovllm.engine.scheduler]  First Prefill: seq_id1 is prefilling 3 tokens and gonna be allocated
+INFO [nanovllm.engine.block_manager] [BlockManager] cache_miss- Allocated NEW physical block 1 for logical block 0
+WARNING [nanovllm.engine.scheduler]  First Prefill: seq_id2 is prefilling 3 tokens and gonna be allocated
+INFO [nanovllm.engine.block_manager] [BlockManager] cache_miss- Allocated NEW physical block 2 for logical block 0
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  0,   1,   2,  64,  65,  66, 128, 129, 130], device='cuda:0',
+       dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 9
+INFO [nanovllm.engine.model_runner] prefill tokens: 9, decode tokens: 0
+INFO [nanovllm.engine.model_runner] [Timing] Prefill: 9 tokens, 132.21ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 0: latency=1281.40ms, tokens=9, throughput=7.02 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  2,  66, 130], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 240.45ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 113.13ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 1: latency=1061.48ms, tokens=3, throughput=2.83 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  3,  67, 131], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 9.09ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.37ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 2: latency=28.97ms, tokens=3, throughput=103.55 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  4,  68, 132], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.74ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.37ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 3: latency=27.80ms, tokens=3, throughput=107.91 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  5,  69, 133], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.67ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.37ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 4: latency=27.59ms, tokens=3, throughput=108.73 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  6,  70, 134], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.69ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.37ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 5: latency=27.64ms, tokens=3, throughput=108.55 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  7,  71, 135], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.77ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.37ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 6: latency=27.86ms, tokens=3, throughput=107.69 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  8,  72, 136], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 9.17ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.37ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 7: latency=29.09ms, tokens=3, throughput=103.14 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  9,  73, 137], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.66ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.37ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 8: latency=27.53ms, tokens=3, throughput=108.96 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 10,  74, 138], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.68ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.37ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 9: latency=27.62ms, tokens=3, throughput=108.60 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 11,  75, 139], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.73ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.37ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 10: latency=27.76ms, tokens=3, throughput=108.07 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 12,  76, 140], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.72ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.37ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 11: latency=27.72ms, tokens=3, throughput=108.21 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 13,  77, 141], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.63ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 12: latency=27.40ms, tokens=3, throughput=109.49 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 14,  78, 142], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.58ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 13: latency=27.25ms, tokens=3, throughput=110.11 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 15,  79, 143], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.58ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 14: latency=27.24ms, tokens=3, throughput=110.14 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 16,  80, 144], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.68ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 15: latency=27.53ms, tokens=3, throughput=108.97 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 17,  81, 145], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.66ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 16: latency=27.49ms, tokens=3, throughput=109.14 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 18,  82, 146], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 17: latency=27.42ms, tokens=3, throughput=109.43 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 19,  83, 147], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.67ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 18: latency=27.50ms, tokens=3, throughput=109.08 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 20,  84, 148], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.67ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 19: latency=27.51ms, tokens=3, throughput=109.05 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 21,  85, 149], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.71ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.34ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 20: latency=27.62ms, tokens=3, throughput=108.60 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 22,  86, 150], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 21: latency=27.44ms, tokens=3, throughput=109.34 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 23,  87, 151], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 22: latency=27.45ms, tokens=3, throughput=109.31 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 24,  88, 152], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.62ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 23: latency=27.38ms, tokens=3, throughput=109.57 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 25,  89, 153], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.62ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 24: latency=27.34ms, tokens=3, throughput=109.74 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 26,  90, 154], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.67ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 25: latency=27.49ms, tokens=3, throughput=109.12 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 27,  91, 155], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.61ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 26: latency=27.31ms, tokens=3, throughput=109.83 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 28,  92, 156], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 27: latency=27.44ms, tokens=3, throughput=109.33 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 29,  93, 157], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.66ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 28: latency=27.47ms, tokens=3, throughput=109.19 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 30,  94, 158], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.71ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 29: latency=27.61ms, tokens=3, throughput=108.65 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 31,  95, 159], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.71ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 30: latency=27.64ms, tokens=3, throughput=108.53 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 32,  96, 160], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.72ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 31: latency=27.67ms, tokens=3, throughput=108.42 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 33,  97, 161], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.71ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 32: latency=27.64ms, tokens=3, throughput=108.55 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 34,  98, 162], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.70ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 33: latency=27.58ms, tokens=3, throughput=108.78 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 35,  99, 163], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.69ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 34: latency=27.57ms, tokens=3, throughput=108.83 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 36, 100, 164], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 35: latency=27.45ms, tokens=3, throughput=109.29 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 37, 101, 165], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 36: latency=27.45ms, tokens=3, throughput=109.30 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 38, 102, 166], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.62ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 37: latency=27.36ms, tokens=3, throughput=109.63 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 39, 103, 167], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.67ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 38: latency=27.51ms, tokens=3, throughput=109.03 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 40, 104, 168], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.66ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 39: latency=27.48ms, tokens=3, throughput=109.17 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 41, 105, 169], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.62ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 40: latency=27.36ms, tokens=3, throughput=109.66 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 42, 106, 170], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.66ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 41: latency=27.49ms, tokens=3, throughput=109.13 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 43, 107, 171], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.85ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.33ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 42: latency=28.06ms, tokens=3, throughput=106.91 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 44, 108, 172], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.75ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 43: latency=27.83ms, tokens=3, throughput=107.82 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 45, 109, 173], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.68ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 44: latency=27.55ms, tokens=3, throughput=108.88 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 46, 110, 174], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 45: latency=27.44ms, tokens=3, throughput=109.34 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 47, 111, 175], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.68ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 46: latency=27.55ms, tokens=3, throughput=108.90 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 48, 112, 176], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.72ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 47: latency=27.67ms, tokens=3, throughput=108.41 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 49, 113, 177], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.63ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 48: latency=27.39ms, tokens=3, throughput=109.53 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 50, 114, 178], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.68ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 49: latency=27.55ms, tokens=3, throughput=108.88 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 51, 115, 179], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 50: latency=27.42ms, tokens=3, throughput=109.43 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 52, 116, 180], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.66ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 51: latency=27.47ms, tokens=3, throughput=109.21 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 53, 117, 181], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 52: latency=27.42ms, tokens=3, throughput=109.42 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 54, 118, 182], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.63ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 53: latency=27.40ms, tokens=3, throughput=109.48 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 55, 119, 183], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.66ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 54: latency=27.46ms, tokens=3, throughput=109.26 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 56, 120, 184], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.67ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 55: latency=27.52ms, tokens=3, throughput=109.02 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 57, 121, 185], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 56: latency=27.41ms, tokens=3, throughput=109.45 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 58, 122, 186], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 57: latency=27.42ms, tokens=3, throughput=109.40 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 59, 123, 187], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.70ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 58: latency=27.58ms, tokens=3, throughput=108.76 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 60, 124, 188], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.67ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 59: latency=27.51ms, tokens=3, throughput=109.05 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 61, 125, 189], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.69ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 60: latency=27.55ms, tokens=3, throughput=108.89 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 62, 126, 190], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 61: latency=27.41ms, tokens=3, throughput=109.44 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 63, 127, 191], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 62: latency=27.44ms, tokens=3, throughput=109.32 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  0,  64, 128], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.63ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 63: latency=27.41ms, tokens=3, throughput=109.47 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  1,  65, 129], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 64: latency=27.47ms, tokens=3, throughput=109.20 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  2,  66, 130], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 65: latency=27.42ms, tokens=3, throughput=109.40 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  3,  67, 131], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 66: latency=27.41ms, tokens=3, throughput=109.47 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  4,  68, 132], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.68ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 67: latency=27.54ms, tokens=3, throughput=108.94 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  5,  69, 133], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.67ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 68: latency=27.49ms, tokens=3, throughput=109.13 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  6,  70, 134], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.66ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 69: latency=27.48ms, tokens=3, throughput=109.18 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  7,  71, 135], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.66ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 70: latency=27.48ms, tokens=3, throughput=109.16 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  8,  72, 136], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.66ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 71: latency=27.49ms, tokens=3, throughput=109.14 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  9,  73, 137], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.67ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 72: latency=27.53ms, tokens=3, throughput=108.97 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 10,  74, 138], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.63ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 73: latency=27.41ms, tokens=3, throughput=109.45 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 11,  75, 139], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.68ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 74: latency=27.53ms, tokens=3, throughput=108.98 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 12,  76, 140], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.61ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 75: latency=27.34ms, tokens=3, throughput=109.74 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 13,  77, 141], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.66ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 76: latency=27.50ms, tokens=3, throughput=109.08 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 14,  78, 142], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.62ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 77: latency=27.36ms, tokens=3, throughput=109.64 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 15,  79, 143], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.63ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 78: latency=27.41ms, tokens=3, throughput=109.46 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 16,  80, 144], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 79: latency=27.42ms, tokens=3, throughput=109.41 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 17,  81, 145], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 80: latency=27.44ms, tokens=3, throughput=109.35 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 18,  82, 146], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 81: latency=27.46ms, tokens=3, throughput=109.23 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 19,  83, 147], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 82: latency=27.43ms, tokens=3, throughput=109.35 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 20,  84, 148], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 83: latency=27.41ms, tokens=3, throughput=109.45 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 21,  85, 149], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.67ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 84: latency=27.52ms, tokens=3, throughput=108.99 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 22,  86, 150], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.62ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 85: latency=27.36ms, tokens=3, throughput=109.63 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 23,  87, 151], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.66ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 86: latency=27.49ms, tokens=3, throughput=109.12 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 24,  88, 152], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.73ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 87: latency=27.69ms, tokens=3, throughput=108.36 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 25,  89, 153], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 88: latency=27.45ms, tokens=3, throughput=109.31 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 26,  90, 154], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.63ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 89: latency=27.39ms, tokens=3, throughput=109.55 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 27,  91, 155], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.66ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 90: latency=27.48ms, tokens=3, throughput=109.16 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 28,  92, 156], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.63ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 91: latency=27.40ms, tokens=3, throughput=109.48 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 29,  93, 157], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.67ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 92: latency=27.52ms, tokens=3, throughput=109.03 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 30,  94, 158], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 93: latency=27.48ms, tokens=3, throughput=109.17 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 31,  95, 159], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 94: latency=27.42ms, tokens=3, throughput=109.39 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 32,  96, 160], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.57ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 95: latency=27.22ms, tokens=3, throughput=110.23 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 33,  97, 161], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.67ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.34ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 96: latency=27.54ms, tokens=3, throughput=108.93 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 34,  98, 162], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.75ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 97: latency=27.85ms, tokens=3, throughput=107.72 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 35,  99, 163], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.71ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 98: latency=27.64ms, tokens=3, throughput=108.55 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 36, 100, 164], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.62ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.34ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 99: latency=27.35ms, tokens=3, throughput=109.69 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 37, 101, 165], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 100: latency=27.46ms, tokens=3, throughput=109.27 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 38, 102, 166], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.70ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 101: latency=27.60ms, tokens=3, throughput=108.71 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 39, 103, 167], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.67ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 102: latency=27.52ms, tokens=3, throughput=109.02 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 40, 104, 168], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 103: latency=27.46ms, tokens=3, throughput=109.23 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 41, 105, 169], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.60ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.34ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 104: latency=27.30ms, tokens=3, throughput=109.90 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 42, 106, 170], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.63ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 105: latency=27.39ms, tokens=3, throughput=109.55 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 43, 107, 171], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.70ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.34ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 106: latency=27.64ms, tokens=3, throughput=108.53 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 44, 108, 172], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.63ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 107: latency=27.39ms, tokens=3, throughput=109.54 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 45, 109, 173], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 108: latency=27.43ms, tokens=3, throughput=109.38 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 46, 110, 174], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 109: latency=27.42ms, tokens=3, throughput=109.40 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 47, 111, 175], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.59ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 110: latency=27.30ms, tokens=3, throughput=109.89 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 48, 112, 176], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.61ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 111: latency=27.36ms, tokens=3, throughput=109.67 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 49, 113, 177], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.61ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 112: latency=27.32ms, tokens=3, throughput=109.83 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 50, 114, 178], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.59ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 113: latency=27.26ms, tokens=3, throughput=110.04 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 51, 115, 179], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.59ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 114: latency=27.25ms, tokens=3, throughput=110.08 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 52, 116, 180], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.66ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 115: latency=27.47ms, tokens=3, throughput=109.21 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 53, 117, 181], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.74ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.33ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 116: latency=27.73ms, tokens=3, throughput=108.18 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 54, 118, 182], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.75ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.34ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 117: latency=27.82ms, tokens=3, throughput=107.82 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 55, 119, 183], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 118: latency=27.47ms, tokens=3, throughput=109.21 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 56, 120, 184], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.34ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 119: latency=27.42ms, tokens=3, throughput=109.39 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 57, 121, 185], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.63ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 120: latency=27.38ms, tokens=3, throughput=109.56 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 58, 122, 186], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.64ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 121: latency=27.41ms, tokens=3, throughput=109.44 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 59, 123, 187], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.65ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 122: latency=27.44ms, tokens=3, throughput=109.33 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 60, 124, 188], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.61ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 123: latency=27.35ms, tokens=3, throughput=109.71 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 61, 125, 189], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.60ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 124: latency=27.31ms, tokens=3, throughput=109.87 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 62, 126, 190], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 9.23ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.34ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 125: latency=29.33ms, tokens=3, throughput=102.30 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([ 63, 127, 191], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.93ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 126: latency=28.35ms, tokens=3, throughput=105.80 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  0,  64, 128], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.99ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 127: latency=28.48ms, tokens=3, throughput=105.34 tokens/s
+WARNING [nanovllm.engine.model_runner] slot_mapping:tensor([  1,  65, 129], device='cuda:0', dtype=torch.int32)
+INFO [nanovllm.engine.model_runner] the number of batched tokens: 3
+INFO [nanovllm.engine.model_runner] prefill tokens: 0, decode tokens: 3
+INFO [nanovllm.engine.model_runner] [Timing] Decode: 3 tokens, 8.69ms/token
+INFO [nanovllm.engine.model_runner] [Timing] Sampling: 3 tokens, 0.35ms/token
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 0 finished in 5.84s
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 1 finished in 5.84s
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 prefill complete
+INFO [nanovllm.engine.scheduler] [Scheduler] Seq 2 finished in 5.84s
+INFO [nanovllm.engine.llm_engine] [LLMEngine] Step 128: latency=27.63ms, tokens=3, throughput=108.58 tokens/s
+INFO [nanovllm.engine.llm_engine] Per-sequence TTFT: ['Seq1=2.3429s', 'Seq2=2.3429s', 'Seq3=2.3429s']
+INFO [nanovllm.engine.llm_engine] Per-sequence completion time: ['Seq1=5.8424s', 'Seq2=5.8424s', 'Seq3=5.8424s']
